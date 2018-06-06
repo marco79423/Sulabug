@@ -16,6 +16,8 @@
     "electron": "2.0.0",
     "electron-builder": "^20.11.1",
     "electron-webpack": "^2.0.1",
+    "electron-webpack-ts": "^2.0.2",
+    "typescript": "^2.9.1",
     "webpack": "^4.8.1"
   },
   "resolutions": {
