@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from 'electron'
+import {app, BrowserWindow} from 'electron'
 import * as path from 'path'
-import { format as formatUrl } from 'url'
+import {format as formatUrl} from 'url'
+import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -54,7 +55,12 @@ app.on('activate', () => {
   }
 })
 
-// create main BrowserWindow when electron is ready
-app.on('ready', () => {
+app.on('ready', async () => {
+  if (isDevelopment) {
+    for (const extension of [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]) {
+      await installExtension(extension)
+    }
+  }
+
   mainWindow = createMainWindow()
 })
