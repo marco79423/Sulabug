@@ -2,6 +2,7 @@ import {app, BrowserWindow} from 'electron'
 import * as path from 'path'
 import {format as formatUrl} from 'url'
 import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer'
+import * as config from './config'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -9,7 +10,11 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let mainWindow: null | BrowserWindow
 
 function createMainWindow() {
-  const window = new BrowserWindow()
+  const window = new BrowserWindow({
+    width: config.WINDOW_WIDTH,
+    height: config.WINDOW_HEIGHT,
+    resizable: false
+  })
 
   if (isDevelopment) {
     window.webContents.openDevTools()
