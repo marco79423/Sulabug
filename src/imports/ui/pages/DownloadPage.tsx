@@ -6,16 +6,16 @@ import MainLayout from '../layouts/MainLayout'
 interface PropsTypes {
 }
 
-export class BrowsePage extends React.Component<PropsTypes, {}> {
+export class DownloadPage extends React.Component<PropsTypes, {}> {
   render() {
     return (
       <MainLayout>
         <Button variant='contained' color='primary'>
-          Hello BrowsePage
+          Hello DownloadPage
         </Button>
       </MainLayout>
     )
   }
 }
 
-export default BrowsePage
+export default DownloadPage

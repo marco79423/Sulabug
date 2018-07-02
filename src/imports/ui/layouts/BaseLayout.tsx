@@ -17,6 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MoveToInboxIcon from '@material-ui/icons/MoveToInbox'
 import ExploreIcon from '@material-ui/icons/Explore'
 import SettingsIcon from '@material-ui/icons/Settings'
+import {Link} from 'react-router-dom'
 
 import 'normalize.css/normalize.css'
 import 'typeface-roboto/index.css'
@@ -145,13 +146,13 @@ export class BaseLayout extends React.Component<PropsTypes, {}> {
           </div>
           <Divider/>
           <List>
-            <ListItem button>
+            <ListItem button component={Link} to="/">
               <ListItemIcon>
                 <ExploreIcon/>
               </ListItemIcon>
               <ListItemText primary="瀏覽漫畫"/>
             </ListItem>
-            <ListItem button>
+            <ListItem button component={Link} to="/download">
               <ListItemIcon>
                 <MoveToInboxIcon/>
               </ListItemIcon>
@@ -160,7 +161,7 @@ export class BaseLayout extends React.Component<PropsTypes, {}> {
           </List>
           <Divider/>
           <List>
-            <ListItem button>
+            <ListItem button component={Link} to="/settings">
               <ListItemIcon>
                 <SettingsIcon/>
               </ListItemIcon>
