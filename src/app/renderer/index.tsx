@@ -1,8 +1,8 @@
-import * as React from 'react'
-import {render} from 'react-dom'
-import App from '../../imports/ui/pages/App'
+import ReactDOM from 'react-dom'
 
-render(
-  <App/>,
+import {renderRoutes} from './routes'
+
+ReactDOM.render(
+  renderRoutes(),
   document.getElementById('app')
 )
