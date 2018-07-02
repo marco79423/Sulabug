@@ -81,18 +81,20 @@ const styles = (theme: any) => ({
       width: theme.spacing.unit * 9,
     },
   },
-  toolbar: {
+  main: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 2,
+
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
+    flexDirection: 'column',
+  },
+  topContentSpacer: {
     ...theme.mixins.toolbar,
   },
   content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
-  },
+    flex: 1
+  }
 })
 
 
@@ -169,10 +171,12 @@ export class BaseLayout extends React.Component<PropsTypes, {}> {
             </ListItem>
           </List>
         </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar}/>
-          {this.props.children}
-        </main>
+        <div className={classes.main}>
+          <div className={classes.topContentSpacer}/>
+          <div className={classes.content}>
+            {this.props.children}
+          </div>
+        </div>
       </div>
     )
   }
