@@ -6,7 +6,7 @@ import MainLayout from '../layouts/MainLayout'
 interface PropsTypes {
 }
 
-export class App extends React.Component<PropsTypes, {}> {
+export class BrowsePage extends React.Component<PropsTypes, {}> {
   render() {
     return (
       <MainLayout>
@@ -18,4 +18,4 @@ export class App extends React.Component<PropsTypes, {}> {
   }
 }
 
-export default App
+export default BrowsePage
