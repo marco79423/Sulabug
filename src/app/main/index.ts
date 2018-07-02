@@ -13,7 +13,7 @@ function createMainWindow() {
   const window = new BrowserWindow({
     width: config.WINDOW_WIDTH,
     height: config.WINDOW_HEIGHT,
-    resizable: false
+    // resizable: false
   })
 
   if (isDevelopment) {

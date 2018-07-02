@@ -33,7 +33,6 @@ const drawerWidth = 240
 const styles = (theme: any) => ({
   root: {
     flexGrow: 1,
-    height: 430,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -84,7 +83,6 @@ const styles = (theme: any) => ({
   main: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 2,
 
     display: 'flex',
     flexDirection: 'column',
@@ -93,7 +91,8 @@ const styles = (theme: any) => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    flex: 1
+    flex: '1 300px',
+    overflowY: 'auto',
   }
 })
 
