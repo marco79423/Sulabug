@@ -105,6 +105,9 @@ const styles = (theme: any) => ({
   content: {
     flex: '1 300px',
     overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   }
 })
 
