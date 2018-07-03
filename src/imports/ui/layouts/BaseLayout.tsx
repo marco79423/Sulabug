@@ -5,7 +5,6 @@ import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -21,6 +20,8 @@ import {Link} from 'react-router-dom'
 
 import 'normalize.css/normalize.css'
 import 'typeface-roboto/index.css'
+
+import SearchBar from '../components/SearchBar'
 
 interface PropsTypes {
   classes: any,
@@ -53,6 +54,10 @@ const styles = (theme: any) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  SearchBarWrapper: {
+    flex: 1,
+    paddingRight: theme.spacing.unit * 2,
+  },
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
@@ -80,6 +85,13 @@ const styles = (theme: any) => ({
       width: theme.spacing.unit * 9,
     },
   },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
   main: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
@@ -97,7 +109,7 @@ const styles = (theme: any) => ({
 })
 
 
-export class BaseLayout extends React.Component<PropsTypes, {}> {
+class BaseLayout extends React.Component<PropsTypes, {}> {
   state = {
     open: false,
   }
@@ -128,9 +140,9 @@ export class BaseLayout extends React.Component<PropsTypes, {}> {
             >
               <MenuIcon/>
             </IconButton>
-            <Typography variant='title' color='inherit' noWrap>
-              Mini variant drawer
-            </Typography>
+            <div className={classes.SearchBarWrapper}>
+              <SearchBar/>
+            </div>
           </Toolbar>
         </AppBar>
         <Drawer
