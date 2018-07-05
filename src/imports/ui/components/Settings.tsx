@@ -2,9 +2,13 @@ import * as React from 'react'
 import {withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import Avatar from '@material-ui/core/Avatar'
-import TextField from '@material-ui/core/TextField'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 import FolderIcon from '@material-ui/icons/Folder'
+import IconButton from '@material-ui/core/IconButton'
+import EditIcon from '@material-ui/icons/Edit'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import Avatar from '@material-ui/core/Avatar'
 
 const styles = theme => ({
   root: {
@@ -30,15 +34,20 @@ export class Settings extends React.Component<PropsTypes, {}> {
       <div className={classes.root}>
         <List>
           <ListItem>
-            <Avatar>
-              <FolderIcon/>
-            </Avatar>
-            <TextField
-              id="target-folder"
-              label="Target Folder"
-              className={classes.textField}
-              margin="normal"
+            <ListItemAvatar>
+              <Avatar>
+                <FolderIcon/>
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="漫畫下載目錄"
+              secondary='C:/Comics'
             />
+            <ListItemSecondaryAction>
+              <IconButton>
+                <EditIcon/>
+              </IconButton>
+            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </div>
