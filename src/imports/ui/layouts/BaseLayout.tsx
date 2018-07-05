@@ -16,9 +16,9 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MoveToInboxIcon from '@material-ui/icons/MoveToInbox'
 import ExploreIcon from '@material-ui/icons/Explore'
 import SettingsIcon from '@material-ui/icons/Settings'
+import CssBaseline from '@material-ui/core/CssBaseline'
 import {Link} from 'react-router-dom'
 
-import 'normalize.css/normalize.css'
 import 'typeface-roboto/index.css'
 
 import SearchBar from '../components/SearchBar'
@@ -129,69 +129,72 @@ class BaseLayout extends React.Component<PropsTypes, {}> {
     const {classes, theme} = this.props
 
     return (
-      <div className={classes.root}>
-        <AppBar
-          position='absolute'
-          className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
-        >
-          <Toolbar disableGutters={!this.state.open}>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, this.state.open && classes.hide)}
-            >
-              <MenuIcon/>
-            </IconButton>
-            <div className={classes.SearchBarWrapper}>
-              <SearchBar/>
+      <React.Fragment>
+        <CssBaseline/>
+        <div className={classes.root}>
+          <AppBar
+            position='absolute'
+            className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
+          >
+            <Toolbar disableGutters={!this.state.open}>
+              <IconButton
+                color='inherit'
+                aria-label='open drawer'
+                onClick={this.handleDrawerOpen}
+                className={classNames(classes.menuButton, this.state.open && classes.hide)}
+              >
+                <MenuIcon/>
+              </IconButton>
+              <div className={classes.SearchBarWrapper}>
+                <SearchBar/>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            variant='permanent'
+            classes={{
+              paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+            }}
+            open={this.state.open}
+          >
+            <div className={classes.toolbar}>
+              <IconButton onClick={this.handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+              </IconButton>
             </div>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant='permanent'
-          classes={{
-            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-          }}
-          open={this.state.open}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-            </IconButton>
-          </div>
-          <Divider/>
-          <List>
-            <ListItem button component={Link} to="/">
-              <ListItemIcon>
-                <ExploreIcon/>
-              </ListItemIcon>
-              <ListItemText primary="瀏覽漫畫"/>
-            </ListItem>
-            <ListItem button component={Link} to="/download">
-              <ListItemIcon>
-                <MoveToInboxIcon/>
-              </ListItemIcon>
-              <ListItemText primary="我的下載"/>
-            </ListItem>
-          </List>
-          <Divider/>
-          <List>
-            <ListItem button component={Link} to="/settings">
-              <ListItemIcon>
-                <SettingsIcon/>
-              </ListItemIcon>
-              <ListItemText primary="個人設定"/>
-            </ListItem>
-          </List>
-        </Drawer>
-        <div className={classes.main}>
-          <div className={classes.topContentSpacer}/>
-          <div className={classes.content}>
-            {this.props.children}
+            <Divider/>
+            <List>
+              <ListItem button component={Link} to="/">
+                <ListItemIcon>
+                  <ExploreIcon/>
+                </ListItemIcon>
+                <ListItemText primary="瀏覽漫畫"/>
+              </ListItem>
+              <ListItem button component={Link} to="/download">
+                <ListItemIcon>
+                  <MoveToInboxIcon/>
+                </ListItemIcon>
+                <ListItemText primary="我的下載"/>
+              </ListItem>
+            </List>
+            <Divider/>
+            <List>
+              <ListItem button component={Link} to="/settings">
+                <ListItemIcon>
+                  <SettingsIcon/>
+                </ListItemIcon>
+                <ListItemText primary="個人設定"/>
+              </ListItem>
+            </List>
+          </Drawer>
+          <div className={classes.main}>
+            <div className={classes.topContentSpacer}/>
+            <div className={classes.content}>
+              {this.props.children}
+            </div>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }

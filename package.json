@@ -15,7 +15,6 @@
     "@types/material-ui": "^0.21.3",
     "classnames": "^2.2.6",
     "history": "^4.7.2",
-    "normalize.css": "^8.0.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-router": "^4.3.1",
