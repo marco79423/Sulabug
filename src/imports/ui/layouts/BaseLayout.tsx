@@ -98,12 +98,12 @@ const styles = (theme: any) => ({
 
     display: 'flex',
     flexDirection: 'column',
+    height: '100vh',
   },
   topContentSpacer: {
     ...theme.mixins.toolbar,
   },
   content: {
-    flex: '1 300px',
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
       display: 'none',

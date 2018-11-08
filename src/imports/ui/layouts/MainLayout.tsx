@@ -12,6 +12,9 @@ interface PropsTypes {
 export default class MainLayout extends React.Component<PropsTypes, {}> {
 
   private theme = createMuiTheme({
+    typography: {
+      useNextVariants: true,
+    },
     palette: {
       primary: {
         main: teal[800]
