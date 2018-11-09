@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {withStyles} from '@material-ui/core/styles'
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
   root: {
     width: '100%',
     display: 'flex',

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import {withStyles} from '@material-ui/core/styles'
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 
 import ComicListItem from './ComicListItem'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
   root: {
     padding: theme.spacing.unit * 2,
   },

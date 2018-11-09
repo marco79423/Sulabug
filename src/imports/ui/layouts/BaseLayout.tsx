@@ -1,6 +1,6 @@
 import * as React from 'react'
 import classNames from 'classnames'
-import {withStyles} from '@material-ui/core/styles'
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -31,7 +31,7 @@ interface PropsTypes {
 
 const drawerWidth = 240
 
-const styles = (theme: any) => ({
+const styles = (theme: Theme) => createStyles({
   root: {
     flexGrow: 1,
     zIndex: 1,

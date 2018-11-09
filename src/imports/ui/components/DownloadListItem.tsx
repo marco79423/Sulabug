@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {withStyles} from '@material-ui/core/styles'
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -9,7 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
   root: {},
   progress: {
     marginRight: theme.spacing.unit * 2

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import {withStyles} from '@material-ui/core/styles'
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 
 import DownloadListItem from './DownloadListItem'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
   root: {
     width: '100%',
     maxWidth: 400,
