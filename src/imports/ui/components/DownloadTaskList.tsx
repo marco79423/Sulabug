@@ -2,7 +2,7 @@ import * as React from 'react'
 import {createStyles, Theme, withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 
-import DownloadListItem from './DownloadListItem'
+import DownloadTaskListItem from './DownloadTaskListItem'
 
 const styles = (theme: Theme) => createStyles({
   root: {
@@ -16,20 +16,21 @@ const styles = (theme: Theme) => createStyles({
 })
 
 interface PropsTypes {
-  classes: any
+  classes: any,
+  downloadTasks: any,
 }
 
-export class DownloadList extends React.Component<PropsTypes, {}> {
+export class DownloadTaskList extends React.Component<PropsTypes, {}> {
   render() {
-    const {classes} = this.props
+    const {classes, downloadTasks} = this.props
     return (
       <div className={classes.root}>
         <List>
-          <DownloadListItem/>
+          {downloadTasks.map((downloadTask: any) => <DownloadTaskListItem key={downloadTask.id} downloadTask={downloadTask}/>)}
         </List>
       </div>
     )
   }
 }
 
-export default withStyles(styles)(DownloadList)
+export default withStyles(styles)(DownloadTaskList)

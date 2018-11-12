@@ -33,7 +33,7 @@ class SearchBar extends React.Component<PropsTypes, {}> {
     return (
       <div className={classes.root}>
         <Input
-          placeholder="想「試看」的漫畫……"
+          placeholder="想試看的漫畫……"
           className={classes.input}
           disableUnderline
           inputProps={{

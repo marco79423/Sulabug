@@ -12,13 +12,20 @@ import ListItem from '@material-ui/core/ListItem/ListItem'
 
 const styles = (theme: Theme) => createStyles({
   root: {
-    paddingTop: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingBottom: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
+    '&:not(:first-child)': {
+      paddingTop: 0
+    }
   },
   card: {
     display: 'flex',
+  },
+  title: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  source: {
+    marginLeft: theme.spacing.unit
   },
   subtitle: {
     overflow: 'hidden',
@@ -47,24 +54,28 @@ const styles = (theme: Theme) => createStyles({
 
 interface PropsTypes {
   classes: any,
+  comic: any,
 }
 
 export class ComicListItem extends React.Component<PropsTypes, {}> {
   render() {
-    const {classes} = this.props
+    const {classes, comic} = this.props
     return (
       <ListItem className={classes.root}>
         <Card className={classes.card}>
           <CardMedia
             className={classes.cover}
-            image="http://rs.sfacg.com/web/novel/images/NovelCover/Small/2017/01/bfb9f16b-bcff-4604-95d3-435d629c20d2.jpg"
-            title="Live from space album cover"
+            image={comic.coverUrl}
+            title={comic.name}
           />
           <div className={classes.details}>
             <CardContent className={classes.content}>
-              <Typography variant="h5">Name</Typography>
-              <Typography className={classes.subtitle} variant="subtitle1" color="textSecondary">
-                Author | SF | Catalog | Status
+              <div className={classes.title}>
+                <Typography variant="h5">{comic.name}</Typography>
+                <Typography className={classes.source} variant="body2">[{comic.source}]</Typography>
+              </div>
+              <Typography className={classes.subtitle} variant="body1" color="textSecondary">
+                {comic.author} | {comic.catalog} | {comic.lastUpdated}
               </Typography>
             </CardContent>
             <CardActions className={classes.actions}>

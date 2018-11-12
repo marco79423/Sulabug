@@ -17,22 +17,36 @@ const styles = (theme: Theme) => createStyles({
 })
 
 interface PropsTypes {
-  classes: any
+  classes: any,
+  downloadTask: any,
 }
 
-export class DownloadListItem extends React.Component<PropsTypes, {}> {
+export class DownloadTaskListItem extends React.Component<PropsTypes, {}> {
+
+  renderProgress = () => {
+    const {classes, downloadTask} = this.props
+    switch (downloadTask.status) {
+      case 'downloading':
+        return <LinearProgress className={classes.progress} variant="determinate" value={downloadTask.progress}/>
+      case 'preparing':
+        return <LinearProgress className={classes.progress} variant="query"/>
+      default:
+        return null
+    }
+  }
+
   render() {
-    const {classes} = this.props
+    const {classes, downloadTask} = this.props
     return (
       <ListItem className={classes.root}>
         <ListItemAvatar>
           <Avatar>
-            <img src={"http://rs.sfacg.com/web/novel/images/NovelCover/Small/2017/01/bfb9f16b-bcff-4604-95d3-435d629c20d2.jpg"}/>
+            <img src={downloadTask.coverUrl}/>
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary="Name"
-          secondary={<LinearProgress className={classes.progress} variant="determinate" value={80}/>}
+          secondary={this.renderProgress()}
         />
         <ListItemSecondaryAction>
           <IconButton>
@@ -44,4 +58,4 @@ export class DownloadListItem extends React.Component<PropsTypes, {}> {
   }
 }
 
-export default withStyles(styles)(DownloadListItem)
+export default withStyles(styles)(DownloadTaskListItem)

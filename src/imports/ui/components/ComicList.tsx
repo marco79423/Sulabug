@@ -6,24 +6,22 @@ import ComicListItem from './ComicListItem'
 
 const styles = (theme: Theme) => createStyles({
   root: {
-    padding: theme.spacing.unit * 2,
+    padding: 0,
   },
 })
 
 interface PropsTypes {
   classes: any,
+  comics: any,
 }
 
 export class ComicList extends React.Component<PropsTypes, {}> {
   render() {
-    const {classes} = this.props
+    const {classes, comics} = this.props
+
     return (
       <List className={classes.root}>
-        <ComicListItem/>
-        <ComicListItem/>
-        <ComicListItem/>
-        <ComicListItem/>
-        <ComicListItem/>
+        {comics.map((comic: any) => <ComicListItem key={comic.id} comic={comic}/>)}
       </List>
     )
   }
