@@ -1,12 +1,12 @@
 import 'reflect-metadata'
 
 import {Request, Response} from '../../base-types'
-import CreateDownloadTaskUseCase from './CreateDownloadTaskUseCase'
+import CreateDownloadTaskUseCaseImpl from './CreateDownloadTaskUseCaseImpl'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../core/interfaces/use-cases'
 
-describe('CreateDownloadTaskUseCase', () => {
+describe('CreateDownloadTaskUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will create a download task', async () => {
       const comicInfo = {
@@ -38,7 +38,7 @@ describe('CreateDownloadTaskUseCase', () => {
       }
 
       const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
-      const uc = new CreateDownloadTaskUseCase(queryComicInfoByIdentityFromDatabaseUseCase, downloadTaskFactory, downloadTaskRepository)
+      const uc = new CreateDownloadTaskUseCaseImpl(queryComicInfoByIdentityFromDatabaseUseCase, downloadTaskFactory, downloadTaskRepository)
       const res = await uc.asyncExecute(new Request(comicInfo.id))
 
       expect(queryComicInfoByIdentityFromDatabaseUseCase.asyncExecute).toBeCalledWith(new Request(comicInfo.id))

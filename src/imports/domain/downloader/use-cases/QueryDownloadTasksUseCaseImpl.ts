@@ -1,11 +1,12 @@
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
-import {AsyncUseCase, Response, ResponseError} from '../../base-types'
+import {Response} from '../../base-types'
 import {DownloadTaskRepository} from '../interfaces/repositories'
+import {QueryDownloadTasksUseCase} from '../interfaces/use-cases'
 
 @injectable()
-export default class QueryDownloadTasksUseCase implements AsyncUseCase {
+export default class QueryDownloadTasksUseCaseImpl implements QueryDownloadTasksUseCase {
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   public constructor(
@@ -14,7 +15,7 @@ export default class QueryDownloadTasksUseCase implements AsyncUseCase {
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  asyncExecute = async (): Promise<Response | ResponseError> => {
+  async asyncExecute(): Promise<Response> {
     const downloadTasks = this._downloadTaskRepository.getAll()
     return new Response(downloadTasks.map(downloadTask => downloadTask.serialize()))
   }

@@ -35,7 +35,3 @@ export class ResponseError {
     this.reason = reason
   }
 }
-
-export interface AsyncUseCase {
-  asyncExecute(request?: Request): Promise<Response | ResponseError>
-}

@@ -6,10 +6,10 @@ import {FileAdapter, NetAdapter} from './interfaces/adapters'
 import {ConfigFactory, DownloadTaskFactory} from './interfaces/factories'
 import {ConfigRepository, DownloadTaskRepository} from './interfaces/repositories'
 import {SFDownloadComicService} from './interfaces/services'
-import CreateDownloadTaskUseCase from './use-cases/CreateDownloadTaskUseCase'
-import DeleteDownloadTaskUseCase from './use-cases/DeleteDownloadTaskUseCase'
-import QueryDownloadTasksUseCase from './use-cases/QueryDownloadTasksUseCase'
-import DownloadComicUseCase from './use-cases/DownloadComicUseCase'
+import CreateDownloadTaskUseCaseImpl from './use-cases/CreateDownloadTaskUseCaseImpl'
+import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCaseImpl'
+import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
+import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
 import SFDownloadComicServiceImpl from './services/SFDownloadComicServiceImpl'
 import DownloadTaskRepositoryImpl from '../../infrastructure/downloader/repositories/DownloadTaskRepositoryImpl'
 import FileAdapterImpl from '../../infrastructure/downloader/adapters/FileAdapterImpl'
@@ -17,6 +17,12 @@ import NetAdapterImpl from '../../infrastructure/downloader/adapters/NetAdapterI
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/downloader/repositories/ConfigRepositoryImpl'
+import {
+  CreateDownloadTaskUseCase,
+  DeleteDownloadTaskUseCase,
+  DownloadComicUseCase,
+  QueryDownloadTasksUseCase
+} from './interfaces/use-cases'
 
 const downloaderInjector = new Container()
 
@@ -33,9 +39,9 @@ downloaderInjector.bind<DownloadTaskRepository>(downloaderTypes.DownloadTaskRepo
 
 downloaderInjector.bind<SFDownloadComicService>(downloaderTypes.SFDownloadComicService).to(SFDownloadComicServiceImpl).inSingletonScope()
 
-downloaderInjector.bind(CreateDownloadTaskUseCase).toSelf().inSingletonScope()
-downloaderInjector.bind(DeleteDownloadTaskUseCase).toSelf().inSingletonScope()
-downloaderInjector.bind(QueryDownloadTasksUseCase).toSelf().inSingletonScope()
-downloaderInjector.bind(DownloadComicUseCase).toSelf().inSingletonScope()
+downloaderInjector.bind<CreateDownloadTaskUseCase>(downloaderTypes.CreateDownloadTaskUseCase).to(CreateDownloadTaskUseCaseImpl).inSingletonScope()
+downloaderInjector.bind<DeleteDownloadTaskUseCase>(downloaderTypes.DeleteDownloadTaskUseCase).to(DeleteDownloadTaskUseCaseImpl).inSingletonScope()
+downloaderInjector.bind<QueryDownloadTasksUseCase>(downloaderTypes.QueryDownloadTasksUseCase).to(QueryDownloadTasksUseCaseImpl).inSingletonScope()
+downloaderInjector.bind<DownloadComicUseCase>(downloaderTypes.DownloadComicUseCase).to(DownloadComicUseCaseImpl).inSingletonScope()
 
 export default downloaderInjector

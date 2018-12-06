@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 
 import {Response} from '../../base-types'
-import QueryDownloadTasksUseCase from './QueryDownloadTasksUseCase'
+import QueryDownloadTasksUseCaseImpl from './QueryDownloadTasksUseCaseImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 import DownloadTask from '../entities/DownloadTask'
 
-describe('QueryDownloadTasksUseCase', () => {
+describe('QueryDownloadTasksUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will get all current download tasks', async () => {
       const downloadTaskRepository: DownloadTaskRepository = {
@@ -43,7 +43,7 @@ describe('QueryDownloadTasksUseCase', () => {
       ]
 
       downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
-      const uc = new QueryDownloadTasksUseCase(downloadTaskRepository)
+      const uc = new QueryDownloadTasksUseCaseImpl(downloadTaskRepository)
       const res = await uc.asyncExecute()
 
       expect(downloadTaskRepository.getAll).toBeCalled()

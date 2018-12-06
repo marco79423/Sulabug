@@ -2,9 +2,9 @@ import 'reflect-metadata'
 
 import {Request, Response} from '../../base-types'
 import {DownloadTaskRepository} from '../interfaces/repositories'
-import DeleteDownloadTaskUseCase from './DeleteDownloadTaskUseCase'
+import DeleteDownloadTaskUseCaseImpl from './DeleteDownloadTaskUseCaseImpl'
 
-describe('DeleteDownloadTaskUseCase', () => {
+describe('DeleteDownloadTaskUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will delete the download task', async () => {
       const downloadTaskId = 'downloadTaskId'
@@ -16,7 +16,7 @@ describe('DeleteDownloadTaskUseCase', () => {
         delete: jest.fn(),
       }
 
-      const uc = new DeleteDownloadTaskUseCase(downloadTaskRepository)
+      const uc = new DeleteDownloadTaskUseCaseImpl(downloadTaskRepository)
       const res = await uc.asyncExecute(new Request(downloadTaskId))
 
       expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)

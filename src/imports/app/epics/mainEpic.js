@@ -4,14 +4,11 @@ import {filter, flatMap, map} from 'rxjs/operators'
 
 import {Request} from '../../domain/base-types'
 import domainInjector from '../domainInjector'
+import coreTypes from '../../domain/core/coreTypes'
+import downloaderTypes from '../../domain/downloader/downloaderTypes'
 import {actions, ActionTypes} from '../ducks/mainDuck'
 import EventPublisher from '../../domain/downloader/event/EventPublisher'
 import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
-import QueryDownloadTasksUseCase from '../../domain/downloader/use-cases/QueryDownloadTasksUseCase'
-import DownloadComicUseCase from '../../domain/downloader/use-cases/DownloadComicUseCase'
-import coreTypes from '../../domain/core/coreTypes'
-import CreateDownloadTaskUseCase from '../../domain/downloader/use-cases/CreateDownloadTaskUseCase'
-import DeleteDownloadTaskUseCase from '../../domain/downloader/use-cases/DeleteDownloadTaskUseCase'
 
 export const initializeEpic = () => of(
   actions.queryConfig(),
@@ -56,7 +53,7 @@ export const queryDownloadTasksEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingDownloadTasks()),
-    from(domainInjector.get(QueryDownloadTasksUseCase).asyncExecute()
+    from(domainInjector.get(downloaderTypes.QueryDownloadTasksUseCase).asyncExecute()
       .then(res => res.data)
       .then(downloadTasks => actions.downloadTasksQueried(downloadTasks)))
   )),
@@ -89,7 +86,7 @@ export const createDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(comicIInfoId => concat(
     of(actions.creatingDownloadTask()),
-    from(domainInjector.get(CreateDownloadTaskUseCase).asyncExecute(new Request(comicIInfoId))
+    from(domainInjector.get(downloaderTypes.CreateDownloadTaskUseCase).asyncExecute(new Request(comicIInfoId))
       .then(res => res.data)
       .then(downloadTask => actions.downloadTaskCreated(downloadTask))
     ),
@@ -103,7 +100,7 @@ export const deleteDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    from(domainInjector.get(DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
+    from(domainInjector.get(downloaderTypes.DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
       .then(() => actions.downloadTaskDeleted(downloadTaskId))
     ),
   ))
@@ -116,7 +113,7 @@ export const handleDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTask => concat(
     of(actions.downloadingComic()),
-    from(domainInjector.get(DownloadComicUseCase).asyncExecute(new Request(downloadTask.id))
+    from(domainInjector.get(downloaderTypes.DownloadComicUseCase).asyncExecute(new Request(downloadTask.id))
       .then(() => actions.comicDownloaded())
     ),
   ))

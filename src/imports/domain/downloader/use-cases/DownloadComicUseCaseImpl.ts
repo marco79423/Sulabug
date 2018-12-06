@@ -1,12 +1,13 @@
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
-import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
+import {Request, Response} from '../../base-types'
 import {SFDownloadComicService} from '../interfaces/services'
 import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DownloadComicUseCase} from '../interfaces/use-cases'
 
 @injectable()
-export default class DownloadComicUseCase implements AsyncUseCase {
+export default class DownloadComicUseCaseImpl implements DownloadComicUseCase {
   private readonly _sfDownloadComicService: SFDownloadComicService
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
@@ -18,7 +19,7 @@ export default class DownloadComicUseCase implements AsyncUseCase {
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  asyncExecute = async (request: Request): Promise<Response | ResponseError> => {
+  async asyncExecute(request: Request): Promise<Response> {
     const downloadTaskId = request.data
     const downloadTask = this._downloadTaskRepository.getById(downloadTaskId)
 

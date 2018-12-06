@@ -1,11 +1,12 @@
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
-import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
+import {Request, Response} from '../../base-types'
 import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DeleteDownloadTaskUseCase} from '../interfaces/use-cases'
 
 @injectable()
-export default class DeleteDownloadTaskUseCase implements AsyncUseCase {
+export default class DeleteDownloadTaskUseCaseImpl implements DeleteDownloadTaskUseCase {
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   public constructor(
@@ -14,7 +15,7 @@ export default class DeleteDownloadTaskUseCase implements AsyncUseCase {
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  asyncExecute = async (request: Request): Promise<Response | ResponseError> => {
+  async asyncExecute(request: Request): Promise<Response> {
     const downloadTaskId = request.data
     this._downloadTaskRepository.delete(downloadTaskId)
     return new Response()
