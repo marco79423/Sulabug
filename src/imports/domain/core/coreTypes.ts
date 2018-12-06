@@ -9,5 +9,5 @@ export default {
   ComicInfoStorageRepository: Symbol('Core/ComicInfoStorageRepository'),
   ConfigRepository: Symbol('Core/ConfigRepository'),
 
-  SFComicInfoQueryService: Symbol('Core/SFComicInfoQueryService'),
+  SFComicSiteService: Symbol('Core/SFComicSiteService'),
 }

@@ -4,12 +4,12 @@ import coreTypes from './coreTypes'
 import {FileAdapter, NetAdapter} from './interfaces/adapters'
 import {ComicInfoFactory, ConfigFactory, CoverImageFactory} from './interfaces/factories'
 import {ComicInfoStorageRepository, ConfigRepository} from './interfaces/repositories'
-import {SFComicInfoQueryService} from './interfaces/services'
+import {SFComicSiteService} from './interfaces/services'
 import QueryConfigUseCase from './use-cases/QueryConfigUseCase'
 import UpdateConfigUseCase from './use-cases/UpdateConfigUseCase'
 import UpdateComicInfoDatabaseUseCase from './use-cases/UpdateComicInfoDatabaseUseCase'
 import QueryComicInfosFromDatabaseUseCase from './use-cases/QueryComicInfosFromDatabaseUseCase'
-import SFComicInfoQueryServiceImpl from './services/SFComicInfoQueryServiceImpl'
+import SFComicSiteServiceImpl from './services/SFComicSiteServiceImpl'
 import ComicInfoStorageRepositoryImpl from '../../infrastructure/core/repositories/ComicStorageRepositoryImpl'
 import FileAdapterImpl from '../../infrastructure/core/adapters/FileAdapterImpl'
 import NetAdapterImpl from '../../infrastructure/core/adapters/NetAdapterImpl'
@@ -30,7 +30,7 @@ coreInjector.bind<CoverImageFactory>(coreTypes.CoverImageFactory).to(CoverImageF
 coreInjector.bind<ConfigRepository>(coreTypes.ConfigRepository).to(ConfigRepositoryImpl).inSingletonScope()
 coreInjector.bind<ComicInfoStorageRepository>(coreTypes.ComicInfoStorageRepository).to(ComicInfoStorageRepositoryImpl).inSingletonScope()
 
-coreInjector.bind<SFComicInfoQueryService>(coreTypes.SFComicInfoQueryService).to(SFComicInfoQueryServiceImpl).inSingletonScope()
+coreInjector.bind<SFComicSiteService>(coreTypes.SFComicSiteService).to(SFComicSiteServiceImpl).inSingletonScope()
 
 coreInjector.bind(QueryConfigUseCase).toSelf().inSingletonScope()
 coreInjector.bind(UpdateConfigUseCase).toSelf().inSingletonScope()

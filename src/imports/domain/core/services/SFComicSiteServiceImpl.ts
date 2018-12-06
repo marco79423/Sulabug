@@ -4,11 +4,11 @@ import {inject, injectable} from 'inversify'
 import coreTypes from '../coreTypes'
 import {ComicInfoFactory} from '../interfaces/factories'
 import ComicInfo from '../entities/ComicInfo'
-import {SFComicInfoQueryService} from '../interfaces/services'
+import {SFComicSiteService} from '../interfaces/services'
 import {NetAdapter} from '../interfaces/adapters'
 
 @injectable()
-export default class SFComicInfoQueryServiceImpl implements SFComicInfoQueryService {
+export default class SFComicSiteServiceImpl implements SFComicSiteService {
   private readonly _comicInfoFactory: ComicInfoFactory
   private readonly _netAdapter: NetAdapter
 
@@ -20,7 +20,7 @@ export default class SFComicInfoQueryServiceImpl implements SFComicInfoQueryServ
     this._netAdapter = netAdapter
   }
 
-  asyncQuery = async () => {
+  asyncGetComicInfos = async () => {
     const comicListPageUrls = await this._asyncGetAllComicListPageUrls()
 
     let allComicInfos: ComicInfo[] = []
