@@ -12,17 +12,33 @@ export enum DownloadStatus {
 export default class DownloadTask extends Entity {
   private _downloadTaskRepository: DownloadTaskRepository
 
-  public readonly comicInfoIdentity: string
+  public readonly name: string
+  public readonly coverImage: {
+    id: string,
+    comicInfoId: string,
+    mediaType: string,
+    base64Content: string,
+  }
+  public readonly sourceUrl: string
   public status: DownloadStatus
   public progress: number
 
   constructor(
     identity: string,
-    comicInfoIdentity: string,
+    name: string,
+    coverImage: {
+      id: string,
+      comicInfoId: string,
+      mediaType: string,
+      base64Content: string,
+    },
+    sourceUrl: string,
     downloadTaskRepository: DownloadTaskRepository
   ) {
     super(identity)
-    this.comicInfoIdentity = comicInfoIdentity
+    this.name = name
+    this.coverImage = coverImage
+    this.sourceUrl = sourceUrl
     this.status = DownloadStatus.WAITING
     this.progress = 0
 
@@ -32,7 +48,9 @@ export default class DownloadTask extends Entity {
   serialize() {
     return {
       id: this.identity,
-      comicInfoId: this.comicInfoIdentity,
+      name: this.name,
+      coverImage: this.coverImage,
+      sourceUrl: this.sourceUrl,
       status: this.status,
       progress: this.progress,
     }

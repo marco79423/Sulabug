@@ -11,6 +11,7 @@ export default {
 
   SFComicSiteService: Symbol('Core/SFComicSiteService'),
 
+  QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Core/QueryComicInfoByIdentityFromDatabaseUseCase'),
   QueryComicInfosFromDatabaseUseCase: Symbol('Core/QueryComicInfosFromDatabaseUseCase'),
   QueryConfigUseCase: Symbol('Core/QueryConfigUseCase'),
   UpdateComicInfoDatabaseUseCase: Symbol('Core/UpdateComicInfoDatabaseUseCase'),

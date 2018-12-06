@@ -18,12 +18,26 @@ describe('QueryDownloadTasksUseCase', () => {
       const downloadTasks = [
         new DownloadTask(
           'id-1',
-          'comicInfoId-1',
+          'name-1',
+          {
+            id: 'id-1',
+            comicInfoId: 'comicInfoId-1',
+            mediaType: 'mediaType-1',
+            base64Content: 'base64Content-1',
+          },
+          'sourceUrl-1',
           downloadTaskRepository
         ),
         new DownloadTask(
           'id-2',
-          'comicInfoId-2',
+          'name-2',
+          {
+            id: 'id-2',
+            comicInfoId: 'comicInfoId-2',
+            mediaType: 'mediaType-2',
+            base64Content: 'base64Content-2',
+          },
+          'sourceUrl-2',
           downloadTaskRepository
         ),
       ]

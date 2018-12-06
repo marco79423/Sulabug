@@ -15,13 +15,22 @@ describe('DownloadTaskFactoryImpl', () => {
 
       const jsonData = {
         id: 'id',
-        comicInfoId: 'comicInfoId',
+        name: 'name',
+        coverImage: {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        sourceUrl: 'sourceUrl',
       }
 
-      const coverImageFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
-      const coverImage = coverImageFactory.createFromJson(jsonData)
-      expect(coverImage.identity).toBe(jsonData.id)
-      expect(coverImage.comicInfoIdentity).toBe(jsonData.comicInfoId)
+      const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+      const downloadTask = downloadTaskFactory.createFromJson(jsonData)
+      expect(downloadTask.identity).toBe(jsonData.id)
+      expect(downloadTask.name).toBe(jsonData.name)
+      expect(downloadTask.coverImage).toEqual(jsonData.coverImage)
+      expect(downloadTask.sourceUrl).toBe(jsonData.sourceUrl)
     })
   })
 })

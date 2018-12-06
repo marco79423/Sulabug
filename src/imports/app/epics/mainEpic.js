@@ -11,6 +11,7 @@ import QueryDownloadTasksUseCase from '../../domain/downloader/use-cases/QueryDo
 import DownloadComicUseCase from '../../domain/downloader/use-cases/DownloadComicUseCase'
 import coreTypes from '../../domain/core/coreTypes'
 import CreateDownloadTaskUseCase from '../../domain/downloader/use-cases/CreateDownloadTaskUseCase'
+import DeleteDownloadTaskUseCase from '../../domain/downloader/use-cases/DeleteDownloadTaskUseCase'
 
 export const initializeEpic = () => of(
   actions.queryConfig(),
@@ -102,7 +103,7 @@ export const deleteDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    from(domainInjector.get(coreTypes.DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
+    from(domainInjector.get(DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
       .then(() => actions.downloadTaskDeleted(downloadTaskId))
     ),
   ))

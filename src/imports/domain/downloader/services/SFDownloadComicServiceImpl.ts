@@ -6,38 +6,31 @@ import * as path from 'path'
 import coreTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {SFDownloadComicService} from '../interfaces/services'
-import {ComicInfoStorageRepository, ConfigRepository} from '../interfaces/repositories'
+import {ConfigRepository} from '../interfaces/repositories'
 import {NetAdapter} from '../interfaces/adapters'
 
 @injectable()
 export default class SFDownloadComicServiceImpl implements SFDownloadComicService {
   private readonly _configRepository: ConfigRepository
   private readonly _netService: NetAdapter
-  private readonly _comicInfoStorageRepository: ComicInfoStorageRepository
 
   public constructor(
     @inject(coreTypes.ConfigRepository) configRepository: ConfigRepository,
     @inject(coreTypes.NetAdapter) netService: NetAdapter,
-    @inject(coreTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository,
   ) {
     this._configRepository = configRepository
     this._netService = netService
-    this._comicInfoStorageRepository = comicInfoStorageRepository
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
     const config = await this._configRepository.asyncGet()
-    const comicInfo = await this._comicInfoStorageRepository.asyncGetById(downloadTask.comicInfoIdentity)
-    if (!comicInfo) {
-      return
-    }
 
-    const $ = await this._asyncGetSelector(comicInfo.pageUrl)
+    const $ = await this._asyncGetSelector(downloadTask.sourceUrl)
     const chapters: { sourceUrl: string, targetDir: string }[] = []
     $('.comic_Serial_list a').each((index, element) => {
       chapters.push({
         sourceUrl: 'https://manhua.sfacg.com' + $(element).attr('href'),
-        targetDir: path.join(config.comicsFolder, comicInfo.name, $(element).text()),
+        targetDir: path.join(config.comicsFolder, downloadTask.name, $(element).text()),
       })
     })
 

@@ -4,11 +4,31 @@ import {Request, Response} from '../../base-types'
 import CreateDownloadTaskUseCase from './CreateDownloadTaskUseCase'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
+import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../core/interfaces/use-cases'
 
 describe('CreateDownloadTaskUseCase', () => {
   describe('asyncExecute', () => {
     it('will create a download task', async () => {
-      const comicInfoId = 'comicInfoId'
+      const comicInfo = {
+        id: 'id',
+        name: 'name',
+        coverImage: {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        source: 'source',
+        pageUrl: 'pageUrl',
+        catalog: 'catalog',
+        author: 'author',
+        lastUpdated: 'lastUpdated',
+        summary: 'summary',
+      }
+
+      const queryComicInfoByIdentityFromDatabaseUseCase: QueryComicInfoByIdentityFromDatabaseUseCase = {
+        asyncExecute: jest.fn(() => new Response(comicInfo)),
+      }
 
       const downloadTaskRepository: DownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
@@ -18,12 +38,16 @@ describe('CreateDownloadTaskUseCase', () => {
       }
 
       const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
-      const uc = new CreateDownloadTaskUseCase(downloadTaskFactory, downloadTaskRepository)
-      const res = await uc.asyncExecute(new Request(comicInfoId))
+      const uc = new CreateDownloadTaskUseCase(queryComicInfoByIdentityFromDatabaseUseCase, downloadTaskFactory, downloadTaskRepository)
+      const res = await uc.asyncExecute(new Request(comicInfo.id))
+
+      expect(queryComicInfoByIdentityFromDatabaseUseCase.asyncExecute).toBeCalledWith(new Request(comicInfo.id))
 
       expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTaskFactory.createFromJson({
-        id: comicInfoId,
-        comicInfoId: comicInfoId,
+        id: comicInfo.id,
+        name: comicInfo.name,
+        coverImage: comicInfo.coverImage,
+        sourceUrl: comicInfo.pageUrl,
       }))
 
       expect(res instanceof Response).toBeTruthy()

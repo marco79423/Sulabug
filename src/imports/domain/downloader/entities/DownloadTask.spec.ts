@@ -3,10 +3,17 @@ import {DownloadTaskRepository} from '../interfaces/repositories'
 
 describe('DownloadTask', () => {
   describe('serialize', () => {
-    it('will serialize the CoverImage instance to json data', () => {
+    it('will serialize the DownloadTask instance to json data', () => {
       const jsonData = {
         id: 'id',
-        comicInfoId: 'comicInfoId',
+        name: 'name',
+        coverImage: {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        sourceUrl: 'sourceUrl',
       }
 
       const downloadTaskRepository: DownloadTaskRepository = {
@@ -18,8 +25,10 @@ describe('DownloadTask', () => {
 
       const downloadTask = new DownloadTask(
         jsonData.id,
-        jsonData.comicInfoId,
-        downloadTaskRepository
+        jsonData.name,
+        jsonData.coverImage,
+        jsonData.sourceUrl,
+        downloadTaskRepository,
       )
 
       expect(downloadTask.serialize()).toEqual({
@@ -39,7 +48,18 @@ describe('DownloadTask', () => {
         delete: jest.fn(),
       }
 
-      const downloadTask = new DownloadTask('id', 'comicInfoId', downloadTaskRepository)
+      const downloadTask = new DownloadTask(
+        'id',
+        'name',
+        {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        'sourceUrl',
+        downloadTaskRepository,
+      )
 
       expect(downloadTask.status).toBe(DownloadStatus.WAITING)
       expect(downloadTask.progress).toBe(0)
@@ -59,7 +79,18 @@ describe('DownloadTask', () => {
         delete: jest.fn(),
       }
 
-      const downloadTask = new DownloadTask('id', 'comicInfoId', downloadTaskRepository)
+      const downloadTask = new DownloadTask(
+        'id',
+        'name',
+        {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        'sourceUrl',
+        downloadTaskRepository,
+      )
 
       expect(downloadTask.progress).toBe(0)
       downloadTask.addProgress(10)
@@ -75,7 +106,18 @@ describe('DownloadTask', () => {
         delete: jest.fn(),
       }
 
-      const downloadTask = new DownloadTask('id', 'comicInfoId', downloadTaskRepository)
+      const downloadTask = new DownloadTask(
+        'id',
+        'name',
+        {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        'sourceUrl',
+        downloadTaskRepository,
+      )
 
       downloadTask.addProgress(10)
       expect(downloadTask.status).toBe(DownloadStatus.DOWNLOADING)
@@ -90,7 +132,18 @@ describe('DownloadTask', () => {
         delete: jest.fn(),
       }
 
-      const downloadTask = new DownloadTask('id', 'comicInfoId', downloadTaskRepository)
+      const downloadTask = new DownloadTask(
+        'id',
+        'name',
+        {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        'sourceUrl',
+        downloadTaskRepository,
+      )
 
       downloadTask.addProgress(100)
       expect(downloadTask.status).toBe(DownloadStatus.FINISHED)
@@ -105,7 +158,18 @@ describe('DownloadTask', () => {
         delete: jest.fn(),
       }
 
-      const downloadTask = new DownloadTask('id', 'comicInfoId', downloadTaskRepository)
+      const downloadTask = new DownloadTask(
+        'id',
+        'name',
+        {
+          id: 'id',
+          comicInfoId: 'comicInfoId',
+          mediaType: 'mediaType',
+          base64Content: 'base64Content',
+        },
+        'sourceUrl',
+        downloadTaskRepository,
+      )
 
       downloadTask.addProgress(110)
       expect(downloadTask.progress).toBe(100)

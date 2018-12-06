@@ -185,8 +185,6 @@ const selectLoadingComicInfos = state => state.comicInfo.loading
 
 const selectComicInfos = state => state.comicInfo.allIds.map(id => state.comicInfo.byId[id])
 
-const selectComicInfoMap = state => state.comicInfo.byId
-
 const selectLoadingDownloadTasks = state => state.downloadTask.loading
 
 const selectLoadingDownloadTaskInfos = createSelector(
@@ -199,30 +197,11 @@ const selectLoadingDownloadTaskInfos = createSelector(
 
 const selectDownloadTasks = state => state.downloadTask.allIds.map(id => state.downloadTask.byId[id])
 
-const selectDownloadTaskInfos = createSelector(
-  [
-    selectDownloadTasks,
-    selectComicInfoMap,
-  ],
-  (downloadTasks, comicInfoMap) => {
-    return downloadTasks.map(downloadTask => {
-      const comicInfo = comicInfoMap[downloadTask.comicInfoId]
-      return {
-        id: downloadTask.id,
-        coverImage: comicInfo.coverImage,
-        name: comicInfo.name,
-        status: downloadTask.status,
-        progress: downloadTask.progress,
-      }
-    })
-  }
-)
-
 export const selectors = {
   selectCurrentPage,
   selectConfig,
   selectLoadingComicInfos,
   selectComicInfos,
   selectLoadingDownloadTaskInfos,
-  selectDownloadTaskInfos,
+  selectDownloadTasks,
 }

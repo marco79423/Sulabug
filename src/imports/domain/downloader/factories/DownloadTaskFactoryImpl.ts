@@ -5,6 +5,7 @@ import DownloadTask from '../entities/DownloadTask'
 import {DownloadTaskFactory} from '../interfaces/factories'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 
+
 @injectable()
 export default class DownloadTaskFactoryImpl implements DownloadTaskFactory {
   private readonly _downloadTaskRepository: DownloadTaskRepository
@@ -17,11 +18,20 @@ export default class DownloadTaskFactoryImpl implements DownloadTaskFactory {
 
   createFromJson(json: {
     id: string,
-    comicInfoId: string,
+    name: string,
+    coverImage: {
+      id: string,
+      comicInfoId: string,
+      mediaType: string,
+      base64Content: string,
+    },
+    sourceUrl: string,
   }): DownloadTask {
     return new DownloadTask(
       json.id,
-      json.comicInfoId,
+      json.name,
+      json.coverImage,
+      json.sourceUrl,
       this._downloadTaskRepository,
     )
   }

@@ -71,7 +71,7 @@ export default connect(
     loadingComicInfos: selectors.selectLoadingComicInfos(state),
     comicInfos: selectors.selectComicInfos(state),
     loadingDownloadTasks: selectors.selectLoadingDownloadTaskInfos(state),
-    downloadTasks: selectors.selectDownloadTaskInfos(state),
+    downloadTasks: selectors.selectDownloadTasks(state),
     config: selectors.selectConfig(state),
   }),
   dispatch => bindActionCreators({

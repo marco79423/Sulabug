@@ -18,11 +18,14 @@ import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import CoverImageFactoryImpl from './factories/CoverImageFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/core/repositories/ConfigRepositoryImpl'
 import {
+  QueryComicInfoByIdentityFromDatabaseUseCase,
   QueryComicInfosFromDatabaseUseCase,
   QueryConfigUseCase,
   UpdateComicInfoDatabaseUseCase,
   UpdateConfigUseCase
 } from './interfaces/use-cases'
+import QueryComicInfoByIdentityFromDatabaseUseCaseImpl
+  from './use-cases/QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
 
 const coreInjector = new Container()
 
@@ -38,6 +41,7 @@ coreInjector.bind<ComicInfoStorageRepository>(coreTypes.ComicInfoStorageReposito
 
 coreInjector.bind<SFComicSiteService>(coreTypes.SFComicSiteService).to(SFComicSiteServiceImpl).inSingletonScope()
 
+coreInjector.bind<QueryComicInfoByIdentityFromDatabaseUseCase>(coreTypes.QueryComicInfoByIdentityFromDatabaseUseCase).to(QueryComicInfoByIdentityFromDatabaseUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryComicInfosFromDatabaseUseCase>(coreTypes.QueryComicInfosFromDatabaseUseCase).to(QueryComicInfosFromDatabaseUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryConfigUseCase>(coreTypes.QueryConfigUseCase).to(QueryConfigUseCaseImpl).inSingletonScope()
 coreInjector.bind<UpdateComicInfoDatabaseUseCase>(coreTypes.UpdateComicInfoDatabaseUseCase).to(UpdateComicInfoDatabaseUseCaseImpl).inSingletonScope()
