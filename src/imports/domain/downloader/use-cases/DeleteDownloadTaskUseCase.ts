@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../coreTypes'
+import coreTypes from '../downloaderTypes'
 import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 

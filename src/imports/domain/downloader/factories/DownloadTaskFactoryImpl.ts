@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../coreTypes'
+import coreTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {DownloadTaskFactory} from '../interfaces/factories'
 import {DownloadTaskRepository} from '../interfaces/repositories'

@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import coreTypes from '../coreTypes'
+import coreTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {SFDownloadComicService} from '../interfaces/services'
 import {ComicInfoStorageRepository, ConfigRepository} from '../interfaces/repositories'

@@ -1,6 +1,7 @@
 import ComicInfo from '../entities/ComicInfo'
 import Config from '../entities/Config'
 import CoverImage from '../entities/CoverImage'
+import DownloadTask from '../entities/DownloadTask'
 
 export interface ComicInfoFactory {
   createFromJson(json: {
@@ -35,4 +36,11 @@ export interface CoverImageFactory {
     mediaType: string,
     base64Content: string,
   }): CoverImage
+}
+
+export interface DownloadTaskFactory {
+  createFromJson(json: {
+    id: string,
+    comicInfoId: string,
+  }): DownloadTask
 }
