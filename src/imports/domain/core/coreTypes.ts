@@ -10,4 +10,9 @@ export default {
   ConfigRepository: Symbol('Core/ConfigRepository'),
 
   SFComicSiteService: Symbol('Core/SFComicSiteService'),
+
+  QueryComicInfosFromDatabaseUseCase: Symbol('Core/QueryComicInfosFromDatabaseUseCase'),
+  QueryConfigUseCase: Symbol('Core/QueryConfigUseCase'),
+  UpdateComicInfoDatabaseUseCase: Symbol('Core/UpdateComicInfoDatabaseUseCase'),
+  UpdateConfigUseCase: Symbol('Core/UpdateConfigUseCase'),
 }

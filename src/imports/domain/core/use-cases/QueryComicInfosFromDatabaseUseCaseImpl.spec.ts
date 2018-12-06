@@ -1,12 +1,12 @@
 import 'reflect-metadata'
 
 import {Request, Response} from '../../base-types'
-import QueryComicInfosFromDatabaseUseCase from './QueryComicInfosFromDatabaseUseCase'
+import QueryComicInfosFromDatabaseUseCaseImpl from './QueryComicInfosFromDatabaseUseCaseImpl'
 import CoverImageFactoryImpl from '../factories/CoverImageFactoryImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
 
-describe('QueryComicInfosFromDatabaseUseCase', () => {
+describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
   const comicInfoFactory = new ComicInfoFactoryImpl(new CoverImageFactoryImpl())
   const comicInfos = [
     comicInfoFactory.createFromJson({
@@ -51,7 +51,7 @@ describe('QueryComicInfosFromDatabaseUseCase', () => {
         asyncGetAllBySearchTerm: jest.fn(() => comicInfos),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCase(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
       const res = await uc.asyncExecute()
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
@@ -67,7 +67,7 @@ describe('QueryComicInfosFromDatabaseUseCase', () => {
         asyncGetAllBySearchTerm: jest.fn(() => comicInfos),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCase(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
       const res = await uc.asyncExecute(new Request(undefined))
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
@@ -85,7 +85,7 @@ describe('QueryComicInfosFromDatabaseUseCase', () => {
         asyncGetAllBySearchTerm: jest.fn(() => filteredComicInfos),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCase(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
       const res = await uc.asyncExecute(new Request('name-1'))
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalledWith('name-1')

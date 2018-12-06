@@ -1,11 +1,12 @@
 import {inject, injectable} from 'inversify'
 
 import coreTypes from '../coreTypes'
-import {AsyncUseCase, Response, ResponseError} from '../../base-types'
+import {Response} from '../../base-types'
 import {ConfigRepository} from '../interfaces/repositories'
+import {QueryConfigUseCase} from '../interfaces/use-cases'
 
 @injectable()
-export default class QueryConfigUseCase implements AsyncUseCase {
+export default class QueryConfigUseCaseImpl implements QueryConfigUseCase {
   private readonly _configRepository: ConfigRepository
 
   public constructor(
@@ -14,7 +15,7 @@ export default class QueryConfigUseCase implements AsyncUseCase {
     this._configRepository = configRepository
   }
 
-  asyncExecute = async (): Promise<Response | ResponseError> => {
+  async asyncExecute(): Promise<Response> {
     const config = await this._configRepository.asyncGet()
     return new Response(config.serialize())
   }

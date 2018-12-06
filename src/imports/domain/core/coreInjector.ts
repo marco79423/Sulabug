@@ -5,10 +5,10 @@ import {FileAdapter, NetAdapter} from './interfaces/adapters'
 import {ComicInfoFactory, ConfigFactory, CoverImageFactory} from './interfaces/factories'
 import {ComicInfoStorageRepository, ConfigRepository} from './interfaces/repositories'
 import {SFComicSiteService} from './interfaces/services'
-import QueryConfigUseCase from './use-cases/QueryConfigUseCase'
-import UpdateConfigUseCase from './use-cases/UpdateConfigUseCase'
-import UpdateComicInfoDatabaseUseCase from './use-cases/UpdateComicInfoDatabaseUseCase'
-import QueryComicInfosFromDatabaseUseCase from './use-cases/QueryComicInfosFromDatabaseUseCase'
+import QueryConfigUseCaseImpl from './use-cases/QueryConfigUseCaseImpl'
+import UpdateConfigUseCaseImpl from './use-cases/UpdateConfigUseCaseImpl'
+import UpdateComicInfoDatabaseUseCaseImpl from './use-cases/UpdateComicInfoDatabaseUseCaseImpl'
+import QueryComicInfosFromDatabaseUseCaseImpl from './use-cases/QueryComicInfosFromDatabaseUseCaseImpl'
 import SFComicSiteServiceImpl from './services/SFComicSiteServiceImpl'
 import ComicInfoStorageRepositoryImpl from '../../infrastructure/core/repositories/ComicStorageRepositoryImpl'
 import FileAdapterImpl from '../../infrastructure/core/adapters/FileAdapterImpl'
@@ -17,6 +17,12 @@ import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import CoverImageFactoryImpl from './factories/CoverImageFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/core/repositories/ConfigRepositoryImpl'
+import {
+  QueryComicInfosFromDatabaseUseCase,
+  QueryConfigUseCase,
+  UpdateComicInfoDatabaseUseCase,
+  UpdateConfigUseCase
+} from './interfaces/use-cases'
 
 const coreInjector = new Container()
 
@@ -32,9 +38,9 @@ coreInjector.bind<ComicInfoStorageRepository>(coreTypes.ComicInfoStorageReposito
 
 coreInjector.bind<SFComicSiteService>(coreTypes.SFComicSiteService).to(SFComicSiteServiceImpl).inSingletonScope()
 
-coreInjector.bind(QueryConfigUseCase).toSelf().inSingletonScope()
-coreInjector.bind(UpdateConfigUseCase).toSelf().inSingletonScope()
-coreInjector.bind(UpdateComicInfoDatabaseUseCase).toSelf().inSingletonScope()
-coreInjector.bind(QueryComicInfosFromDatabaseUseCase).toSelf().inSingletonScope()
+coreInjector.bind<QueryComicInfosFromDatabaseUseCase>(coreTypes.QueryComicInfosFromDatabaseUseCase).to(QueryComicInfosFromDatabaseUseCaseImpl).inSingletonScope()
+coreInjector.bind<QueryConfigUseCase>(coreTypes.QueryConfigUseCase).to(QueryConfigUseCaseImpl).inSingletonScope()
+coreInjector.bind<UpdateComicInfoDatabaseUseCase>(coreTypes.UpdateComicInfoDatabaseUseCase).to(UpdateComicInfoDatabaseUseCaseImpl).inSingletonScope()
+coreInjector.bind<UpdateConfigUseCase>(coreTypes.UpdateConfigUseCase).to(UpdateConfigUseCaseImpl).inSingletonScope()
 
 export default coreInjector

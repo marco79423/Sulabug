@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 
 import {Response} from '../../base-types'
-import QueryConfigUseCase from './QueryConfigUseCase'
+import QueryConfigUseCaseImpl from './QueryConfigUseCaseImpl'
 import ConfigFactoryImpl from '../factories/ConfigFactoryImpl'
 import {ConfigRepository} from '../interfaces/repositories'
 
-describe('QueryConfigUseCase', () => {
+describe('QueryConfigUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will get configuration', async () => {
       const configFactory = new ConfigFactoryImpl()
@@ -18,7 +18,7 @@ describe('QueryConfigUseCase', () => {
         asyncSaveOrUpdate: jest.fn(),
         asyncGet: jest.fn(() => config),
       }
-      const uc = new QueryConfigUseCase(configRepository)
+      const uc = new QueryConfigUseCaseImpl(configRepository)
       const res = await uc.asyncExecute()
 
       expect(configRepository.asyncGet).toBeCalled()

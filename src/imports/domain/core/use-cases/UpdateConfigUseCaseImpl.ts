@@ -1,12 +1,13 @@
 import {inject, injectable} from 'inversify'
 
 import coreTypes from '../coreTypes'
-import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
+import {Request, Response} from '../../base-types'
 import {ConfigFactory} from '../interfaces/factories'
 import {ConfigRepository} from '../interfaces/repositories'
+import {UpdateConfigUseCase} from '../interfaces/use-cases'
 
 @injectable()
-export default class UpdateConfigUseCase implements AsyncUseCase {
+export default class UpdateConfigUseCaseImpl implements UpdateConfigUseCase {
   private readonly _configFactory: ConfigFactory
   private readonly _configRepository: ConfigRepository
 
@@ -18,7 +19,7 @@ export default class UpdateConfigUseCase implements AsyncUseCase {
     this._configRepository = configRepository
   }
 
-  asyncExecute = async (request: Request): Promise<Response | ResponseError> => {
+  async asyncExecute(request: Request): Promise<Response> {
     const rawConfigData: {
       comicsFolder: string,
       comicInfoStorePath: string,

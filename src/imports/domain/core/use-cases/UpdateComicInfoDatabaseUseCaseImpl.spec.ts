@@ -1,13 +1,13 @@
 import 'reflect-metadata'
 
 import {Response} from '../../base-types'
-import UpdateComicInfoDatabaseUseCase from './UpdateComicInfoDatabaseUseCase'
+import UpdateComicInfoDatabaseUseCaseImpl from './UpdateComicInfoDatabaseUseCaseImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
 import CoverImageFactoryImpl from '../factories/CoverImageFactoryImpl'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import {SFComicSiteService} from '../interfaces/services'
 
-describe('UpdateComicInfoDatabaseUseCase', () => {
+describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will retrieve comic infos from SF site to database', async () => {
       const comicInfoFactory = new ComicInfoFactoryImpl(new CoverImageFactoryImpl())
@@ -56,7 +56,7 @@ describe('UpdateComicInfoDatabaseUseCase', () => {
         asyncGetComicInfos: jest.fn(() => comicInfos),
       }
 
-      const uc = new UpdateComicInfoDatabaseUseCase(comicInfoStorageRepository, sfComicSiteService)
+      const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicSiteService)
       const res = await uc.asyncExecute()
 
       expect(sfComicSiteService.asyncGetComicInfos).toBeCalled()

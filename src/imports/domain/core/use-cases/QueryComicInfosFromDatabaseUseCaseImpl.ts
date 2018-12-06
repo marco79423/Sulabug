@@ -1,13 +1,14 @@
 import {inject, injectable} from 'inversify'
 
-import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
+import {Request, Response} from '../../base-types'
 import coreTypes from '../coreTypes'
 import ComicInfo from '../entities/ComicInfo'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
+import {QueryComicInfosFromDatabaseUseCase} from '../interfaces/use-cases'
 
 
 @injectable()
-export default class QueryComicInfosFromDatabaseUseCase implements AsyncUseCase {
+export default class QueryComicInfosFromDatabaseUseCaseImpl implements QueryComicInfosFromDatabaseUseCase {
   private readonly _comicInfoStorageRepository: ComicInfoStorageRepository
 
   public constructor(
@@ -16,7 +17,7 @@ export default class QueryComicInfosFromDatabaseUseCase implements AsyncUseCase 
     this._comicInfoStorageRepository = comicInfoStorageRepository
   }
 
-  asyncExecute = async (request?: Request): Promise<Response | ResponseError> => {
+  async asyncExecute(request?: Request): Promise<Response> {
     let searchTerm = ''
     if (request && request.data) {
       searchTerm = request.data

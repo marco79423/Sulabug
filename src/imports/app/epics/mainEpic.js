@@ -5,16 +5,12 @@ import {filter, flatMap, map} from 'rxjs/operators'
 import {Request} from '../../domain/base-types'
 import domainInjector from '../domainInjector'
 import {actions, ActionTypes} from '../ducks/mainDuck'
-import QueryConfigUseCase from '../../domain/core/use-cases/QueryConfigUseCase'
 import EventPublisher from '../../domain/downloader/event/EventPublisher'
 import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
-import QueryComicInfosFromDatabaseUseCase from '../../domain/core/use-cases/QueryComicInfosFromDatabaseUseCase'
 import QueryDownloadTasksUseCase from '../../domain/downloader/use-cases/QueryDownloadTasksUseCase'
-import UpdateComicInfoDatabaseUseCase from '../../domain/core/use-cases/UpdateComicInfoDatabaseUseCase'
-import CreateDownloadTaskUseCase from '../../domain/downloader/use-cases/CreateDownloadTaskUseCase'
 import DownloadComicUseCase from '../../domain/downloader/use-cases/DownloadComicUseCase'
-import UpdateConfigUseCase from '../../domain/core/use-cases/UpdateConfigUseCase'
-import DeleteDownloadTaskUseCase from '../../domain/downloader/use-cases/DeleteDownloadTaskUseCase'
+import coreTypes from '../../domain/core/coreTypes'
+import CreateDownloadTaskUseCase from '../../domain/downloader/use-cases/CreateDownloadTaskUseCase'
 
 export const initializeEpic = () => of(
   actions.queryConfig(),
@@ -28,7 +24,7 @@ export const queryConfigEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingConfig()),
-    from(domainInjector.get(QueryConfigUseCase).asyncExecute()
+    from(domainInjector.get(coreTypes.QueryConfigUseCase).asyncExecute()
       .then(res => res.data)
       .then(config => actions.configQueried(config))
     ),
@@ -44,7 +40,7 @@ export const queryComicInfosFromDatabaseEpic = action$ => action$.pipe(
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
     of(actions.queryingComicInfosFromDatabase()),
-    from(domainInjector.get(QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
+    from(domainInjector.get(coreTypes.QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
       .then(res => res.data)
       .then(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos))
     ),
@@ -78,7 +74,7 @@ export const updateComicInfoDatabaseEpic = action$ => action$.pipe(
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    from(domainInjector.get(UpdateComicInfoDatabaseUseCase).asyncExecute()
+    from(domainInjector.get(coreTypes.UpdateComicInfoDatabaseUseCase).asyncExecute()
       .then(() => actions.comicInfoDatabaseUpdated())
     ),
   )),
@@ -106,7 +102,7 @@ export const deleteDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    from(domainInjector.get(DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
+    from(domainInjector.get(coreTypes.DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
       .then(() => actions.downloadTaskDeleted(downloadTaskId))
     ),
   ))
@@ -132,7 +128,7 @@ export const updateConfigEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(config => concat(
     of(actions.updatingConfig()),
-    from(domainInjector.get(UpdateConfigUseCase).asyncExecute(new Request(config))
+    from(domainInjector.get(coreTypes.UpdateConfigUseCase).asyncExecute(new Request(config))
       .then(() => actions.configUpdated(config))
     ),
   ))
