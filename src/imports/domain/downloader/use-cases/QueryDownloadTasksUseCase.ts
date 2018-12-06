@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../downloaderTypes'
+import downloaderTypes from '../downloaderTypes'
 import {AsyncUseCase, Response, ResponseError} from '../../base-types'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 
@@ -9,7 +9,7 @@ export default class QueryDownloadTasksUseCase implements AsyncUseCase {
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   public constructor(
-    @inject(coreTypes.DownloadTaskRepository) downloadTaskRepository: DownloadTaskRepository
+    @inject(downloaderTypes.DownloadTaskRepository) downloadTaskRepository: DownloadTaskRepository
   ) {
     this._downloadTaskRepository = downloadTaskRepository
   }

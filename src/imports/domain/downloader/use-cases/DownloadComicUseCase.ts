@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../downloaderTypes'
+import downloaderTypes from '../downloaderTypes'
 import {AsyncUseCase, Request, Response, ResponseError} from '../../base-types'
 import {SFDownloadComicService} from '../interfaces/services'
 import {DownloadTaskRepository} from '../interfaces/repositories'
@@ -11,8 +11,8 @@ export default class DownloadComicUseCase implements AsyncUseCase {
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   public constructor(
-    @inject(coreTypes.SFDownloadComicService) sfDownloadComicService: SFDownloadComicService,
-    @inject(coreTypes.DownloadTaskRepository) downloadTaskRepository: DownloadTaskRepository,
+    @inject(downloaderTypes.SFDownloadComicService) sfDownloadComicService: SFDownloadComicService,
+    @inject(downloaderTypes.DownloadTaskRepository) downloadTaskRepository: DownloadTaskRepository,
   ) {
     this._sfDownloadComicService = sfDownloadComicService
     this._downloadTaskRepository = downloadTaskRepository
