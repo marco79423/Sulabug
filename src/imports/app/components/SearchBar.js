@@ -44,7 +44,7 @@ class SearchBar extends React.Component {
     return (
       <div className={classes.root}>
         <Input
-          placeholder="想試看的漫畫……"
+          placeholder="請輸入想試看的漫畫……"
           onChange={this.handleChange}
           className={classes.input}
           disableUnderline
