@@ -2,7 +2,6 @@ import {Container} from 'inversify'
 
 import downloaderTypes from './downloaderTypes'
 import EventPublisher from './event/EventPublisher'
-import {FileAdapter, NetAdapter} from './interfaces/adapters'
 import {DownloadTaskFactory} from './interfaces/factories'
 import {DownloadTaskRepository} from './interfaces/repositories'
 import {SFDownloadComicService} from './interfaces/services'
@@ -12,8 +11,6 @@ import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCase
 import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
 import SFDownloadComicServiceImpl from './services/SFDownloadComicServiceImpl'
 import DownloadTaskRepositoryImpl from '../../infrastructure/downloader/repositories/DownloadTaskRepositoryImpl'
-import FileAdapterImpl from '../../infrastructure/downloader/adapters/FileAdapterImpl'
-import NetAdapterImpl from '../../infrastructure/downloader/adapters/NetAdapterImpl'
 import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
 import {
   CreateDownloadTaskUseCase,
@@ -25,9 +22,6 @@ import {
 const downloaderInjector = new Container()
 
 downloaderInjector.bind(EventPublisher).toSelf().inSingletonScope()
-
-downloaderInjector.bind<FileAdapter>(downloaderTypes.FileAdapter).to(FileAdapterImpl).inSingletonScope()
-downloaderInjector.bind<NetAdapter>(downloaderTypes.NetAdapter).to(NetAdapterImpl).inSingletonScope()
 
 downloaderInjector.bind<DownloadTaskFactory>(downloaderTypes.DownloadTaskFactory).to(DownloadTaskFactoryImpl).inSingletonScope()
 

@@ -1,21 +1,29 @@
 import {Request, Response} from '../../base-types'
 
-export interface QueryComicInfoByIdentityFromDatabaseUseCase{
+export interface DownloadBinaryUseCase {
   asyncExecute(request: Request): Promise<Response>
 }
 
-export interface QueryComicInfosFromDatabaseUseCase{
+export interface FetchHtmlUseCase {
+  asyncExecute(request: Request): Promise<Response>
+}
+
+export interface QueryComicInfoByIdentityFromDatabaseUseCase {
+  asyncExecute(request: Request): Promise<Response>
+}
+
+export interface QueryComicInfosFromDatabaseUseCase {
   asyncExecute(request?: Request): Promise<Response>
 }
 
-export interface QueryConfigUseCase{
+export interface QueryConfigUseCase {
   asyncExecute(): Promise<Response>
 }
 
-export interface UpdateComicInfoDatabaseUseCase{
+export interface UpdateComicInfoDatabaseUseCase {
   asyncExecute(): Promise<Response>
 }
 
-export interface UpdateConfigUseCase{
+export interface UpdateConfigUseCase {
   asyncExecute(request: Request): Promise<Response>
 }

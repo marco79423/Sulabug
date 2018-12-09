@@ -1,7 +1,4 @@
 export default {
-  FileAdapter: Symbol('Downloader/FileAdapter'),
-  NetAdapter: Symbol('Downloader/NetAdapter'),
-
   DownloadTaskFactory: Symbol('Downloader/DownloadTaskFactory'),
 
   DownloadTaskRepository: Symbol('Downloader/DownloadTaskRepository'),

@@ -3,24 +3,26 @@ import * as cheerio from 'cheerio'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
+import {Request} from '../../base-types'
 import coreTypes from '../../core/coreTypes'
-import downloaderTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {SFDownloadComicService} from '../interfaces/services'
-import {NetAdapter} from '../interfaces/adapters'
-import {QueryConfigUseCase} from '../../core/interfaces/use-cases'
+import {DownloadBinaryUseCase, FetchHtmlUseCase, QueryConfigUseCase} from '../../core/interfaces/use-cases'
 
 @injectable()
 export default class SFDownloadComicServiceImpl implements SFDownloadComicService {
+  private readonly _downloadBinaryUseCase: DownloadBinaryUseCase
+  private readonly _fetchHtmlUseCase: FetchHtmlUseCase
   private readonly _queryConfigUseCase: QueryConfigUseCase
-  private readonly _netService: NetAdapter
 
   public constructor(
+    @inject(coreTypes.DownloadBinaryUseCase) downloadBinaryUseCase: DownloadBinaryUseCase,
+    @inject(coreTypes.FetchHtmlUseCase) fetchHtmlUseCase: FetchHtmlUseCase,
     @inject(coreTypes.QueryConfigUseCase) queryConfigUseCase: QueryConfigUseCase,
-    @inject(downloaderTypes.NetAdapter) netService: NetAdapter,
   ) {
+    this._downloadBinaryUseCase = downloadBinaryUseCase
+    this._fetchHtmlUseCase = fetchHtmlUseCase
     this._queryConfigUseCase = queryConfigUseCase
-    this._netService = netService
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
@@ -57,7 +59,7 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
       .first()
       .attr('src')
 
-    const text = await this._netService.asyncGetText(url)
+    const text = await this._asyncFetchHtmlText(url)
 
     // @ts-ignore
     const host = /hosts = \["([^"]+)"/g.exec(text)[1]
@@ -67,7 +69,7 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
     while ((matched = re.exec(text)) !== null) {
       const url = host + matched[2]
       const imagePath = path.join(targetDir, `${+matched[1] + 1}`.padStart(3, '0') + '.jpg')
-      await this._netService.asyncDownload(url, imagePath)
+      await this._asyncDownloadBinary(url, imagePath)
     }
   }
 
@@ -77,8 +79,20 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
     return config.downloadFolderPath
   }
 
-  private async _asyncGetSelector(url: string) {
-    const text = await this._netService.asyncGetText(url)
+  private async _asyncGetSelector(targetUrl: string) {
+    const text = await this._asyncFetchHtmlText(targetUrl)
     return cheerio.load(text)
+  }
+
+  private async _asyncFetchHtmlText(targetUrl: string): Promise<string> {
+    const res = await this._fetchHtmlUseCase.asyncExecute(new Request(targetUrl))
+    return res.data
+  }
+
+  private async _asyncDownloadBinary(targetUrl: string, targetPath: string) {
+    await this._downloadBinaryUseCase.asyncExecute(new Request({
+      targetUrl,
+      targetPath
+    }))
   }
 }

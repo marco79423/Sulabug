@@ -10,6 +10,8 @@ export default {
 
   SFComicSiteService: Symbol('Core/SFComicSiteService'),
 
+  DownloadBinaryUseCase: Symbol('Core/DownloadBinaryUseCase'),
+  FetchHtmlUseCase: Symbol('Core/FetchHtmlUseCase'),
   QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Core/QueryComicInfoByIdentityFromDatabaseUseCase'),
   QueryComicInfosFromDatabaseUseCase: Symbol('Core/QueryComicInfosFromDatabaseUseCase'),
   QueryConfigUseCase: Symbol('Core/QueryConfigUseCase'),
