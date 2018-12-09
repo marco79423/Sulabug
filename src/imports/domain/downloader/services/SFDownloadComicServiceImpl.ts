@@ -3,34 +3,35 @@ import * as cheerio from 'cheerio'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import coreTypes from '../downloaderTypes'
+import coreTypes from '../../core/coreTypes'
+import downloaderTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {SFDownloadComicService} from '../interfaces/services'
-import {ConfigRepository} from '../interfaces/repositories'
 import {NetAdapter} from '../interfaces/adapters'
+import {QueryConfigUseCase} from '../../core/interfaces/use-cases'
 
 @injectable()
 export default class SFDownloadComicServiceImpl implements SFDownloadComicService {
-  private readonly _configRepository: ConfigRepository
+  private readonly _queryConfigUseCase: QueryConfigUseCase
   private readonly _netService: NetAdapter
 
   public constructor(
-    @inject(coreTypes.ConfigRepository) configRepository: ConfigRepository,
-    @inject(coreTypes.NetAdapter) netService: NetAdapter,
+    @inject(coreTypes.QueryConfigUseCase) queryConfigUseCase: QueryConfigUseCase,
+    @inject(downloaderTypes.NetAdapter) netService: NetAdapter,
   ) {
-    this._configRepository = configRepository
+    this._queryConfigUseCase = queryConfigUseCase
     this._netService = netService
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
-    const config = await this._configRepository.asyncGet()
+    const downloadFolder = await this._asyncGetDownloadFolder()
 
     const $ = await this._asyncGetSelector(downloadTask.sourceUrl)
     const chapters: { sourceUrl: string, targetDir: string }[] = []
     $('.comic_Serial_list a').each((index, element) => {
       chapters.push({
         sourceUrl: 'https://manhua.sfacg.com' + $(element).attr('href'),
-        targetDir: path.join(config.comicsFolder, downloadTask.name, $(element).text()),
+        targetDir: path.join(downloadFolder, downloadTask.name, $(element).text()),
       })
     })
 
@@ -68,6 +69,12 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
       const imagePath = path.join(targetDir, `${+matched[1] + 1}`.padStart(3, '0') + '.jpg')
       await this._netService.asyncDownload(url, imagePath)
     }
+  }
+
+  private async _asyncGetDownloadFolder() {
+    const res = await this._queryConfigUseCase.asyncExecute()
+    const config = res.data
+    return config.comicsFolder
   }
 
   private async _asyncGetSelector(url: string) {
