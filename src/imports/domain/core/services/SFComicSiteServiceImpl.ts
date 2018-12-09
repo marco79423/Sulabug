@@ -76,15 +76,13 @@ export default class SFComicSiteServiceImpl implements SFComicSiteService {
         .text()
         .trim()
 
+      const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
+      const coverBase64Content = await this._netAdapter.asyncGetBinaryBase64(coverImageUrl)
+
       comicInfos.push(this._comicInfoFactory.createFromJson({
         id: name,
         name: name,
-        coverImage: {
-          id: name,
-          comicInfoId: name,
-          mediaType: this._guessMediaTypeByUrl(coverImageUrl),
-          base64Content: await this._netAdapter.asyncGetBinaryBase64(coverImageUrl)
-        },
+        coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,
         source: 'SF',
         pageUrl: pageUrl,
         catalog: catalog,

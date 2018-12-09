@@ -1,17 +1,11 @@
 import ComicInfo from '../entities/ComicInfo'
 import Config from '../entities/Config'
-import CoverImage from '../entities/CoverImage'
 
 export interface ComicInfoFactory {
   createFromJson(json: {
     id: string,
     name: string,
-    coverImage: {
-      id: string,
-      comicInfoId: string,
-      mediaType: string,
-      base64Content: string,
-    },
+    coverDataUrl: string,
     source: string,
     pageUrl: string,
     catalog: string,
@@ -26,13 +20,4 @@ export interface ConfigFactory {
     comicsFolder: string,
     comicInfoStorePath: string,
   }): Config
-}
-
-export interface CoverImageFactory {
-  createFromJson(json: {
-    id: string,
-    comicInfoId: string,
-    mediaType: string,
-    base64Content: string,
-  }): CoverImage
 }

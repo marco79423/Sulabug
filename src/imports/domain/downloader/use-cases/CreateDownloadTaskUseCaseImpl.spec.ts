@@ -12,12 +12,7 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
       const comicInfo = {
         id: 'id',
         name: 'name',
-        coverImage: {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        coverDataUrl: 'coverDataUrl',
         source: 'source',
         pageUrl: 'pageUrl',
         catalog: 'catalog',
@@ -46,7 +41,7 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
       expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTaskFactory.createFromJson({
         id: comicInfo.id,
         name: comicInfo.name,
-        coverImage: comicInfo.coverImage,
+        coverDataUrl: comicInfo.coverDataUrl,
         sourceUrl: comicInfo.pageUrl,
       }))
 

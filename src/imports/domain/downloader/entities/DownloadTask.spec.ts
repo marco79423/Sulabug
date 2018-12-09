@@ -7,12 +7,7 @@ describe('DownloadTask', () => {
       const jsonData = {
         id: 'id',
         name: 'name',
-        coverImage: {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        coverDataUrl: 'coverDataUrl',
         sourceUrl: 'sourceUrl',
       }
 
@@ -26,7 +21,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         jsonData.id,
         jsonData.name,
-        jsonData.coverImage,
+        jsonData.coverDataUrl,
         jsonData.sourceUrl,
         downloadTaskRepository,
       )
@@ -51,12 +46,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         'id',
         'name',
-        {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        'coverDataUrl',
         'sourceUrl',
         downloadTaskRepository,
       )
@@ -82,12 +72,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         'id',
         'name',
-        {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        'coverDataUrl',
         'sourceUrl',
         downloadTaskRepository,
       )
@@ -109,12 +94,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         'id',
         'name',
-        {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        'coverDataUrl',
         'sourceUrl',
         downloadTaskRepository,
       )
@@ -135,12 +115,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         'id',
         'name',
-        {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        'coverDataUrl',
         'sourceUrl',
         downloadTaskRepository,
       )
@@ -161,12 +136,7 @@ describe('DownloadTask', () => {
       const downloadTask = new DownloadTask(
         'id',
         'name',
-        {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        'coverDataUrl',
         'sourceUrl',
         downloadTaskRepository,
       )

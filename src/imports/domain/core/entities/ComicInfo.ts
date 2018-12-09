@@ -1,9 +1,8 @@
 import {Entity} from '../../base-types'
-import CoverImage from './CoverImage'
 
 export default class ComicInfo extends Entity {
   readonly name: string
-  readonly coverImage: CoverImage
+  readonly coverDataUrl: string
   readonly source: string
   readonly pageUrl: string
   readonly catalog: string
@@ -14,7 +13,7 @@ export default class ComicInfo extends Entity {
   constructor(
     identity: string,
     name: string,
-    coverImage: CoverImage,
+    coverDataUrl: string,
     source: string,
     pageUrl: string,
     catalog: string,
@@ -24,7 +23,7 @@ export default class ComicInfo extends Entity {
   ) {
     super(identity)
     this.name = name
-    this.coverImage = coverImage
+    this.coverDataUrl = coverDataUrl
     this.source = source
     this.pageUrl = pageUrl
     this.catalog = catalog
@@ -37,7 +36,7 @@ export default class ComicInfo extends Entity {
     return {
       id: this.identity,
       name: this.name,
-      coverImage: this.coverImage.serialize(),
+      coverDataUrl: this.coverDataUrl,
       source: this.source,
       pageUrl: this.pageUrl,
       catalog: this.catalog,

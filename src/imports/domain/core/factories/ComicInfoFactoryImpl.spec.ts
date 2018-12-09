@@ -1,5 +1,4 @@
 import ComicInfoFactoryImpl from './ComicInfoFactoryImpl'
-import {CoverImageFactory} from '../interfaces/factories'
 
 describe('ComicInfoFactoryImpl', () => {
   describe('createFromJson', () => {
@@ -7,12 +6,7 @@ describe('ComicInfoFactoryImpl', () => {
       const jsonData = {
         id: 'id',
         name: 'name',
-        coverImage: {
-          id: 'id',
-          comicInfoId: 'comicInfoId',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        coverDataUrl: 'coverDataUrl',
         source: 'source',
         pageUrl: 'pageUrl',
         catalog: 'catalog',
@@ -21,16 +15,11 @@ describe('ComicInfoFactoryImpl', () => {
         summary: 'summary',
       }
 
-      const coverImageFactory: CoverImageFactory = {
-        createFromJson: jest.fn(() => ({
-          serialize: jest.fn(() => jsonData.coverImage)
-        }))
-      }
-      const factory = new ComicInfoFactoryImpl(coverImageFactory)
+      const factory = new ComicInfoFactoryImpl()
       const comicInfo = factory.createFromJson(jsonData)
       expect(comicInfo.identity).toBe(jsonData.id)
       expect(comicInfo.name).toBe(jsonData.name)
-      expect(comicInfo.coverImage.serialize()).toEqual(jsonData.coverImage)
+      expect(comicInfo.coverDataUrl).toBe(jsonData.coverDataUrl)
       expect(comicInfo.source).toBe(jsonData.source)
       expect(comicInfo.pageUrl).toBe(jsonData.pageUrl)
       expect(comicInfo.catalog).toBe(jsonData.catalog)

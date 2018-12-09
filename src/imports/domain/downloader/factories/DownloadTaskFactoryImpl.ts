@@ -19,18 +19,13 @@ export default class DownloadTaskFactoryImpl implements DownloadTaskFactory {
   createFromJson(json: {
     id: string,
     name: string,
-    coverImage: {
-      id: string,
-      comicInfoId: string,
-      mediaType: string,
-      base64Content: string,
-    },
+    coverDataUrl: string,
     sourceUrl: string,
   }): DownloadTask {
     return new DownloadTask(
       json.id,
       json.name,
-      json.coverImage,
+      json.coverDataUrl,
       json.sourceUrl,
       this._downloadTaskRepository,
     )

@@ -32,7 +32,7 @@ export default class CreateDownloadTaskUseCaseImpl implements CreateDownloadTask
     const downloadTask = this._downloadTaskFactory.createFromJson({
       id: comicInfoId,
       name: comicInfo.name,
-      coverImage: comicInfo.coverImage,
+      coverDataUrl: comicInfo.coverDataUrl,
       sourceUrl: comicInfo.pageUrl,
     })
     this._downloadTaskRepository.saveOrUpdate(downloadTask)

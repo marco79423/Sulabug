@@ -12,11 +12,6 @@ export interface DownloadTaskFactory {
   createFromJson(json: {
     id: string,
     name: string,
-    coverImage: {
-      id: string,
-      comicInfoId: string,
-      mediaType: string,
-      base64Content: string,
-    }
+    coverDataUrl: string
   }): DownloadTask
 }

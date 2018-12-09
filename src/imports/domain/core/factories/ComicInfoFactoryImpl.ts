@@ -1,30 +1,16 @@
 import 'reflect-metadata'
 
-import {inject, injectable} from 'inversify'
-
-import coreTypes from '../coreTypes'
-import {ComicInfoFactory, CoverImageFactory} from '../interfaces/factories'
+import {injectable} from 'inversify'
+import {ComicInfoFactory} from '../interfaces/factories'
 import ComicInfo from '../entities/ComicInfo'
 
 @injectable()
 export default class ComicInfoFactoryImpl implements ComicInfoFactory {
-  private readonly _coverImageFactory: CoverImageFactory
-
-  constructor(
-    @inject(coreTypes.CoverImageFactory) coverImageFactory: CoverImageFactory,
-  ) {
-    this._coverImageFactory = coverImageFactory
-  }
 
   createFromJson(json: {
     id: string,
     name: string,
-    coverImage: {
-      id: string,
-      comicInfoId: string,
-      mediaType: string,
-      base64Content: string,
-    },
+    coverDataUrl: string,
     source: string,
     pageUrl: string,
     catalog: string,
@@ -35,7 +21,7 @@ export default class ComicInfoFactoryImpl implements ComicInfoFactory {
     return new ComicInfo(
       json.id,
       json.name,
-      this._coverImageFactory.createFromJson(json.coverImage),
+      json.coverDataUrl,
       json.source,
       json.pageUrl,
       json.catalog,

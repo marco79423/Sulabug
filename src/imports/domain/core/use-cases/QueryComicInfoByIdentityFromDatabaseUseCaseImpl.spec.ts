@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 
 import {Request, Response} from '../../base-types'
-import CoverImageFactoryImpl from '../factories/CoverImageFactoryImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl from './QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
@@ -9,16 +8,11 @@ import QueryComicInfoByIdentityFromDatabaseUseCaseImpl from './QueryComicInfoByI
 describe('QueryComicInfoByIdentityFromDatabaseUseCaseImpl', () => {
   describe('asyncExecute', () => {
     it('will get target comic info by identity from database', async () => {
-      const comicInfoFactory = new ComicInfoFactoryImpl(new CoverImageFactoryImpl())
+      const comicInfoFactory = new ComicInfoFactoryImpl()
       const comicInfo = comicInfoFactory.createFromJson({
         id: 'id',
         name: 'name',
-        coverImage: {
-          id: 'id',
-          comicInfoId: 'id',
-          mediaType: 'mediaType',
-          base64Content: 'base64Content',
-        },
+        coverDataUrl: 'coverDataUrl',
         source: 'source',
         pageUrl: 'pageUrl',
         catalog: 'catalog',

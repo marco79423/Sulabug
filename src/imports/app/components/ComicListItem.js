@@ -72,7 +72,7 @@ export class ComicListItem extends React.Component {
         <Card className={classes.card}>
           <CardMedia
             className={classes.cover}
-            image={`data:${comic.coverImage.mediaType};base64,${comic.coverImage.base64Content}`}
+            image={comic.coverDataUrl}
             title={comic.name}
           />
           <div className={classes.details}>

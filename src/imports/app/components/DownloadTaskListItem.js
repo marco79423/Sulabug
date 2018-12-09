@@ -42,7 +42,7 @@ export class DownloadTaskListItem extends React.Component {
       <ListItem className={classes.root}>
         <ListItemAvatar>
           <Avatar>
-            <img src={`data:${downloadTask.coverImage.mediaType};base64,${downloadTask.coverImage.base64Content}`}/>
+            <img src={downloadTask.coverDataUrl}/>
           </Avatar>
         </ListItemAvatar>
         <ListItemText
