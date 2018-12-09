@@ -1,22 +1,22 @@
 import {Entity} from '../../base-types'
 
 export default class Config extends Entity {
-  readonly comicsFolder: string
-  readonly comicInfoStorePath: string
+  readonly downloadFolderPath: string
+  readonly comicInfoDatabasePath: string
 
   constructor(
     comicsFolder: string,
-    comicInfoStorePath: string,
+    comicInfoDatabasePath: string,
   ) {
     super(null)
-    this.comicsFolder = comicsFolder
-    this.comicInfoStorePath = comicInfoStorePath
+    this.downloadFolderPath = comicsFolder
+    this.comicInfoDatabasePath = comicInfoDatabasePath
   }
 
   serialize() {
     return {
-      comicsFolder: this.comicsFolder,
-      comicInfoStorePath: this.comicInfoStorePath,
+      downloadFolderPath: this.downloadFolderPath,
+      comicInfoDatabasePath: this.comicInfoDatabasePath,
     }
   }
 }

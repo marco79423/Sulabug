@@ -17,7 +17,7 @@ export interface ComicInfoFactory {
 
 export interface ConfigFactory {
   createFromJson(json: {
-    comicsFolder: string,
-    comicInfoStorePath: string,
+    downloadFolderPath: string,
+    comicInfoDatabasePath: string,
   }): Config
 }

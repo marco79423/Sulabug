@@ -21,8 +21,8 @@ export default class UpdateConfigUseCaseImpl implements UpdateConfigUseCase {
 
   async asyncExecute(request: Request): Promise<Response> {
     const rawConfigData: {
-      comicsFolder: string,
-      comicInfoStorePath: string,
+      downloadFolderPath: string,
+      comicInfoDatabasePath: string,
     } = request.data
 
     const config = this._configFactory.createFromJson(rawConfigData)

@@ -99,8 +99,8 @@ export const defaultState = {
   },
 
   config: {
-    comicsFolder: '',
-    comicInfoStorePath: '',
+    downloadFolderPath: '',
+    comicInfoDatabasePath: '',
   },
 }
 

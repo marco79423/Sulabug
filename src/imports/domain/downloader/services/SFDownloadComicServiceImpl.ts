@@ -24,14 +24,14 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
-    const downloadFolder = await this._asyncGetDownloadFolder()
+    const downloadFolderPath = await this._asyncGetDownloadFolderPath()
 
     const $ = await this._asyncGetSelector(downloadTask.sourceUrl)
     const chapters: { sourceUrl: string, targetDir: string }[] = []
     $('.comic_Serial_list a').each((index, element) => {
       chapters.push({
         sourceUrl: 'https://manhua.sfacg.com' + $(element).attr('href'),
-        targetDir: path.join(downloadFolder, downloadTask.name, $(element).text()),
+        targetDir: path.join(downloadFolderPath, downloadTask.name, $(element).text()),
       })
     })
 
@@ -71,10 +71,10 @@ export default class SFDownloadComicServiceImpl implements SFDownloadComicServic
     }
   }
 
-  private async _asyncGetDownloadFolder() {
+  private async _asyncGetDownloadFolderPath() {
     const res = await this._queryConfigUseCase.asyncExecute()
     const config = res.data
-    return config.comicsFolder
+    return config.downloadFolderPath
   }
 
   private async _asyncGetSelector(url: string) {

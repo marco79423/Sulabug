@@ -10,8 +10,8 @@ describe('QueryConfigUseCaseImpl', () => {
     it('will get configuration', async () => {
       const configFactory = new ConfigFactoryImpl()
       const config = configFactory.createFromJson({
-        comicsFolder: 'comicsFolder',
-        comicInfoStorePath: 'comicInfoStorePath',
+        downloadFolderPath: 'downloadFolderPath',
+        comicInfoDatabasePath: 'comicInfoDatabasePath',
       })
 
       const configRepository: ConfigRepository = {

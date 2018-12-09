@@ -13,8 +13,8 @@ export default class ConfigRepositoryImpl implements ConfigRepository {
   configPath = './config.json'
 
   defaultConfigData = {
-    comicsFolder: path.resolve('./comics'),
-    comicInfoStorePath: path.resolve('./comicInfoStore.json')
+    downloadFolderPath: path.resolve('./comics'),
+    comicInfoDatabasePath: path.resolve('./comicInfoStore.json')
   }
 
   public constructor(

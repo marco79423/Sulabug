@@ -7,12 +7,12 @@ import {ConfigFactory} from '../interfaces/factories'
 export default class ConfigFactoryImpl implements ConfigFactory {
 
   createFromJson(json: {
-    comicsFolder: string,
-    comicInfoStorePath: string,
+    downloadFolderPath: string,
+    comicInfoDatabasePath: string,
   }): Config {
     return new Config(
-      json.comicsFolder,
-      json.comicInfoStorePath,
+      json.downloadFolderPath,
+      json.comicInfoDatabasePath,
     )
   }
 }

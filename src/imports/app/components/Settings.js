@@ -28,14 +28,14 @@ export class Settings extends React.Component {
     const {config, updateConfig} = this.props
     const filePaths = remote.dialog.showOpenDialog({
       title: '指定漫畫資料夾',
-      defaultPath: config.comicsFolder,
+      defaultPath: config.downloadFolderPath,
       buttonLabel: '確定',
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
     })
     if (filePaths.length > 0) {
       updateConfig({
         ...config,
-        comicsFolder: filePaths[0],
+        downloadFolderPath: filePaths[0],
       })
     }
   }
@@ -53,7 +53,7 @@ export class Settings extends React.Component {
             </ListItemAvatar>
             <ListItemText
               primary="漫畫下載目錄"
-              secondary={config.comicsFolder}
+              secondary={config.downloadFolderPath}
             />
             <ListItemSecondaryAction>
               <IconButton onClick={this.updateComicsFolder}>

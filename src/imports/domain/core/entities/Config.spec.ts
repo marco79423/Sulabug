@@ -4,13 +4,13 @@ describe('Config', () => {
   describe('serialize', () => {
     it('will serialize the Config instance to json data', () => {
       const jsonData = {
-        comicsFolder: 'comicsFolder',
-        comicInfoStorePath: 'comicInfoStorePath',
+        downloadFolderPath: 'downloadFolderPath',
+        comicInfoDatabasePath: 'comicInfoDatabasePath',
       }
 
       const config = new Config(
-        jsonData.comicsFolder,
-        jsonData.comicInfoStorePath,
+        jsonData.downloadFolderPath,
+        jsonData.comicInfoDatabasePath,
       )
       expect(config.serialize()).toEqual(jsonData)
     })
