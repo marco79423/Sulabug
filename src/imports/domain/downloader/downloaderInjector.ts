@@ -10,7 +10,7 @@ import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCase
 import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
 import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
 import SFDownloadComicServiceImpl from './services/SFDownloadComicServiceImpl'
-import DownloadTaskRepositoryImpl from '../../infrastructure/downloader/repositories/DownloadTaskRepositoryImpl'
+import DownloadTaskRepositoryImpl from '../../infrastructure/domain/downloader/repositories/DownloadTaskRepositoryImpl'
 import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
 import {
   CreateDownloadTaskUseCase,

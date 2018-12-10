@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
 import {injectable} from 'inversify'
 
-import {FileAdapter} from '../../../domain/core/interfaces/adapters'
+import {FileAdapter} from '../../../../domain/core/interfaces/adapters'
 
 @injectable()
 export default class FileAdapterImpl implements FileAdapter {

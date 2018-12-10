@@ -1,11 +1,11 @@
 import * as fs from 'fs-extra'
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../../../domain/core/coreTypes'
-import ComicInfo from '../../../domain/core/entities/ComicInfo'
-import {ComicInfoFactory} from '../../../domain/core/interfaces/factories'
-import {ComicInfoStorageRepository, ConfigRepository} from '../../../domain/core/interfaces/repositories'
-import {FileAdapter} from '../../../domain/core/interfaces/adapters'
+import coreTypes from '../../../../domain/core/coreTypes'
+import ComicInfo from '../../../../domain/core/entities/ComicInfo'
+import {ComicInfoFactory} from '../../../../domain/core/interfaces/factories'
+import {ComicInfoStorageRepository, ConfigRepository} from '../../../../domain/core/interfaces/repositories'
+import {FileAdapter} from '../../../../domain/core/interfaces/adapters'
 
 @injectable()
 export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageRepository {

@@ -2,7 +2,7 @@ import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 import fetch from 'node-fetch'
 
-import {NetAdapter} from '../../../domain/core/interfaces/adapters'
+import {NetAdapter} from '../../../../domain/core/interfaces/adapters'
 
 @injectable()
 export default class NetAdapterImpl implements NetAdapter {

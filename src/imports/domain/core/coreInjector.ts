@@ -10,12 +10,12 @@ import UpdateConfigUseCaseImpl from './use-cases/UpdateConfigUseCaseImpl'
 import UpdateComicInfoDatabaseUseCaseImpl from './use-cases/UpdateComicInfoDatabaseUseCaseImpl'
 import QueryComicInfosFromDatabaseUseCaseImpl from './use-cases/QueryComicInfosFromDatabaseUseCaseImpl'
 import SFComicSiteServiceImpl from './services/SFComicSiteServiceImpl'
-import ComicInfoStorageRepositoryImpl from '../../infrastructure/core/repositories/ComicStorageRepositoryImpl'
-import FileAdapterImpl from '../../infrastructure/core/adapters/FileAdapterImpl'
-import NetAdapterImpl from '../../infrastructure/core/adapters/NetAdapterImpl'
+import ComicInfoStorageRepositoryImpl from '../../infrastructure/domain/core/repositories/ComicStorageRepositoryImpl'
+import FileAdapterImpl from '../../infrastructure/domain/core/adapters/FileAdapterImpl'
+import NetAdapterImpl from '../../infrastructure/domain/core/adapters/NetAdapterImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
-import ConfigRepositoryImpl from '../../infrastructure/core/repositories/ConfigRepositoryImpl'
+import ConfigRepositoryImpl from '../../infrastructure/domain/core/repositories/ConfigRepositoryImpl'
 import {
   DownloadBinaryUseCase,
   FetchHtmlUseCase,

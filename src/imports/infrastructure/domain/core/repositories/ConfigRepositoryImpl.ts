@@ -1,10 +1,10 @@
 import * as fs from 'fs-extra'
 import path from 'path'
 import {inject, injectable} from 'inversify'
-import Config from '../../../domain/core/entities/Config'
-import coreTypes from '../../../domain/core/coreTypes'
-import {ConfigFactory} from '../../../domain/core/interfaces/factories'
-import {ConfigRepository} from '../../../domain/core/interfaces/repositories'
+import Config from '../../../../domain/core/entities/Config'
+import coreTypes from '../../../../domain/core/coreTypes'
+import {ConfigFactory} from '../../../../domain/core/interfaces/factories'
+import {ConfigRepository} from '../../../../domain/core/interfaces/repositories'
 
 @injectable()
 export default class ConfigRepositoryImpl implements ConfigRepository {

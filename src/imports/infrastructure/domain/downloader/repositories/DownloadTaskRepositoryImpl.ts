@@ -1,8 +1,8 @@
 import {inject, injectable} from 'inversify'
-import EventPublisher from '../../../domain/downloader/event/EventPublisher'
-import DownloadTask from '../../../domain/downloader/entities/DownloadTask'
-import DownloadTaskUpdatedEvent from '../../../domain/downloader/event/DownloadTaskUpdatedEvent'
-import {DownloadTaskRepository} from '../../../domain/downloader/interfaces/repositories'
+import EventPublisher from '../../../../domain/downloader/event/EventPublisher'
+import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
+import DownloadTaskUpdatedEvent from '../../../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import {DownloadTaskRepository} from '../../../../domain/downloader/interfaces/repositories'
 
 
 @injectable()
