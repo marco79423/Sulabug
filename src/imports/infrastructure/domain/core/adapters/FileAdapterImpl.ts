@@ -1,24 +1,20 @@
-import * as fs from 'fs-extra'
 import {injectable} from 'inversify'
 
 import {FileAdapter} from '../../../../domain/core/interfaces/adapters'
+import FileHandler from '../../../base/FileHandler'
 
 @injectable()
 export default class FileAdapterImpl implements FileAdapter {
 
   async asyncReadJson(targetPath: string, defaultJson: any = null): Promise<any> {
-    const exists = await this.asyncPathExists(targetPath)
-    if (!exists) {
-      return defaultJson
-    }
-    return await fs.readJSON(targetPath)
+    return await FileHandler.asyncReadJson(targetPath, defaultJson)
   }
 
   async asyncWriteJson(targetPath: string, data: any): Promise<void> {
-    await fs.writeJson(targetPath, targetPath)
+    await FileHandler.asyncWriteJson(targetPath, data)
   }
 
   async asyncPathExists(targetPath: string): Promise<boolean> {
-    return await fs.pathExists(targetPath)
+    return await FileHandler.asyncPathExists(targetPath)
   }
 }

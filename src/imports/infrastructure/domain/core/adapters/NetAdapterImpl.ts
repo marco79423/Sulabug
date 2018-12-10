@@ -1,28 +1,20 @@
 import {injectable} from 'inversify'
-import * as fs from 'fs-extra'
-import fetch from 'node-fetch'
 
 import {NetAdapter} from '../../../../domain/core/interfaces/adapters'
+import NetHandler from '../../../base/NetHandler'
 
 @injectable()
 export default class NetAdapterImpl implements NetAdapter {
 
   async asyncGetText(targetUrl: string): Promise<string> {
-    const response = await fetch(targetUrl)
-    return await response.text()
+    return await NetHandler.asyncGetText(targetUrl)
   }
 
   async asyncDownload(targetUrl: string, targetPath: string): Promise<void> {
-    await fetch(targetUrl)
-      .then(response => {
-        const dest = fs.createWriteStream(targetPath)
-        response.body.pipe(dest)
-      })
+    await NetHandler.asyncDownload(targetUrl, targetPath)
   }
 
   async asyncGetBinaryBase64(targetUrl: string): Promise<string> {
-    const response = await fetch(targetUrl)
-    const buffer = await response.arrayBuffer()
-    return Buffer.from(buffer).toString('base64')
+    return await NetHandler.asyncGetBinaryBase64(targetUrl)
   }
 }
