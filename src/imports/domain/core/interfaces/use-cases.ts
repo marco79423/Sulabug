@@ -1,13 +1,5 @@
 import {Request, Response} from '../../base-types'
 
-export interface DownloadBinaryUseCase {
-  asyncExecute(request: Request): Promise<Response>
-}
-
-export interface FetchHtmlUseCase {
-  asyncExecute(request: Request): Promise<Response>
-}
-
 export interface QueryComicInfoByIdentityFromDatabaseUseCase {
   asyncExecute(request: Request): Promise<Response>
 }

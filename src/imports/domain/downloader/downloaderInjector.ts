@@ -18,10 +18,14 @@ import {
   DownloadComicUseCase,
   QueryDownloadTasksUseCase
 } from './interfaces/use-cases'
+import {NetAdapter} from './interfaces/adapters'
+import NetAdapterImpl from '../../infrastructure/domain/downloader/adapters/NetAdapterImpl'
 
 const downloaderInjector = new Container()
 
 downloaderInjector.bind(EventPublisher).toSelf().inSingletonScope()
+
+downloaderInjector.bind<NetAdapter>(downloaderTypes.NetAdapter).to(NetAdapterImpl).inSingletonScope()
 
 downloaderInjector.bind<DownloadTaskFactory>(downloaderTypes.DownloadTaskFactory).to(DownloadTaskFactoryImpl).inSingletonScope()
 

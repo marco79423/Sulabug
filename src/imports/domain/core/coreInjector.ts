@@ -17,8 +17,6 @@ import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/domain/core/repositories/ConfigRepositoryImpl'
 import {
-  DownloadBinaryUseCase,
-  FetchHtmlUseCase,
   QueryComicInfoByIdentityFromDatabaseUseCase,
   QueryComicInfosFromDatabaseUseCase,
   QueryConfigUseCase,
@@ -27,8 +25,6 @@ import {
 } from './interfaces/use-cases'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl
   from './use-cases/QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
-import DownloadBinaryUseCaseImpl from './use-cases/DownloadBinaryUseCaseImpl'
-import FetchHtmlUseCaseImpl from './use-cases/FetchHtmlUseCaseImpl'
 
 const coreInjector = new Container()
 
@@ -43,8 +39,6 @@ coreInjector.bind<ComicInfoStorageRepository>(coreTypes.ComicInfoStorageReposito
 
 coreInjector.bind<SFComicSiteService>(coreTypes.SFComicSiteService).to(SFComicSiteServiceImpl).inSingletonScope()
 
-coreInjector.bind<DownloadBinaryUseCase>(coreTypes.DownloadBinaryUseCase).to(DownloadBinaryUseCaseImpl).inSingletonScope()
-coreInjector.bind<FetchHtmlUseCase>(coreTypes.FetchHtmlUseCase).to(FetchHtmlUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryComicInfoByIdentityFromDatabaseUseCase>(coreTypes.QueryComicInfoByIdentityFromDatabaseUseCase).to(QueryComicInfoByIdentityFromDatabaseUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryComicInfosFromDatabaseUseCase>(coreTypes.QueryComicInfosFromDatabaseUseCase).to(QueryComicInfosFromDatabaseUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryConfigUseCase>(coreTypes.QueryConfigUseCase).to(QueryConfigUseCaseImpl).inSingletonScope()

@@ -1,6 +1,6 @@
 import {injectable} from 'inversify'
 
-import {NetAdapter} from '../../../../domain/core/interfaces/adapters'
+import {NetAdapter} from '../../../../domain/downloader/interfaces/adapters'
 import NetHandler from '../../../base/NetHandler'
 
 @injectable()
@@ -10,7 +10,7 @@ export default class NetAdapterImpl implements NetAdapter {
     return await NetHandler.asyncGetText(targetUrl)
   }
 
-  async asyncGetBinaryBase64(targetUrl: string): Promise<string> {
-    return await NetHandler.asyncGetBinaryBase64(targetUrl)
+  async asyncDownload(targetUrl: string, targetPath: string): Promise<void> {
+    await NetHandler.asyncDownload(targetUrl, targetPath)
   }
 }
