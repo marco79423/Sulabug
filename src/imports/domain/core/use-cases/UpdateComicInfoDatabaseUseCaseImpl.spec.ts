@@ -4,7 +4,7 @@ import {Response} from '../../base-types'
 import UpdateComicInfoDatabaseUseCaseImpl from './UpdateComicInfoDatabaseUseCaseImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
-import {SFComicSiteService} from '../interfaces/services'
+import {SFComicInfoQueryAdapter} from '../interfaces/adapters'
 
 describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
   describe('asyncExecute', () => {
@@ -41,14 +41,14 @@ describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
         asyncGetAllBySearchTerm: jest.fn(),
       }
 
-      const sfComicSiteService: SFComicSiteService = {
+      const sfComicInfoQueryAdapter: SFComicInfoQueryAdapter = {
         asyncGetComicInfos: jest.fn(() => comicInfos),
       }
 
-      const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicSiteService)
+      const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicInfoQueryAdapter)
       const res = await uc.asyncExecute()
 
-      expect(sfComicSiteService.asyncGetComicInfos).toBeCalled()
+      expect(sfComicInfoQueryAdapter.asyncGetComicInfos).toBeCalled()
 
       expect(comicInfoStorageRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[0])
       expect(comicInfoStorageRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[1])

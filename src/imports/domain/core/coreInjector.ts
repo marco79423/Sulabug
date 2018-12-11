@@ -1,18 +1,14 @@
 import {Container} from 'inversify'
 
 import coreTypes from './coreTypes'
-import {FileAdapter, NetAdapter} from './interfaces/adapters'
+import { SFComicInfoQueryAdapter} from './interfaces/adapters'
 import {ComicInfoFactory, ConfigFactory} from './interfaces/factories'
 import {ComicInfoStorageRepository, ConfigRepository} from './interfaces/repositories'
-import {SFComicSiteService} from './interfaces/services'
 import QueryConfigUseCaseImpl from './use-cases/QueryConfigUseCaseImpl'
 import UpdateConfigUseCaseImpl from './use-cases/UpdateConfigUseCaseImpl'
 import UpdateComicInfoDatabaseUseCaseImpl from './use-cases/UpdateComicInfoDatabaseUseCaseImpl'
 import QueryComicInfosFromDatabaseUseCaseImpl from './use-cases/QueryComicInfosFromDatabaseUseCaseImpl'
-import SFComicSiteServiceImpl from './services/SFComicSiteServiceImpl'
 import ComicInfoStorageRepositoryImpl from '../../infrastructure/domain/core/repositories/ComicStorageRepositoryImpl'
-import FileAdapterImpl from '../../infrastructure/domain/core/adapters/FileAdapterImpl'
-import NetAdapterImpl from '../../infrastructure/domain/core/adapters/NetAdapterImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/domain/core/repositories/ConfigRepositoryImpl'
@@ -25,19 +21,17 @@ import {
 } from './interfaces/use-cases'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl
   from './use-cases/QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
+import SFComicInfoQueryAdapterImpl from '../../infrastructure/domain/core/adapters/SFComicInfoQueryAdapterImpl'
 
 const coreInjector = new Container()
 
-coreInjector.bind<FileAdapter>(coreTypes.FileAdapter).to(FileAdapterImpl).inSingletonScope()
-coreInjector.bind<NetAdapter>(coreTypes.NetAdapter).to(NetAdapterImpl).inSingletonScope()
+coreInjector.bind<SFComicInfoQueryAdapter>(coreTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapterImpl).inSingletonScope()
 
 coreInjector.bind<ComicInfoFactory>(coreTypes.ComicInfoFactory).to(ComicInfoFactoryImpl).inSingletonScope()
 coreInjector.bind<ConfigFactory>(coreTypes.ConfigFactory).to(ConfigFactoryImpl).inSingletonScope()
 
 coreInjector.bind<ConfigRepository>(coreTypes.ConfigRepository).to(ConfigRepositoryImpl).inSingletonScope()
 coreInjector.bind<ComicInfoStorageRepository>(coreTypes.ComicInfoStorageRepository).to(ComicInfoStorageRepositoryImpl).inSingletonScope()
-
-coreInjector.bind<SFComicSiteService>(coreTypes.SFComicSiteService).to(SFComicSiteServiceImpl).inSingletonScope()
 
 coreInjector.bind<QueryComicInfoByIdentityFromDatabaseUseCase>(coreTypes.QueryComicInfoByIdentityFromDatabaseUseCase).to(QueryComicInfoByIdentityFromDatabaseUseCaseImpl).inSingletonScope()
 coreInjector.bind<QueryComicInfosFromDatabaseUseCase>(coreTypes.QueryComicInfosFromDatabaseUseCase).to(QueryComicInfosFromDatabaseUseCaseImpl).inSingletonScope()

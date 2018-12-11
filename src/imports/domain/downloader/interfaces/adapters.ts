@@ -1,6 +1,5 @@
-export interface NetAdapter {
+import DownloadTask from '../entities/DownloadTask'
 
-  asyncGetText(targetUrl: string): Promise<string>
-
-  asyncDownload(targetUrl: string, targetPath: string): Promise<void>
+export interface SFComicDownloadAdapter {
+  asyncDownload(downloadTask: DownloadTask): Promise<void>
 }

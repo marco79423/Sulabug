@@ -3,24 +3,24 @@ import {inject, injectable} from 'inversify'
 import {Response} from '../../base-types'
 import coreTypes from '../coreTypes'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
-import {SFComicSiteService} from '../interfaces/services'
 import {UpdateComicInfoDatabaseUseCase} from '../interfaces/use-cases'
+import {SFComicInfoQueryAdapter} from '../interfaces/adapters'
 
 @injectable()
 export default class UpdateComicInfoDatabaseUseCaseImpl implements UpdateComicInfoDatabaseUseCase {
   private readonly _comicInfoStorageRepository: ComicInfoStorageRepository
-  private readonly _sfComicSiteService: SFComicSiteService
+  private readonly _sfComicInfoQueryAdapter: SFComicInfoQueryAdapter
 
   public constructor(
     @inject(coreTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository,
-    @inject(coreTypes.SFComicSiteService) sfComicSiteService: SFComicSiteService,
+    @inject(coreTypes.SFComicInfoQueryAdapter) sfComicInfoQueryAdapter: SFComicInfoQueryAdapter,
   ) {
     this._comicInfoStorageRepository = comicInfoStorageRepository
-    this._sfComicSiteService = sfComicSiteService
+    this._sfComicInfoQueryAdapter = sfComicInfoQueryAdapter
   }
 
   async asyncExecute(): Promise<Response> {
-    const comicInfos = await this._sfComicSiteService.asyncGetComicInfos()
+    const comicInfos = await this._sfComicInfoQueryAdapter.asyncGetComicInfos()
     for (let comicInfo of comicInfos) {
       await this._comicInfoStorageRepository.asyncSaveOrUpdate(comicInfo)
     }

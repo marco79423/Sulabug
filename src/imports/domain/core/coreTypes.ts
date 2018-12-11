@@ -1,6 +1,5 @@
 export default {
-  FileAdapter: Symbol('Core/FileAdapter'),
-  NetAdapter: Symbol('Core/NetAdapter'),
+  SFComicInfoQueryAdapter: Symbol('Core/SFComicInfoQueryAdapter'),
 
   ComicInfoFactory: Symbol('Core/ComicInfoFactory'),
   ConfigFactory: Symbol('Core/ConfigFactory'),

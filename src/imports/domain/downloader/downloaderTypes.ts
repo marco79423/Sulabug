@@ -1,5 +1,5 @@
 export default {
-  NetAdapter: Symbol('Downloader/NetAdapter'),
+  SFComicDownloadAdapter: Symbol('Downloader/SFComicDownloadAdapter'),
 
   DownloadTaskFactory: Symbol('Downloader/DownloadTaskFactory'),
 

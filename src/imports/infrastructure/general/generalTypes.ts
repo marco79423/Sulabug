@@ -1,4 +1,6 @@
 export default {
-  FileHandler: Symbol('Infrastructure/General/FileHandler'),
-  NetHandler: Symbol('Infrastructure/General/NetHandler'),
+  FileHandler: Symbol('Infrastructure/FileHandler'),
+  NetHandler: Symbol('Infrastructure/NetHandler'),
+
+  SFSourceSite: Symbol('Infrastructure/SFSourceSite'),
 }
