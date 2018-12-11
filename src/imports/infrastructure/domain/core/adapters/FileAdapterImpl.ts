@@ -1,7 +1,7 @@
 import {injectable} from 'inversify'
 
 import {FileAdapter} from '../../../../domain/core/interfaces/adapters'
-import FileHandler from '../../../base/FileHandler'
+import FileHandler from '../../../general/base/FileHandler'
 
 @injectable()
 export default class FileAdapterImpl implements FileAdapter {

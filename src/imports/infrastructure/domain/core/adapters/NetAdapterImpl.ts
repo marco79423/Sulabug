@@ -1,7 +1,7 @@
 import {injectable} from 'inversify'
 
 import {NetAdapter} from '../../../../domain/core/interfaces/adapters'
-import NetHandler from '../../../base/NetHandler'
+import NetHandler from '../../../general/base/NetHandler'
 
 @injectable()
 export default class NetAdapterImpl implements NetAdapter {
