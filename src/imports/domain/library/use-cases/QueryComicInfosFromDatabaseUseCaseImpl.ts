@@ -1,7 +1,7 @@
 import {inject, injectable} from 'inversify'
 
 import {Request, Response} from '../../base-types'
-import coreTypes from '../coreTypes'
+import libraryTypes from '../libraryTypes'
 import ComicInfo from '../entities/ComicInfo'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import {QueryComicInfosFromDatabaseUseCase} from '../interfaces/use-cases'
@@ -12,7 +12,7 @@ export default class QueryComicInfosFromDatabaseUseCaseImpl implements QueryComi
   private readonly _comicInfoStorageRepository: ComicInfoStorageRepository
 
   public constructor(
-    @inject(coreTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository
+    @inject(libraryTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository
   ) {
     this._comicInfoStorageRepository = comicInfoStorageRepository
   }

@@ -2,21 +2,21 @@ import {Container} from 'inversify'
 
 import downloaderTypes from './downloaderTypes'
 import EventPublisher from './event/EventPublisher'
+import {SFComicDownloadAdapter} from './interfaces/adapters'
 import {DownloadTaskFactory} from './interfaces/factories'
 import {DownloadTaskRepository} from './interfaces/repositories'
-import CreateDownloadTaskUseCaseImpl from './use-cases/CreateDownloadTaskUseCaseImpl'
-import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCaseImpl'
-import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
-import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
-import DownloadTaskRepositoryImpl from '../../infrastructure/domain/downloader/repositories/DownloadTaskRepositoryImpl'
-import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
 import {
   CreateDownloadTaskUseCase,
   DeleteDownloadTaskUseCase,
   DownloadComicUseCase,
   QueryDownloadTasksUseCase
 } from './interfaces/use-cases'
-import {SFComicDownloadAdapter} from './interfaces/adapters'
+import CreateDownloadTaskUseCaseImpl from './use-cases/CreateDownloadTaskUseCaseImpl'
+import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCaseImpl'
+import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
+import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
+import DownloadTaskRepositoryImpl from '../../infrastructure/domain/downloader/repositories/DownloadTaskRepositoryImpl'
+import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
 import SFComicDownloadAdapterImpl from '../../infrastructure/domain/downloader/adapters/SFComicDownloadAdapterImpl'
 
 const downloaderInjector = new Container()

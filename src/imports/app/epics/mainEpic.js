@@ -5,6 +5,7 @@ import {filter, flatMap, map} from 'rxjs/operators'
 import {Request} from '../../domain/base-types'
 import injector from '../injector'
 import coreTypes from '../../domain/core/coreTypes'
+import libraryTypes from '../../domain/library/libraryTypes'
 import downloaderTypes from '../../domain/downloader/downloaderTypes'
 import {actions, ActionTypes} from '../ducks/mainDuck'
 import EventPublisher from '../../domain/downloader/event/EventPublisher'
@@ -38,7 +39,7 @@ export const queryComicInfosFromDatabaseEpic = action$ => action$.pipe(
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
     of(actions.queryingComicInfosFromDatabase()),
-    from(injector.get(coreTypes.QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
+    from(injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
       .then(res => res.data)
       .then(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos))
     ),
@@ -72,7 +73,7 @@ export const updateComicInfoDatabaseEpic = action$ => action$.pipe(
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    from(injector.get(coreTypes.UpdateComicInfoDatabaseUseCase).asyncExecute()
+    from(injector.get(libraryTypes.UpdateComicInfoDatabaseUseCase).asyncExecute()
       .then(() => actions.comicInfoDatabaseUpdated())
     ),
   )),

@@ -1,7 +1,7 @@
 import {inject, injectable} from 'inversify'
 
 import {Response} from '../../base-types'
-import coreTypes from '../coreTypes'
+import libraryTypes from '../libraryTypes'
 import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import {UpdateComicInfoDatabaseUseCase} from '../interfaces/use-cases'
 import {SFComicInfoQueryAdapter} from '../interfaces/adapters'
@@ -12,8 +12,8 @@ export default class UpdateComicInfoDatabaseUseCaseImpl implements UpdateComicIn
   private readonly _sfComicInfoQueryAdapter: SFComicInfoQueryAdapter
 
   public constructor(
-    @inject(coreTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository,
-    @inject(coreTypes.SFComicInfoQueryAdapter) sfComicInfoQueryAdapter: SFComicInfoQueryAdapter,
+    @inject(libraryTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository,
+    @inject(libraryTypes.SFComicInfoQueryAdapter) sfComicInfoQueryAdapter: SFComicInfoQueryAdapter,
   ) {
     this._comicInfoStorageRepository = comicInfoStorageRepository
     this._sfComicInfoQueryAdapter = sfComicInfoQueryAdapter

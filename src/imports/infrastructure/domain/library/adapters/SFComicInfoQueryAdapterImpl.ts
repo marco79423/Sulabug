@@ -1,11 +1,11 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../../../../domain/core/coreTypes'
+import libraryTypes from '../../../../domain/library/libraryTypes'
 import generalTypes from '../../../general/generalTypes'
-import {SFComicInfoQueryAdapter} from '../../../../domain/core/interfaces/adapters'
-import ComicInfo from '../../../../domain/core/entities/ComicInfo'
+import {SFComicInfoQueryAdapter} from '../../../../domain/library/interfaces/adapters'
+import ComicInfo from '../../../../domain/library/entities/ComicInfo'
 import {SFSourceSite} from '../../../general/interfaces/source-sites'
-import {ComicInfoFactory} from '../../../../domain/core/interfaces/factories'
+import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
 
 @injectable()
 export default class SFComicInfoQueryAdapterImpl implements SFComicInfoQueryAdapter {
@@ -13,7 +13,7 @@ export default class SFComicInfoQueryAdapterImpl implements SFComicInfoQueryAdap
   private readonly _sfSourceSite: SFSourceSite
 
   public constructor(
-    @inject(coreTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
+    @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
     @inject(generalTypes.SFSourceSite) sfSourceSite: SFSourceSite,
   ) {
     this._comicInfoFactory = comicInfoFactory

@@ -4,7 +4,7 @@ import {Request, Response} from '../../base-types'
 import CreateDownloadTaskUseCaseImpl from './CreateDownloadTaskUseCaseImpl'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
-import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../core/interfaces/use-cases'
+import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../library/interfaces/use-cases'
 
 describe('CreateDownloadTaskUseCaseImpl', () => {
   describe('asyncExecute', () => {

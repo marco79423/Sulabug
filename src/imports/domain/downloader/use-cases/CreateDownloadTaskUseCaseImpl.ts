@@ -1,12 +1,11 @@
 import {inject, injectable} from 'inversify'
-
-import coreTypes from '../../core/coreTypes'
+import libraryTypes from '../../library/libraryTypes'
 import downloaderTypes from '../downloaderTypes'
 import {Request, Response} from '../../base-types'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
 
-import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../core/interfaces/use-cases'
+import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../library/interfaces/use-cases'
 import {CreateDownloadTaskUseCase} from '../interfaces/use-cases'
 
 @injectable()
@@ -16,7 +15,7 @@ export default class CreateDownloadTaskUseCaseImpl implements CreateDownloadTask
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   public constructor(
-    @inject(coreTypes.QueryComicInfoByIdentityFromDatabaseUseCase) queryComicInfoByIdentityFromDatabaseUseCase: QueryComicInfoByIdentityFromDatabaseUseCase,
+    @inject(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase) queryComicInfoByIdentityFromDatabaseUseCase: QueryComicInfoByIdentityFromDatabaseUseCase,
     @inject(downloaderTypes.DownloadTaskFactory) downloadTaskFactory: DownloadTaskFactoryImpl,
     @inject(downloaderTypes.DownloadTaskRepository) downloadTaskRepository: DownloadTaskRepository,
   ) {
