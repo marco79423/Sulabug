@@ -3,7 +3,7 @@ import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map} from 'rxjs/operators'
 
 import {Request} from '../../domain/base-types'
-import domainInjector from '../domainInjector'
+import injector from '../injector'
 import coreTypes from '../../domain/core/coreTypes'
 import downloaderTypes from '../../domain/downloader/downloaderTypes'
 import {actions, ActionTypes} from '../ducks/mainDuck'
@@ -22,7 +22,7 @@ export const queryConfigEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingConfig()),
-    from(domainInjector.get(coreTypes.QueryConfigUseCase).asyncExecute()
+    from(injector.get(coreTypes.QueryConfigUseCase).asyncExecute()
       .then(res => res.data)
       .then(config => actions.configQueried(config))
     ),
@@ -38,7 +38,7 @@ export const queryComicInfosFromDatabaseEpic = action$ => action$.pipe(
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
     of(actions.queryingComicInfosFromDatabase()),
-    from(domainInjector.get(coreTypes.QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
+    from(injector.get(coreTypes.QueryComicInfosFromDatabaseUseCase).asyncExecute(new Request(searchTerm))
       .then(res => res.data)
       .then(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos))
     ),
@@ -53,7 +53,7 @@ export const queryDownloadTasksEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingDownloadTasks()),
-    from(domainInjector.get(downloaderTypes.QueryDownloadTasksUseCase).asyncExecute()
+    from(injector.get(downloaderTypes.QueryDownloadTasksUseCase).asyncExecute()
       .then(res => res.data)
       .then(downloadTasks => actions.downloadTasksQueried(downloadTasks)))
   )),
@@ -72,7 +72,7 @@ export const updateComicInfoDatabaseEpic = action$ => action$.pipe(
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    from(domainInjector.get(coreTypes.UpdateComicInfoDatabaseUseCase).asyncExecute()
+    from(injector.get(coreTypes.UpdateComicInfoDatabaseUseCase).asyncExecute()
       .then(() => actions.comicInfoDatabaseUpdated())
     ),
   )),
@@ -86,7 +86,7 @@ export const createDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(comicIInfoId => concat(
     of(actions.creatingDownloadTask()),
-    from(domainInjector.get(downloaderTypes.CreateDownloadTaskUseCase).asyncExecute(new Request(comicIInfoId))
+    from(injector.get(downloaderTypes.CreateDownloadTaskUseCase).asyncExecute(new Request(comicIInfoId))
       .then(res => res.data)
       .then(downloadTask => actions.downloadTaskCreated(downloadTask))
     ),
@@ -100,7 +100,7 @@ export const deleteDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    from(domainInjector.get(downloaderTypes.DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
+    from(injector.get(downloaderTypes.DeleteDownloadTaskUseCase).asyncExecute(new Request(downloadTaskId))
       .then(() => actions.downloadTaskDeleted(downloadTaskId))
     ),
   ))
@@ -113,7 +113,7 @@ export const handleDownloadTaskEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(downloadTask => concat(
     of(actions.downloadingComic()),
-    from(domainInjector.get(downloaderTypes.DownloadComicUseCase).asyncExecute(new Request(downloadTask.id))
+    from(injector.get(downloaderTypes.DownloadComicUseCase).asyncExecute(new Request(downloadTask.id))
       .then(() => actions.comicDownloaded())
     ),
   ))
@@ -126,13 +126,13 @@ export const updateConfigEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(config => concat(
     of(actions.updatingConfig()),
-    from(domainInjector.get(coreTypes.UpdateConfigUseCase).asyncExecute(new Request(config))
+    from(injector.get(coreTypes.UpdateConfigUseCase).asyncExecute(new Request(config))
       .then(() => actions.configUpdated(config))
     ),
   ))
 )
 
-export const handleDownloadTaskUpdatedEventEpic = () => domainInjector.get(EventPublisher).getEventStream().pipe(
+export const handleDownloadTaskUpdatedEventEpic = () => injector.get(EventPublisher).getEventStream().pipe(
   filter(event => event instanceof DownloadTaskUpdatedEvent),
   map(() => actions.queryDownloadTasks()),
 )
