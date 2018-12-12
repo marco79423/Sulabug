@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../coreTypes'
+import generalTypes from '../generalTypes'
 import {Request, Response} from '../../base-types'
 import {ConfigFactory} from '../interfaces/factories'
 import {ConfigRepository} from '../interfaces/repositories'
@@ -12,8 +12,8 @@ export default class UpdateConfigUseCaseImpl implements UpdateConfigUseCase {
   private readonly _configRepository: ConfigRepository
 
   public constructor(
-    @inject(coreTypes.ConfigFactory) configFactory: ConfigFactory,
-    @inject(coreTypes.ConfigRepository) configRepository: ConfigRepository,
+    @inject(generalTypes.ConfigFactory) configFactory: ConfigFactory,
+    @inject(generalTypes.ConfigRepository) configRepository: ConfigRepository,
   ) {
     this._configFactory = configFactory
     this._configRepository = configRepository

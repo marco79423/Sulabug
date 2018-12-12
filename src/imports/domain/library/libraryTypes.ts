@@ -1,11 +1,11 @@
 export default {
-  SFComicInfoQueryAdapter: Symbol('Library/SFComicInfoQueryAdapter'),
+  SFComicInfoQueryAdapter: Symbol('Domain/Library/SFComicInfoQueryAdapter'),
 
-  ComicInfoFactory: Symbol('Library/ComicInfoFactory'),
+  ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
 
-  ComicInfoStorageRepository: Symbol('Library/ComicInfoStorageRepository'),
+  ComicInfoStorageRepository: Symbol('Domain/Library/ComicInfoStorageRepository'),
 
-  QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Library/QueryComicInfoByIdentityFromDatabaseUseCase'),
-  QueryComicInfosFromDatabaseUseCase: Symbol('Library/QueryComicInfosFromDatabaseUseCase'),
-  UpdateComicInfoDatabaseUseCase: Symbol('Library/UpdateComicInfoDatabaseUseCase'),
+  QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Domain/Library/QueryComicInfoByIdentityFromDatabaseUseCase'),
+  QueryComicInfosFromDatabaseUseCase: Symbol('Domain/Library/QueryComicInfosFromDatabaseUseCase'),
+  UpdateComicInfoDatabaseUseCase: Symbol('Domain/Library/UpdateComicInfoDatabaseUseCase'),
 }

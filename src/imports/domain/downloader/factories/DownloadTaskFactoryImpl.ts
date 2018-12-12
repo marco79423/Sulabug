@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../downloaderTypes'
+import downloaderTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
 import {DownloadTaskFactory} from '../interfaces/factories'
 import {DownloadTaskRepository} from '../interfaces/repositories'
@@ -11,7 +11,7 @@ export default class DownloadTaskFactoryImpl implements DownloadTaskFactory {
   private readonly _downloadTaskRepository: DownloadTaskRepository
 
   constructor(
-    @inject(coreTypes.DownloadTaskRepository) downloadTaskRepository
+    @inject(downloaderTypes.DownloadTaskRepository) downloadTaskRepository
   ) {
     this._downloadTaskRepository = downloadTaskRepository
   }

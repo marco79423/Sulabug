@@ -1,22 +1,22 @@
 import {inject, injectable} from 'inversify'
-import EventPublisher from '../../../../domain/downloader/event/EventPublisher'
-import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
-import DownloadTaskUpdatedEvent from '../../../../domain/downloader/event/DownloadTaskUpdatedEvent'
-import {DownloadTaskRepository} from '../../../../domain/downloader/interfaces/repositories'
+
+import EventPublisher from '../../../../../domain/downloader/event/EventPublisher'
+import DownloadTask from '../../../../../domain/downloader/entities/DownloadTask'
+import DownloadTaskUpdatedEvent from '../../../../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import {DownloadTaskRepository} from '../../../../../domain/downloader/interfaces/repositories'
 
 
 @injectable()
 export default class DownloadTaskRepositoryImpl implements DownloadTaskRepository {
   private readonly _eventPublisher: EventPublisher
+  private downloadTaskIds: string[] = []
+  private downloadTaskMap = {}
 
   public constructor(
     @inject(EventPublisher) eventPublisher: EventPublisher
   ) {
     this._eventPublisher = eventPublisher
   }
-
-  private downloadTaskIds: string[] = []
-  private downloadTaskMap = {}
 
   saveOrUpdate(downloadTask: DownloadTask): void {
     if (!this.downloadTaskIds.includes(downloadTask.identity)) {

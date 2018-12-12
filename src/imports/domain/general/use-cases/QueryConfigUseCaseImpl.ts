@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import coreTypes from '../coreTypes'
+import generalTypes from '../generalTypes'
 import {Response} from '../../base-types'
 import {ConfigRepository} from '../interfaces/repositories'
 import {QueryConfigUseCase} from '../interfaces/use-cases'
@@ -10,7 +10,7 @@ export default class QueryConfigUseCaseImpl implements QueryConfigUseCase {
   private readonly _configRepository: ConfigRepository
 
   public constructor(
-    @inject(coreTypes.ConfigRepository) configRepository: ConfigRepository
+    @inject(generalTypes.ConfigRepository) configRepository: ConfigRepository
   ) {
     this._configRepository = configRepository
   }

@@ -1,12 +1,12 @@
 import {Container} from 'inversify'
 
-import coreInjector from '../domain/core/coreInjector'
+import generalInjector from './general/generalInjector'
 import libraryInjector from './library/libraryInjector'
 import downloaderInjector from '../domain/downloader/downloaderInjector'
 
 
 const domainInjector = Container.merge(
-  coreInjector,
+  generalInjector,
   Container.merge(libraryInjector, downloaderInjector),
 )
 

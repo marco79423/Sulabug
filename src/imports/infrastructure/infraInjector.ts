@@ -1,6 +1,6 @@
-import generalInjector from './general/generalInjector'
+import coreInjector from './core/coreInjector'
 
 
-const infraInjector = generalInjector
+const infraInjector = coreInjector
 
 export default infraInjector

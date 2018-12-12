@@ -1,14 +1,14 @@
 export default {
-  SFComicDownloadAdapter: Symbol('Downloader/SFComicDownloadAdapter'),
+  SFComicDownloadAdapter: Symbol('Domain/Downloader/SFComicDownloadAdapter'),
 
-  DownloadTaskFactory: Symbol('Downloader/DownloadTaskFactory'),
+  DownloadTaskFactory: Symbol('Domain/Downloader/DownloadTaskFactory'),
 
-  DownloadTaskRepository: Symbol('Downloader/DownloadTaskRepository'),
+  DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
 
-  SFDownloadComicService: Symbol('Downloader/SFDownloadComicService'),
+  SFDownloadComicService: Symbol('Domain/Downloader/SFDownloadComicService'),
 
-  CreateDownloadTaskUseCase: Symbol('Downloader/CreateDownloadTaskUseCase'),
-  DeleteDownloadTaskUseCase: Symbol('Downloader/DeleteDownloadTaskUseCase'),
-  DownloadComicUseCase: Symbol('Downloader/DownloadComicUseCase'),
-  QueryDownloadTasksUseCase: Symbol('Downloader/QueryDownloadTasksUseCase'),
+  CreateDownloadTaskUseCase: Symbol('Domain/Downloader/CreateDownloadTaskUseCase'),
+  DeleteDownloadTaskUseCase: Symbol('Domain/Downloader/DeleteDownloadTaskUseCase'),
+  DownloadComicUseCase: Symbol('Domain/Downloader/DownloadComicUseCase'),
+  QueryDownloadTasksUseCase: Symbol('Domain/Downloader/QueryDownloadTasksUseCase'),
 }

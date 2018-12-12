@@ -1,24 +1,23 @@
+import {inject, injectable} from 'inversify'
 import * as fs from 'fs-extra'
 import path from 'path'
-import {inject, injectable} from 'inversify'
-import Config from '../../../../domain/core/entities/Config'
-import coreTypes from '../../../../domain/core/coreTypes'
-import {ConfigFactory} from '../../../../domain/core/interfaces/factories'
-import {ConfigRepository} from '../../../../domain/core/interfaces/repositories'
+
+import Config from '../../../../../domain/general/entities/Config'
+import generalTypes from '../../../../../domain/general/generalTypes'
+import {ConfigFactory} from '../../../../../domain/general/interfaces/factories'
+import {ConfigRepository} from '../../../../../domain/general/interfaces/repositories'
 
 @injectable()
 export default class ConfigRepositoryImpl implements ConfigRepository {
-  private readonly _configFactory: ConfigFactory
-
   configPath = './config.json'
-
   defaultConfigData = {
     downloadFolderPath: path.resolve('./comics'),
     comicInfoDatabasePath: path.resolve('./comicInfoStore.json')
   }
+  private readonly _configFactory: ConfigFactory
 
   public constructor(
-    @inject(coreTypes.ConfigFactory) configFactory: ConfigFactory,
+    @inject(generalTypes.ConfigFactory) configFactory: ConfigFactory,
   ) {
     this._configFactory = configFactory
   }

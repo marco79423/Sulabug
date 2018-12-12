@@ -4,7 +4,7 @@ import {filter, flatMap, map} from 'rxjs/operators'
 
 import {Request} from '../../domain/base-types'
 import injector from '../injector'
-import coreTypes from '../../domain/core/coreTypes'
+import generalTypes from '../../domain/general/generalTypes'
 import libraryTypes from '../../domain/library/libraryTypes'
 import downloaderTypes from '../../domain/downloader/downloaderTypes'
 import {actions, ActionTypes} from '../ducks/mainDuck'
@@ -23,7 +23,7 @@ export const queryConfigEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingConfig()),
-    from(injector.get(coreTypes.QueryConfigUseCase).asyncExecute()
+    from(injector.get(generalTypes.QueryConfigUseCase).asyncExecute()
       .then(res => res.data)
       .then(config => actions.configQueried(config))
     ),
@@ -127,7 +127,7 @@ export const updateConfigEpic = action$ => action$.pipe(
   map(action => action.payload),
   flatMap(config => concat(
     of(actions.updatingConfig()),
-    from(injector.get(coreTypes.UpdateConfigUseCase).asyncExecute(new Request(config))
+    from(injector.get(generalTypes.UpdateConfigUseCase).asyncExecute(new Request(config))
       .then(() => actions.configUpdated(config))
     ),
   ))
