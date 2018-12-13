@@ -1,4 +1,3 @@
-import * as fs from 'fs-extra'
 import {inject, injectable} from 'inversify'
 
 import generalTypes from '../../../../../domain/general/generalTypes'
@@ -31,7 +30,7 @@ export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageR
     const config = await this._configRepository.asyncGet()
     const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
     rawComicInfos[comicInfo.identity] = comicInfo.serialize()
-    await fs.writeJson(config.comicInfoDatabasePath, rawComicInfos)
+    await this._fileHandler.asyncWriteJson(config.comicInfoDatabasePath, rawComicInfos)
   }
 
   async asyncGetById(identity: string): Promise<ComicInfo | null> {

@@ -1,4 +1,5 @@
 export interface FileHandler {
+  asyncEnsureDir(targetDirPath: string): Promise<void>
 
   asyncReadJson(targetPath: string, defaultJson: any): Promise<any>
 

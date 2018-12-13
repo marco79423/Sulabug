@@ -1,5 +1,4 @@
 import {inject, injectable} from 'inversify'
-import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import generalTypes from '../../../../../domain/general/generalTypes'
@@ -8,22 +7,25 @@ import {SFComicDownloadAdapter} from '../../../../../domain/downloader/interface
 import DownloadTask from '../../../../../domain/downloader/entities/DownloadTask'
 import {QueryConfigUseCase} from '../../../../../domain/general/interfaces/use-cases'
 import {SFSourceSite} from '../../../interfaces/source-sites'
-import {NetHandler} from '../../../interfaces/bases'
+import {FileHandler, NetHandler} from '../../../interfaces/bases'
 
 
 @injectable()
 export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapter {
   private readonly _queryConfigUseCase: QueryConfigUseCase
   private readonly _sfSourceSite: SFSourceSite
+  private readonly _fileHandler: FileHandler
   private readonly _netHandler: NetHandler
 
   public constructor(
     @inject(generalTypes.QueryConfigUseCase) queryConfigUseCase: QueryConfigUseCase,
     @inject(coreTypes.SFSourceSite) sfSourceSite: SFSourceSite,
+    @inject(coreTypes.FileHandler) fileHandler: FileHandler,
     @inject(coreTypes.NetHandler) netHandler: NetHandler,
   ) {
     this._queryConfigUseCase = queryConfigUseCase
     this._sfSourceSite = sfSourceSite
+    this._fileHandler = fileHandler
     this._netHandler = netHandler
   }
 
@@ -45,7 +47,7 @@ export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapte
   }
 
   private async _asyncDownloadChapter(pageUrl: string, targetDir: string): Promise<void> {
-    await fs.ensureDir(targetDir)
+    await this._fileHandler.asyncEnsureDir(targetDir)
     const images = await this._sfSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
