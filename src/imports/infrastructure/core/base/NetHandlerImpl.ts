@@ -13,11 +13,17 @@ export default class NetHandlerImpl implements NetHandler {
   }
 
   async asyncDownload(targetUrl: string, targetPath: string): Promise<void> {
-    await fetch(targetUrl)
-      .then(response => {
-        const dest = fs.createWriteStream(targetPath)
-        response.body.pipe(dest)
+    const response = await fetch(targetUrl)
+    response.body.pipe(fs.createWriteStream(targetPath))
+    await new Promise((resolve, reject) => {
+      response.body.on('end', () => {
+        resolve()
       })
+
+      response.body.on('error', () => {
+        reject()
+      })
+    })
   }
 
   async asyncGetBinaryBase64(targetUrl: string): Promise<string> {
