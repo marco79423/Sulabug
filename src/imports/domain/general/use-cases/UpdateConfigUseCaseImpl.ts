@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import generalTypes from '../generalTypes'
@@ -19,14 +20,17 @@ export default class UpdateConfigUseCaseImpl implements UpdateConfigUseCase {
     this._configRepository = configRepository
   }
 
-  async asyncExecute(request: Request): Promise<Response> {
+  execute(request: Request): Observable<Response> {
     const rawConfigData: {
       downloadFolderPath: string,
       comicInfoDatabasePath: string,
     } = request.data
 
-    const config = this._configFactory.createFromJson(rawConfigData)
-    await this._configRepository.asyncSaveOrUpdate(config)
-    return new Response()
+    return Observable.create(async (observer) => {
+      const config = this._configFactory.createFromJson(rawConfigData)
+      await this._configRepository.asyncSaveOrUpdate(config)
+      observer.next(new Response())
+      observer.complete()
+    })
   }
 }

@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
@@ -15,8 +16,11 @@ export default class QueryDownloadTasksUseCaseImpl implements QueryDownloadTasks
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  async asyncExecute(): Promise<Response> {
-    const downloadTasks = this._downloadTaskRepository.getAll()
-    return new Response(downloadTasks.map(downloadTask => downloadTask.serialize()))
+  execute(): Observable<Response> {
+    return Observable.create(async (observer) => {
+      const downloadTasks = this._downloadTaskRepository.getAll()
+      observer.next(new Response(downloadTasks.map(downloadTask => downloadTask.serialize())))
+      observer.complete()
+    })
   }
 }

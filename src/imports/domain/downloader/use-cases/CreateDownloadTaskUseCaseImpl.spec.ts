@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import {of} from 'rxjs'
 
 import {Request, Response} from '../../base-types'
 import CreateDownloadTaskUseCaseImpl from './CreateDownloadTaskUseCaseImpl'
@@ -7,7 +8,7 @@ import {DownloadTaskRepository} from '../interfaces/repositories'
 import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../library/interfaces/use-cases'
 
 describe('CreateDownloadTaskUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will create a download task', async () => {
       const comicInfo = {
         id: 'id',
@@ -22,7 +23,7 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
       }
 
       const queryComicInfoByIdentityFromDatabaseUseCase: QueryComicInfoByIdentityFromDatabaseUseCase = {
-        asyncExecute: jest.fn(() => new Response(comicInfo)),
+        execute: () => of(new Response(comicInfo)),
       }
 
       const downloadTaskRepository: DownloadTaskRepository = {
@@ -34,9 +35,7 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
 
       const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
       const uc = new CreateDownloadTaskUseCaseImpl(queryComicInfoByIdentityFromDatabaseUseCase, downloadTaskFactory, downloadTaskRepository)
-      const res = await uc.asyncExecute(new Request(comicInfo.id))
-
-      expect(queryComicInfoByIdentityFromDatabaseUseCase.asyncExecute).toBeCalledWith(new Request(comicInfo.id))
+      const res = await uc.execute(new Request(comicInfo.id)).toPromise()
 
       expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTaskFactory.createFromJson({
         id: comicInfo.id,

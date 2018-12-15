@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import {Request, Response} from '../../base-types'
@@ -17,9 +18,12 @@ export default class QueryComicInfoByIdentityFromDatabaseUseCaseImpl implements 
     this._comicInfoStorageRepository = comicInfoStorageRepository
   }
 
-  async asyncExecute(request: Request): Promise<Response> {
+  execute(request: Request): Observable<Response> {
     const identity = request.data
-    const comicInfo = await this._comicInfoStorageRepository.asyncGetById(identity)
-    return new Response((comicInfo as ComicInfo).serialize())
+    return Observable.create(async (observer) => {
+      const comicInfo = await this._comicInfoStorageRepository.asyncGetById(identity)
+      observer.next(new Response((comicInfo as ComicInfo).serialize()))
+      observer.complete()
+    })
   }
 }

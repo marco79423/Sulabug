@@ -1,3 +1,4 @@
+import {map} from 'rxjs/operators'
 import {inject, injectable} from 'inversify'
 import * as path from 'path'
 
@@ -56,8 +57,9 @@ export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapte
   }
 
   private async _asyncGetDownloadFolderPath() {
-    const res = await this._queryConfigUseCase.asyncExecute()
-    const config = res.data
-    return config.downloadFolderPath
+    return await this._queryConfigUseCase.execute().pipe(
+      map(res => res.data),
+      map(config => config.downloadFolderPath),
+    ).toPromise()
   }
 }

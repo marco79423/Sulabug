@@ -6,7 +6,7 @@ import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl from './QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
 
 describe('QueryComicInfoByIdentityFromDatabaseUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will get target comic info by identity from database', async () => {
       const comicInfoFactory = new ComicInfoFactoryImpl()
       const comicInfo = comicInfoFactory.createFromJson({
@@ -28,7 +28,7 @@ describe('QueryComicInfoByIdentityFromDatabaseUseCaseImpl', () => {
       }
 
       const uc = new QueryComicInfoByIdentityFromDatabaseUseCaseImpl(comicInfoStorageRepository)
-      const res = await uc.asyncExecute(new Request(comicInfo.identity))
+      const res = await uc.execute(new Request(comicInfo.identity)).toPromise()
 
       expect(comicInfoStorageRepository.asyncGetById).toBeCalledWith(comicInfo.identity)
 

@@ -6,7 +6,7 @@ import {DownloadTaskRepository} from '../interfaces/repositories'
 import DownloadTask from '../entities/DownloadTask'
 
 describe('QueryDownloadTasksUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will get all current download tasks', async () => {
       const downloadTaskRepository: DownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
@@ -34,7 +34,7 @@ describe('QueryDownloadTasksUseCaseImpl', () => {
 
       downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
       const uc = new QueryDownloadTasksUseCaseImpl(downloadTaskRepository)
-      const res = await uc.asyncExecute()
+      const res = await uc.execute().toPromise()
 
       expect(downloadTaskRepository.getAll).toBeCalled()
 

@@ -5,7 +5,7 @@ import {DownloadTaskRepository} from '../interfaces/repositories'
 import DeleteDownloadTaskUseCaseImpl from './DeleteDownloadTaskUseCaseImpl'
 
 describe('DeleteDownloadTaskUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will delete the download task', async () => {
       const downloadTaskId = 'downloadTaskId'
 
@@ -17,7 +17,7 @@ describe('DeleteDownloadTaskUseCaseImpl', () => {
       }
 
       const uc = new DeleteDownloadTaskUseCaseImpl(downloadTaskRepository)
-      const res = await uc.asyncExecute(new Request(downloadTaskId))
+      const res = await uc.execute(new Request(downloadTaskId)).toPromise()
 
       expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)
 

@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
@@ -19,11 +20,16 @@ export default class DownloadComicUseCaseImpl implements DownloadComicUseCase {
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  async asyncExecute(request: Request): Promise<Response> {
+  execute(request: Request): Observable<Response> {
     const downloadTaskId = request.data
-    const downloadTask = this._downloadTaskRepository.getById(downloadTaskId)
 
-    await this._sfComicDownloadAdapter.asyncDownload(downloadTask)
-    return new Response()
+    return Observable.create(async (observer) => {
+      const downloadTask = this._downloadTaskRepository.getById(downloadTaskId)
+
+      await this._sfComicDownloadAdapter.asyncDownload(downloadTask)
+      observer.next(new Response())
+      observer.complete()
+    })
+
   }
 }

@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
@@ -15,9 +16,12 @@ export default class DeleteDownloadTaskUseCaseImpl implements DeleteDownloadTask
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  async asyncExecute(request: Request): Promise<Response> {
+  execute(request: Request): Observable<Response> {
     const downloadTaskId = request.data
-    this._downloadTaskRepository.delete(downloadTaskId)
-    return new Response()
+    return Observable.create(async (observer) => {
+      this._downloadTaskRepository.delete(downloadTaskId)
+      observer.next(new Response())
+      observer.complete()
+    })
   }
 }

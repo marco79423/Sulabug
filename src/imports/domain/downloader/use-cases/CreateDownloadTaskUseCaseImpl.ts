@@ -1,10 +1,11 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
+
 import libraryTypes from '../../library/libraryTypes'
 import downloaderTypes from '../downloaderTypes'
 import {Request, Response} from '../../base-types'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
-
 import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../library/interfaces/use-cases'
 import {CreateDownloadTaskUseCase} from '../interfaces/use-cases'
 
@@ -24,22 +25,26 @@ export default class CreateDownloadTaskUseCaseImpl implements CreateDownloadTask
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  async asyncExecute(request: Request): Promise<Response> {
+  execute(request: Request): Observable<Response> {
     const comicInfoId = request.data
-    const comicInfo = await this.asyncGetComicInfo(comicInfoId)
 
-    const downloadTask = this._downloadTaskFactory.createFromJson({
-      id: comicInfoId,
-      name: comicInfo.name,
-      coverDataUrl: comicInfo.coverDataUrl,
-      sourceUrl: comicInfo.pageUrl,
+    return Observable.create(async (observer) => {
+      const comicInfo = await this.asyncGetComicInfo(comicInfoId)
+
+      const downloadTask = this._downloadTaskFactory.createFromJson({
+        id: comicInfoId,
+        name: comicInfo.name,
+        coverDataUrl: comicInfo.coverDataUrl,
+        sourceUrl: comicInfo.pageUrl,
+      })
+      this._downloadTaskRepository.saveOrUpdate(downloadTask)
+      observer.next(new Response(downloadTask.serialize()))
+      observer.complete()
     })
-    this._downloadTaskRepository.saveOrUpdate(downloadTask)
-    return new Response(downloadTask.serialize())
   }
 
   async asyncGetComicInfo(comicInfoId: string) {
-    const res = await this._queryComicInfoByIdentityFromDatabaseUseCase.asyncExecute(new Request(comicInfoId))
+    const res = await this._queryComicInfoByIdentityFromDatabaseUseCase.execute(new Request(comicInfoId)).toPromise()
     return res.data
   }
 }

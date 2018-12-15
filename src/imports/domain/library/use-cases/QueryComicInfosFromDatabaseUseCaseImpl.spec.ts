@@ -32,7 +32,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
     }),
   ]
 
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will get all comic infos from database without request object', async () => {
       const comicInfoStorageRepository: ComicInfoStorageRepository = {
         asyncSaveOrUpdate: jest.fn(),
@@ -41,7 +41,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
-      const res = await uc.asyncExecute()
+      const res = await uc.execute().toPromise()
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
 
@@ -57,7 +57,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
-      const res = await uc.asyncExecute(new Request(undefined))
+      const res = await uc.execute(new Request(undefined)).toPromise()
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
 
@@ -75,7 +75,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
-      const res = await uc.asyncExecute(new Request('name-1'))
+      const res = await uc.execute(new Request('name-1')).toPromise()
 
       expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalledWith('name-1')
 

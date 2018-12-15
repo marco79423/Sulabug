@@ -7,7 +7,7 @@ import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import DownloadComicUseCaseImpl from './DownloadComicUseCaseImpl'
 
 describe('DownloadComicUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will download target comic', async () => {
       const downloadTaskRepository: DownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
@@ -30,7 +30,7 @@ describe('DownloadComicUseCaseImpl', () => {
       }
 
       const uc = new DownloadComicUseCaseImpl(sfComicDownloadAdapter, downloadTaskRepository)
-      const res = await uc.asyncExecute(new Request(downloadTask.identity))
+      const res = await uc.execute(new Request(downloadTask.identity)).toPromise()
 
       expect(downloadTaskRepository.getById).toBeCalledWith(downloadTask.identity)
       expect(sfComicDownloadAdapter.asyncDownload).toBeCalledWith(downloadTask)

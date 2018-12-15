@@ -4,6 +4,8 @@ import generalTypes from '../generalTypes'
 import {Response} from '../../base-types'
 import {ConfigRepository} from '../interfaces/repositories'
 import {QueryConfigUseCase} from '../interfaces/use-cases'
+import {Observable} from 'rxjs'
+
 
 @injectable()
 export default class QueryConfigUseCaseImpl implements QueryConfigUseCase {
@@ -15,8 +17,11 @@ export default class QueryConfigUseCaseImpl implements QueryConfigUseCase {
     this._configRepository = configRepository
   }
 
-  async asyncExecute(): Promise<Response> {
-    const config = await this._configRepository.asyncGet()
-    return new Response(config.serialize())
+  execute(): Observable<Response> {
+    return Observable.create(async (observer) => {
+      const config = await this._configRepository.asyncGet()
+      observer.next(new Response(config.serialize()))
+      observer.complete()
+    })
   }
 }

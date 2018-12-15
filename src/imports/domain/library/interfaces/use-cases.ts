@@ -1,13 +1,15 @@
+import {Observable} from 'rxjs'
+
 import {Request, Response} from '../../base-types'
 
 export interface QueryComicInfoByIdentityFromDatabaseUseCase {
-  asyncExecute(request: Request): Promise<Response>
+  execute(request: Request): Observable<Response>
 }
 
 export interface QueryComicInfosFromDatabaseUseCase {
-  asyncExecute(request?: Request): Promise<Response>
+  execute(request?: Request): Observable<Response>
 }
 
 export interface UpdateComicInfoDatabaseUseCase {
-  asyncExecute(): Promise<Response>
+  execute(): Observable<Response>
 }

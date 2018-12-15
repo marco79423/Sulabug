@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import {Response} from '../../base-types'
@@ -19,11 +20,14 @@ export default class UpdateComicInfoDatabaseUseCaseImpl implements UpdateComicIn
     this._sfComicInfoQueryAdapter = sfComicInfoQueryAdapter
   }
 
-  async asyncExecute(): Promise<Response> {
-    const comicInfos = await this._sfComicInfoQueryAdapter.asyncGetComicInfos()
-    for (let comicInfo of comicInfos) {
-      await this._comicInfoStorageRepository.asyncSaveOrUpdate(comicInfo)
-    }
-    return new Response()
+  execute(): Observable<Response> {
+    return Observable.create(async (observer) => {
+      const comicInfos = await this._sfComicInfoQueryAdapter.asyncGetComicInfos()
+      for (let comicInfo of comicInfos) {
+        await this._comicInfoStorageRepository.asyncSaveOrUpdate(comicInfo)
+      }
+      observer.next(new Response())
+      observer.complete()
+    })
   }
 }

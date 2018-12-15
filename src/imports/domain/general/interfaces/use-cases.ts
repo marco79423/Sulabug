@@ -1,10 +1,12 @@
+import {Observable} from 'rxjs'
+
 import {Request, Response} from '../../base-types'
 
 
 export interface QueryConfigUseCase {
-  asyncExecute(): Promise<Response>
+  execute(): Observable<Response>
 }
 
 export interface UpdateConfigUseCase {
-  asyncExecute(request: Request): Promise<Response>
+  execute(request: Request): Observable<Response>
 }

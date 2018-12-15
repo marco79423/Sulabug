@@ -1,3 +1,4 @@
+import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
 
 import {Request, Response} from '../../base-types'
@@ -17,12 +18,15 @@ export default class QueryComicInfosFromDatabaseUseCaseImpl implements QueryComi
     this._comicInfoStorageRepository = comicInfoStorageRepository
   }
 
-  async asyncExecute(request?: Request): Promise<Response> {
+  execute(request?: Request): Observable<Response> {
     let searchTerm = ''
     if (request && request.data) {
       searchTerm = request.data
     }
-    const comicInfos: ComicInfo[] = await this._comicInfoStorageRepository.asyncGetAllBySearchTerm(searchTerm)
-    return new Response(comicInfos.map(comicInfo => comicInfo.serialize()))
+    return Observable.create(async (observer) => {
+      const comicInfos: ComicInfo[] = await this._comicInfoStorageRepository.asyncGetAllBySearchTerm(searchTerm)
+      observer.next(new Response(comicInfos.map(comicInfo => comicInfo.serialize())))
+      observer.complete()
+    })
   }
 }

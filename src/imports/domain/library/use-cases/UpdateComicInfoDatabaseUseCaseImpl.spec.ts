@@ -7,7 +7,7 @@ import {ComicInfoStorageRepository} from '../interfaces/repositories'
 import {SFComicInfoQueryAdapter} from '../interfaces/adapters'
 
 describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
-  describe('asyncExecute', () => {
+  describe('execute', () => {
     it('will retrieve comic infos from SF site to database', async () => {
       const comicInfoFactory = new ComicInfoFactoryImpl()
       const comicInfos = [
@@ -46,7 +46,7 @@ describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
       }
 
       const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicInfoQueryAdapter)
-      const res = await uc.asyncExecute()
+      const res = await uc.execute().toPromise()
 
       expect(sfComicInfoQueryAdapter.asyncGetComicInfos).toBeCalled()
 
