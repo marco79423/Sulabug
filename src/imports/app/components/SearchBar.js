@@ -2,6 +2,8 @@ import * as React from 'react'
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
+import {fromEvent} from 'rxjs'
+import {filter} from 'rxjs/operators'
 
 const styles = (theme) => createStyles({
   root: {
@@ -29,6 +31,12 @@ class SearchBar extends React.Component {
     searchTerm: '',
   }
 
+  constructor(props) {
+    super(props)
+
+    this.inputRef = React.createRef()
+  }
+
   searchComic = () => {
     this.props.searchComic(this.state.searchTerm)
   }
@@ -39,11 +47,18 @@ class SearchBar extends React.Component {
     })
   }
 
+  componentDidMount() {
+    fromEvent(this.inputRef.current, 'keyup').pipe(filter(event => event.key === 'Enter'))
+      .subscribe(this.searchComic)
+  }
+
   render() {
     const {classes} = this.props
     return (
       <div className={classes.root}>
         <Input
+          inputRef={this.inputRef}
+          autoFocus={true}
           placeholder="請輸入想試看的漫畫……"
           onChange={this.handleChange}
           className={classes.input}
