@@ -4,9 +4,6 @@ import {filter, flatMap, map, mapTo} from 'rxjs/operators'
 
 import {Request} from '../../domain/base-types'
 import injector from '../injector'
-import generalTypes from '../../domain/general/generalTypes'
-import libraryTypes from '../../domain/library/libraryTypes'
-import downloaderTypes from '../../domain/downloader/downloaderTypes'
 import {actions, ActionTypes} from '../ducks/mainDuck'
 import EventPublisher from '../../domain/downloader/event/EventPublisher'
 import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
@@ -17,9 +14,7 @@ export const initializeEpic = () => of(
   actions.queryDownloadTasks(),
 )
 
-export const queryConfigEpic = (
-  queryConfigUseCase,
-) => action$ => action$.pipe(
+export const queryConfigEpic = (action$, state$, {queryConfigUseCase}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_CONFIG
   ),
@@ -32,7 +27,7 @@ export const queryConfigEpic = (
   ))
 )
 
-export const queryComicInfosFromDatabaseEpic = action$ => action$.pipe(
+export const queryComicInfosFromDatabaseEpic = (action$, state$, {queryComicInfosFromDatabaseUseCase}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE,
     ActionTypes.COMIC_INFO_DATABASE_UPDATED,
@@ -41,14 +36,14 @@ export const queryComicInfosFromDatabaseEpic = action$ => action$.pipe(
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
     of(actions.queryingComicInfosFromDatabase()),
-    injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase).execute(new Request(searchTerm)).pipe(
+    queryComicInfosFromDatabaseUseCase.execute(new Request(searchTerm)).pipe(
       map(res => res.data),
       map(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos))
     ),
   ))
 )
 
-export const queryDownloadTasksEpic = action$ => action$.pipe(
+export const queryDownloadTasksEpic = (action$, state$, {queryDownloadTasksUseCase}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_DOWNLOAD_TASKS,
     ActionTypes.DOWNLOAD_TASK_CREATED,
@@ -56,7 +51,7 @@ export const queryDownloadTasksEpic = action$ => action$.pipe(
   ),
   flatMap(() => concat(
     of(actions.queryingDownloadTasks()),
-    injector.get(downloaderTypes.QueryDownloadTasksUseCase).execute().pipe(
+    queryDownloadTasksUseCase.execute().pipe(
       map(res => res.data),
       map(downloadTasks => actions.downloadTasksQueried(downloadTasks))),
     ),
@@ -68,7 +63,7 @@ export const changeCurrentPageEpic = action$ => action$.pipe(
   map(action => actions.currentPageChanged(action.payload)),
 )
 
-export const updateComicInfoDatabaseEpic = action$ => action$.pipe(
+export const updateComicInfoDatabaseEpic = (action$, state$, {updateComicInfoDatabaseUseCase}) => action$.pipe(
   ofType(
     ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED
   ),
@@ -76,61 +71,61 @@ export const updateComicInfoDatabaseEpic = action$ => action$.pipe(
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    injector.get(libraryTypes.UpdateComicInfoDatabaseUseCase).execute().pipe(
+    updateComicInfoDatabaseUseCase.execute().pipe(
       mapTo(actions.comicInfoDatabaseUpdated())
     ),
   )),
 )
 
 
-export const createDownloadTaskEpic = action$ => action$.pipe(
+export const createDownloadTaskEpic = (action$, state$, {createDownloadTaskUseCase}) => action$.pipe(
   ofType(
     ActionTypes.CREATE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
   flatMap(comicIInfoId => concat(
     of(actions.creatingDownloadTask()),
-    injector.get(downloaderTypes.CreateDownloadTaskUseCase).execute(new Request(comicIInfoId)).pipe(
+    createDownloadTaskUseCase.execute(new Request(comicIInfoId)).pipe(
       map(res => res.data),
       map(downloadTask => actions.downloadTaskCreated(downloadTask)),
     ),
   ))
 )
 
-export const deleteDownloadTaskEpic = action$ => action$.pipe(
+export const deleteDownloadTaskEpic = (action$, state$, {deleteDownloadTaskUseCase}) => action$.pipe(
   ofType(
     ActionTypes.DELETE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    injector.get(downloaderTypes.DeleteDownloadTaskUseCase).execute(new Request(downloadTaskId)).pipe(
+    deleteDownloadTaskUseCase.execute(new Request(downloadTaskId)).pipe(
       mapTo(actions.downloadTaskDeleted(downloadTaskId))
     ),
   ))
 )
 
-export const handleDownloadTaskEpic = action$ => action$.pipe(
+export const handleDownloadTaskEpic = (action$, state$, {downloadComicUseCase}) => action$.pipe(
   ofType(
     ActionTypes.DOWNLOAD_TASK_CREATED,
   ),
   map(action => action.payload),
   flatMap(downloadTask => concat(
     of(actions.downloadingComic()),
-    injector.get(downloaderTypes.DownloadComicUseCase).execute(new Request(downloadTask.id)).pipe(
+    downloadComicUseCase.execute(new Request(downloadTask.id)).pipe(
       mapTo(actions.comicDownloaded())
     ),
   ))
 )
 
-export const updateConfigEpic = action$ => action$.pipe(
+export const updateConfigEpic = (action$, state$, {updateConfigUseCase}) => action$.pipe(
   ofType(
     ActionTypes.UPDATE_CONFIG
   ),
   map(action => action.payload),
   flatMap(config => concat(
     of(actions.updatingConfig()),
-    injector.get(generalTypes.UpdateConfigUseCase).execute(new Request(config)).pipe(
+    updateConfigUseCase.execute(new Request(config)).pipe(
       mapTo(actions.configUpdated(config))
     ),
   ))
@@ -143,9 +138,7 @@ export const handleDownloadTaskUpdatedEventEpic = () => injector.get(EventPublis
 
 export default combineEpics(
   initializeEpic,
-  queryConfigEpic(
-    injector.get(generalTypes.QueryConfigUseCase),
-  ),
+  queryConfigEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
 
