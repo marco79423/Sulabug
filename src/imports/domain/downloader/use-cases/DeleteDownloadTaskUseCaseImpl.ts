@@ -1,5 +1,6 @@
-import {Observable} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {inject, injectable} from 'inversify'
+import {mapTo, tap} from 'rxjs/operators'
 
 import downloaderTypes from '../downloaderTypes'
 import {Request, Response} from '../../base-types'
@@ -16,12 +17,27 @@ export default class DeleteDownloadTaskUseCaseImpl implements DeleteDownloadTask
     this._downloadTaskRepository = downloadTaskRepository
   }
 
-  execute(request: Request): Observable<Response> {
+  execute = (request: Request): Observable<Response> => {
+    return this._createDownloadTaskIdStream(request).pipe(
+      this._deleteDownloadTaskFromRepositoryOpr(),
+      this._returnEmptyResponseOpr(),
+    )
+  }
+
+  private _createDownloadTaskIdStream = (request: Request): Observable<string> => {
     const downloadTaskId = request.data
-    return Observable.create(async (observer) => {
-      this._downloadTaskRepository.delete(downloadTaskId)
-      observer.next(new Response())
-      observer.complete()
-    })
+    return of(downloadTaskId)
+  }
+
+  private _deleteDownloadTaskFromRepositoryOpr = () => (source: Observable<string>): Observable<string> => {
+    return source.pipe(
+      tap(this._downloadTaskRepository.delete),
+    )
+  }
+
+  private _returnEmptyResponseOpr = () => (source: Observable<any>): Observable<Response> => {
+    return source.pipe(
+      mapTo(new Response()),
+    )
   }
 }

@@ -42,7 +42,7 @@ describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
       }
 
       const sfComicInfoQueryAdapter: SFComicInfoQueryAdapter = {
-        asyncGetComicInfos: jest.fn(() => comicInfos),
+        asyncGetComicInfos: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
       const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicInfoQueryAdapter)

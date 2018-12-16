@@ -26,11 +26,11 @@ export default class ConfigRepositoryImpl implements ConfigRepository {
     this._fileHandler = fileHandler
   }
 
-  async asyncSaveOrUpdate(config: Config): Promise<void> {
+  asyncSaveOrUpdate = async (config: Config): Promise<void> => {
     await this._fileHandler.asyncWriteJson(this.configPath, config.serialize())
   }
 
-  async asyncGet(): Promise<Config> {
+  asyncGet = async (): Promise<Config> => {
     const exists = await this._fileHandler.asyncPathExists(this.configPath)
     if (!exists) {
       await this.asyncSaveOrUpdate(this._configFactory.createFromJson(this.defaultConfigData))

@@ -1,5 +1,6 @@
-import {Observable} from 'rxjs'
 import {inject, injectable} from 'inversify'
+import {from, Observable, of} from 'rxjs'
+import {map, mergeMap} from 'rxjs/operators'
 
 import {Request, Response} from '../../base-types'
 import libraryTypes from '../libraryTypes'
@@ -18,12 +19,27 @@ export default class QueryComicInfoByIdentityFromDatabaseUseCaseImpl implements 
     this._comicInfoStorageRepository = comicInfoStorageRepository
   }
 
-  execute(request: Request): Observable<Response> {
-    const identity = request.data
-    return Observable.create(async (observer) => {
-      const comicInfo = await this._comicInfoStorageRepository.asyncGetById(identity)
-      observer.next(new Response((comicInfo as ComicInfo).serialize()))
-      observer.complete()
-    })
+  execute = (request: Request): Observable<Response> => {
+    return this._createComicInfoIdStream(request).pipe(
+      this._queryComicInfoByIdOpr(),
+      this._returnResponseWithComicInfoOpr(),
+    )
+  }
+
+  private _createComicInfoIdStream = (request: Request) => {
+    const comicInfoId = request.data
+    return of(comicInfoId)
+  }
+
+  private _queryComicInfoByIdOpr = () => (source: Observable<string>): Observable<ComicInfo> => {
+    return source.pipe(
+      mergeMap(comicInfoId => from(this._comicInfoStorageRepository.asyncGetById(comicInfoId))),
+    )
+  }
+
+  private _returnResponseWithComicInfoOpr = () => (source: Observable<ComicInfo>): Observable<Response> => {
+    return source.pipe(
+      map(comicInfo => new Response(comicInfo.serialize()))
+    )
   }
 }

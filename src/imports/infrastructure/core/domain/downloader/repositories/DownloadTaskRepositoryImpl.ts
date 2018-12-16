@@ -18,7 +18,7 @@ export default class DownloadTaskRepositoryImpl implements DownloadTaskRepositor
     this._eventPublisher = eventPublisher
   }
 
-  saveOrUpdate(downloadTask: DownloadTask): void {
+  saveOrUpdate = (downloadTask: DownloadTask): void => {
     if (!this.downloadTaskIds.includes(downloadTask.identity)) {
       this.downloadTaskIds.push(downloadTask.identity)
     }
@@ -26,15 +26,15 @@ export default class DownloadTaskRepositoryImpl implements DownloadTaskRepositor
     this._eventPublisher.sendEvent(new DownloadTaskUpdatedEvent())
   }
 
-  getById(identity: string): DownloadTask {
+  getById = (identity: string): DownloadTask => {
     return this.downloadTaskMap[identity]
   }
 
-  getAll(): DownloadTask[] {
+  getAll = (): DownloadTask[] => {
     return this.downloadTaskIds.map(downloadTaskId => this.downloadTaskMap[downloadTaskId])
   }
 
-  delete(identity: string): void {
+  delete = (identity: string): void => {
     this.downloadTaskIds = this.downloadTaskIds.filter(downloadTaskId => downloadTaskId !== identity)
     delete this.downloadTaskMap[identity]
   }

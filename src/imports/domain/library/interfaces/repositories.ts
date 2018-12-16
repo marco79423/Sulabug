@@ -4,7 +4,7 @@ export interface ComicInfoStorageRepository {
 
   asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
 
-  asyncGetById(identity: string): Promise<ComicInfo | null>
+  asyncGetById(identity: string): Promise<ComicInfo>
 
   asyncGetAllBySearchTerm(searchTerm: string): Promise<ComicInfo[]>
 }

@@ -23,7 +23,7 @@ describe('QueryComicInfoByIdentityFromDatabaseUseCaseImpl', () => {
 
       const comicInfoStorageRepository: ComicInfoStorageRepository = {
         asyncSaveOrUpdate: jest.fn(),
-        asyncGetById: jest.fn(() => comicInfo),
+        asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
         asyncGetAllBySearchTerm: jest.fn(),
       }
 

@@ -16,7 +16,7 @@ describe('QueryConfigUseCaseImpl', () => {
 
       const configRepository: ConfigRepository = {
         asyncSaveOrUpdate: jest.fn(),
-        asyncGet: jest.fn(() => config),
+        asyncGet: jest.fn(() => Promise.resolve(config)),
       }
       const uc = new QueryConfigUseCaseImpl(configRepository)
       const res = await uc.execute().toPromise()

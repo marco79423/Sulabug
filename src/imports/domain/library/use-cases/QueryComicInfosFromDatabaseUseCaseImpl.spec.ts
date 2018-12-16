@@ -37,7 +37,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       const comicInfoStorageRepository: ComicInfoStorageRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
-        asyncGetAllBySearchTerm: jest.fn(() => comicInfos),
+        asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
@@ -53,7 +53,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       const comicInfoStorageRepository: ComicInfoStorageRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
-        asyncGetAllBySearchTerm: jest.fn(() => comicInfos),
+        asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
@@ -71,7 +71,7 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
       const comicInfoStorageRepository: ComicInfoStorageRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
-        asyncGetAllBySearchTerm: jest.fn(() => filteredComicInfos),
+        asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(filteredComicInfos)),
       }
 
       const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)

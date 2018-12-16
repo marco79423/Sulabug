@@ -26,24 +26,24 @@ export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageR
     this._fileHandler = fileHandler
   }
 
-  async asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void> {
+  asyncSaveOrUpdate = async (comicInfo: ComicInfo): Promise<void> => {
     const config = await this._configRepository.asyncGet()
     const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
     rawComicInfos[comicInfo.identity] = comicInfo.serialize()
     await this._fileHandler.asyncWriteJson(config.comicInfoDatabasePath, rawComicInfos)
   }
 
-  async asyncGetById(identity: string): Promise<ComicInfo | null> {
+  asyncGetById = async (identity: string): Promise<ComicInfo>  => {
     const config = await this._configRepository.asyncGet()
     const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
     const rawComicInfo = rawComicInfos[identity]
     if (!rawComicInfo) {
-      return null
+      throw new Error('Target comic info not found')
     }
     return this._comicInfoFactory.createFromJson(rawComicInfo)
   }
 
-  async asyncGetAllBySearchTerm(searchTerm: string = ''): Promise<ComicInfo[]> {
+  asyncGetAllBySearchTerm = async (searchTerm: string = ''): Promise<ComicInfo[]> => {
     const config = await this._configRepository.asyncGet()
     const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
     return Object.keys(rawComicInfos)
