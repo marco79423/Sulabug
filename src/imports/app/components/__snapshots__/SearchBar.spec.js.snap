@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBar will render search bar correctly 1`] = `
+<div
+  className="SearchBar-root-1"
+>
+  <div
+    className="MuiInputBase-root-18 MuiInput-root-5 SearchBar-input-3"
+    onClick={[Function]}
+  >
+    <input
+      aria-label="Description"
+      autoFocus={true}
+      className="MuiInputBase-input-28 MuiInput-input-13"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      placeholder="請輸入想試看的漫畫……"
+      type="text"
+    />
+  </div>
+  <button
+    className="MuiButtonBase-root-61 MuiButton-root-35 MuiButton-contained-46 MuiButton-containedSecondary-48 MuiButton-raised-49 MuiButton-raisedSecondary-51 MuiButton-sizeSmall-58 SearchBar-button-4"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    tabIndex="0"
+    type="button"
+  >
+    <span
+      className="MuiButton-label-36"
+    >
+      搜尋
+    </span>
+    <span
+      className="MuiTouchRipple-root-64"
+    />
+  </button>
+</div>
+`;

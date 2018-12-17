@@ -12,36 +12,45 @@
   "dependencies": {
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",
+    "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.6",
-    "history": "^4.7.2",
+    "fs-extra": "^7.0.1",
+    "inversify": "^5.0.1",
+    "node-fetch": "^2.3.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "source-map-support": "^0.5.5",
+    "react-redux": "^5.1.1",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.4",
+    "redux-observable": "^1.0.0",
+    "reflect-metadata": "^0.1.12",
+    "reselect": "^4.0.0",
+    "rxjs": "6",
+    "source-map-support": "^0.5.9",
     "typeface-roboto": "^0.0.54"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.0.0-beta.49",
-    "@types/classnames": "^2.2.6",
-    "@types/electron-devtools-installer": "^2.0.3",
-    "@types/history": "^4.6.2",
-    "@types/material-ui": "^0.21.5",
-    "@types/react": "^16.7.0",
-    "@types/react-dom": "^16.0.9",
-    "@types/react-router": "^4.0.27",
-    "@types/react-router-dom": "^4.2.7",
-    "electron": "2.0.0",
-    "electron-builder": "^20.11.1",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-react": "^7.0.0",
+    "@types/jest": "^23.3.9",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "electron": "3.0.10",
+    "electron-builder": "20.36.2",
     "electron-devtools-installer": "^2.2.4",
-    "electron-webpack": "^2.1.2",
-    "electron-webpack-ts": "^2.0.2",
-    "tslint": "^5.10.0",
+    "electron-webpack": "^2.6.1",
+    "electron-webpack-ts": "^3.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "inversify-logger-middleware": "^3.1.0",
+    "jest": "^23.6.0",
+    "react-test-renderer": "^16.6.3",
+    "ts-jest": "^23.10.5",
     "typescript": "^3.1.6",
-    "webpack": "^4.8.3"
-  },
-  "resolutions": {
-    "webpack-sources": "1.0.1"
+    "webpack": "^4.26.0"
   },
   "electronWebpack": {
     "main": {
@@ -52,6 +61,6 @@
     }
   },
   "engines": {
-    "node": ">=8.x"
+    "node": ">=10.x"
   }
 }
