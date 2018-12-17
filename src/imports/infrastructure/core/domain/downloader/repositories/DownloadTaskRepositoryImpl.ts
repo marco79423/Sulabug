@@ -1,5 +1,6 @@
 import {inject, injectable} from 'inversify'
 
+import downloaderTypes from '../../../../../domain/downloader/downloaderTypes'
 import EventPublisher from '../../../../../domain/downloader/event/EventPublisher'
 import DownloadTask from '../../../../../domain/downloader/entities/DownloadTask'
 import DownloadTaskUpdatedEvent from '../../../../../domain/downloader/event/DownloadTaskUpdatedEvent'
@@ -13,7 +14,7 @@ export default class DownloadTaskRepositoryImpl implements DownloadTaskRepositor
   private downloadTaskMap = {}
 
   public constructor(
-    @inject(EventPublisher) eventPublisher: EventPublisher
+    @inject(downloaderTypes.EventPublisher) eventPublisher: EventPublisher
   ) {
     this._eventPublisher = eventPublisher
   }

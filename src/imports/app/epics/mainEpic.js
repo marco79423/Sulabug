@@ -131,7 +131,7 @@ export const updateConfigEpic = (action$, state$, {updateConfigUseCase}) => acti
   ))
 )
 
-export const handleDownloadTaskUpdatedEventEpic = () => injector.get(EventPublisher).getEventStream().pipe(
+export const handleDownloadTaskUpdatedEventEpic = (action$, state$, {eventPublisher}) => eventPublisher.getEventStream().pipe(
   filter(event => event instanceof DownloadTaskUpdatedEvent),
   map(() => actions.queryDownloadTasks()),
 )

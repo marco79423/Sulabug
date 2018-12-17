@@ -19,6 +19,7 @@ export default function configureStore() {
       queryComicInfosFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase),
       updateComicInfoDatabaseUseCase: injector.get(libraryTypes.UpdateComicInfoDatabaseUseCase),
       // downloader
+      eventPublisher: injector.get(downloaderTypes.EventPublisher),
       createDownloadTaskUseCase: injector.get(downloaderTypes.CreateDownloadTaskUseCase),
       deleteDownloadTaskUseCase: injector.get(downloaderTypes.DeleteDownloadTaskUseCase),
       downloadComicUseCase: injector.get(downloaderTypes.DownloadComicUseCase),

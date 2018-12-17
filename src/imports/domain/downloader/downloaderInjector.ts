@@ -21,7 +21,7 @@ import SFComicDownloadAdapterImpl from '../../infrastructure/core/domain/downloa
 
 const downloaderInjector = new Container()
 
-downloaderInjector.bind(EventPublisher).toSelf().inSingletonScope()
+downloaderInjector.bind<EventPublisher>(downloaderTypes.EventPublisher).to(EventPublisher).inSingletonScope()
 
 downloaderInjector.bind<SFComicDownloadAdapter>(downloaderTypes.SFComicDownloadAdapter).to(SFComicDownloadAdapterImpl).inSingletonScope()
 

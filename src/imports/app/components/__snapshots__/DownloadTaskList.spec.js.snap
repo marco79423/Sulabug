@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DownloadTaskList will render download task list correctly 1`] = `
+<div
+  className="MuiPaper-root-5 MuiPaper-elevation1-8 MuiPaper-rounded-6 MuiCard-root-4 DownloadTaskList-card-1"
+>
+  <div
+    className="MuiCardContent-root-32"
+  >
+    <h2
+      className="MuiTypography-root-33 MuiTypography-h2-46 MuiTypography-gutterBottom-60"
+    >
+      報告老大！
+    </h2>
+    <p
+      className="MuiTypography-root-33 MuiTypography-body1-42"
+    >
+      沒有正在下載的任務！
+    </p>
+  </div>
+</div>
+`;
+
+exports[`DownloadTaskList will render download task list correctly in loading state 1`] = `
+<div
+  className="MuiLinearProgress-root-68 MuiLinearProgress-colorSecondary-70 MuiLinearProgress-query-72"
+  role="progressbar"
+>
+  <div
+    className="MuiLinearProgress-bar-76 MuiLinearProgress-barColorSecondary-78 MuiLinearProgress-bar1Indeterminate-79"
+    style={Object {}}
+  />
+  <div
+    className="MuiLinearProgress-bar-76 MuiLinearProgress-barColorSecondary-78 MuiLinearProgress-bar2Indeterminate-82"
+    style={Object {}}
+  />
+</div>
+`;
