@@ -1,15 +1,15 @@
 {
-  "name": "Sulabug",
+  "name": "sulabug",
   "version": "0.0.0",
-  "description": "Sulabug 漫畫下載器",
-  "author": "兩大類 <marco79423@gmail.com>",
+  "description": "Sulabug downloader",
+  "author": "Marco Li <marco79423@gmail.com>",
   "scripts": {
     "dev": "electron-webpack dev",
     "test": "jest",
     "test:coverage": "yarn test --coverage",
     "compile": "electron-webpack",
-    "dist": "yarn compile && electron-builder",
-    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+    "dist:win": "yarn compile && electron-builder --win",
+    "dist": "yarn dist:win"
   },
   "dependencies": {
     "@material-ui/core": "^3.4.0",
@@ -60,6 +60,25 @@
     },
     "renderer": {
       "sourceDirectory": "src/app/renderer"
+    }
+  },
+  "build": {
+    "productName": "Sulabug",
+    "appId": "net.marco79423.sulabug",
+    "copyright": "Copyright © 2018 ${author}",
+    "asar": true,
+    "win": {
+      "target": [
+        "zip",
+        "tar.xz",
+        "nsis",
+        "portable"
+      ],
+      "icon": "static/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "engines": {
