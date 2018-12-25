@@ -1,12 +1,30 @@
-image: node:10
+image: electronuserland/builder:wine
 
 cache:
   paths:
     - node_modules/
 
-before_script:
-  - yarn
+stages:
+  - preparing
+  - testing
+  - building
 
-build:
+install-npm-modules:
+  stage: preparing
+  script:
+    - yarn
+
+run-tests-with-coverage:
+  stage: testing
   script:
     - yarn test:coverage
+
+build-windows-distributions:
+  stage: building
+  script:
+    - yarn dist:win
+  artifacts:
+    name: "dist"
+    expire_in: 1 day
+    paths:
+      - $CI_PROJECT_DIR/dist
