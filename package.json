@@ -5,6 +5,8 @@
   "author": "兩大類 <marco79423@gmail.com>",
   "scripts": {
     "dev": "electron-webpack dev",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
