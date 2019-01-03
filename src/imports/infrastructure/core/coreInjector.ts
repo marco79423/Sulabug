@@ -2,10 +2,10 @@ import {Container} from 'inversify'
 
 import generalTypes from './coreTypes'
 import {FileHandler, NetHandler} from '../vendor/interfaces/handlers'
-import {SFSourceSite} from './interfaces/source-sites'
+import {SFSourceSite} from '../shared/interfaces/source-sites'
 import FileHandlerImpl from '../vendor/handlers/FileHandlerImpl'
 import NetHandlerImpl from '../vendor/handlers/NetHandlerImpl'
-import {SFSourceSiteImpl} from './source-sites/SFSourceSiteImpl'
+import {SFSourceSiteImpl} from '../shared/source-sites/SFSourceSiteImpl'
 
 const coreInjector = new Container()
 

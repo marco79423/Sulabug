@@ -7,7 +7,7 @@ import coreTypes from '../../../coreTypes'
 import {SFComicDownloadAdapter} from '../../../../../domain/downloader/interfaces/adapters'
 import DownloadTask from '../../../../../domain/downloader/entities/DownloadTask'
 import {QueryConfigUseCase} from '../../../../../domain/general/interfaces/use-cases'
-import {SFSourceSite} from '../../../interfaces/source-sites'
+import {SFSourceSite} from '../../../../shared/interfaces/source-sites'
 import {FileHandler, NetHandler} from '../../../../vendor/interfaces/handlers'
 
 

@@ -5,7 +5,7 @@ import coreTypes from '../../../coreTypes'
 import {SFComicInfoQueryAdapter} from '../../../../../domain/library/interfaces/adapters'
 import ComicInfo from '../../../../../domain/library/entities/ComicInfo'
 import {ComicInfoFactory} from '../../../../../domain/library/interfaces/factories'
-import {SFSourceSite} from '../../../interfaces/source-sites'
+import {SFSourceSite} from '../../../../shared/interfaces/source-sites'
 
 @injectable()
 export default class SFComicInfoQueryAdapterImpl implements SFComicInfoQueryAdapter {

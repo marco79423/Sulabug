@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 
 import {SFSourceSite} from '../interfaces/source-sites'
 import {NetHandler} from '../../vendor/interfaces/handlers'
-import coreTypes from '../coreTypes'
+import coreTypes from '../../core/coreTypes'
 
 @injectable()
 export class SFSourceSiteImpl implements SFSourceSite {
