@@ -5,7 +5,7 @@ import Config from '../../../../../domain/general/entities/Config'
 import generalTypes from '../../../../../domain/general/generalTypes'
 import {ConfigFactory} from '../../../../../domain/general/interfaces/factories'
 import {ConfigRepository} from '../../../../../domain/general/interfaces/repositories'
-import {FileHandler} from '../../../interfaces/bases'
+import {FileHandler} from '../../../../vendor/interfaces/handlers'
 import coreTypes from '../../../coreTypes'
 
 @injectable()

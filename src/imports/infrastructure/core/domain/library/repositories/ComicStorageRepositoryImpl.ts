@@ -7,7 +7,7 @@ import ComicInfo from '../../../../../domain/library/entities/ComicInfo'
 import {ComicInfoFactory} from '../../../../../domain/library/interfaces/factories'
 import {ComicInfoStorageRepository} from '../../../../../domain/library/interfaces/repositories'
 import {ConfigRepository} from '../../../../../domain/general/interfaces/repositories'
-import {FileHandler} from '../../../interfaces/bases'
+import {FileHandler} from '../../../../vendor/interfaces/handlers'
 
 
 @injectable()

@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify'
 import * as cheerio from 'cheerio'
 
 import {SFSourceSite} from '../interfaces/source-sites'
-import {NetHandler} from '../interfaces/bases'
+import {NetHandler} from '../../vendor/interfaces/handlers'
 import coreTypes from '../coreTypes'
 
 @injectable()
