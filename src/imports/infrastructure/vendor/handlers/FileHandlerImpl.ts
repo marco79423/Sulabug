@@ -1,7 +1,7 @@
 import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 
-import {FileHandler} from '../interfaces/bases'
+import {FileHandler} from '../interfaces/handlers'
 
 @injectable()
 export default class FileHandlerImpl implements FileHandler {

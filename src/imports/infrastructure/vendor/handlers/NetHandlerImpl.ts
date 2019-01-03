@@ -2,7 +2,7 @@ import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 import fetch from 'node-fetch'
 
-import {NetHandler} from '../interfaces/bases'
+import {NetHandler} from '../interfaces/handlers'
 
 @injectable()
 export default class NetHandlerImpl implements NetHandler {
