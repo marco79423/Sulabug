@@ -6,7 +6,7 @@ import {ConfigRepository} from './interfaces/repositories'
 import {QueryConfigUseCase, UpdateConfigUseCase} from './interfaces/use-cases'
 import QueryConfigUseCaseImpl from './use-cases/QueryConfigUseCaseImpl'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
-import ConfigRepositoryImpl from '../../infrastructure/core/domain/general/repositories/ConfigRepositoryImpl'
+import ConfigRepositoryImpl from '../../infrastructure/domain/general/repositories/ConfigRepositoryImpl'
 import UpdateConfigUseCaseImpl from './use-cases/UpdateConfigUseCaseImpl'
 
 const generalInjector = new Container()

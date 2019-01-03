@@ -15,9 +15,9 @@ import CreateDownloadTaskUseCaseImpl from './use-cases/CreateDownloadTaskUseCase
 import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCaseImpl'
 import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
 import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
-import DownloadTaskRepositoryImpl from '../../infrastructure/core/domain/downloader/repositories/DownloadTaskRepositoryImpl'
+import DownloadTaskRepositoryImpl from '../../infrastructure/domain/downloader/repositories/DownloadTaskRepositoryImpl'
 import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
-import SFComicDownloadAdapterImpl from '../../infrastructure/core/domain/downloader/adapters/SFComicDownloadAdapterImpl'
+import SFComicDownloadAdapterImpl from '../../infrastructure/domain/downloader/adapters/SFComicDownloadAdapterImpl'
 
 const downloaderInjector = new Container()
 

@@ -1,12 +1,12 @@
 import {inject, injectable} from 'inversify'
 import path from 'path'
 
-import Config from '../../../../../domain/general/entities/Config'
-import generalTypes from '../../../../../domain/general/generalTypes'
-import {ConfigFactory} from '../../../../../domain/general/interfaces/factories'
-import {ConfigRepository} from '../../../../../domain/general/interfaces/repositories'
-import {FileHandler} from '../../../../vendor/interfaces/handlers'
-import coreTypes from '../../../coreTypes'
+import Config from '../../../../domain/general/entities/Config'
+import generalTypes from '../../../../domain/general/generalTypes'
+import {ConfigFactory} from '../../../../domain/general/interfaces/factories'
+import {ConfigRepository} from '../../../../domain/general/interfaces/repositories'
+import {FileHandler} from '../../../vendor/interfaces/handlers'
+import infraTypes from '../../../infraTypes'
 
 @injectable()
 export default class ConfigRepositoryImpl implements ConfigRepository {
@@ -20,7 +20,7 @@ export default class ConfigRepositoryImpl implements ConfigRepository {
 
   public constructor(
     @inject(generalTypes.ConfigFactory) configFactory: ConfigFactory,
-    @inject(coreTypes.FileHandler) fileHandler: FileHandler,
+    @inject(infraTypes.FileHandler) fileHandler: FileHandler,
   ) {
     this._configFactory = configFactory
     this._fileHandler = fileHandler

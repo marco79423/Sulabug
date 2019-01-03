@@ -1,13 +1,13 @@
 import {inject, injectable} from 'inversify'
 
-import generalTypes from '../../../../../domain/general/generalTypes'
-import libraryTypes from '../../../../../domain/library/libraryTypes'
-import coreTypes from '../../../coreTypes'
-import ComicInfo from '../../../../../domain/library/entities/ComicInfo'
-import {ComicInfoFactory} from '../../../../../domain/library/interfaces/factories'
-import {ComicInfoStorageRepository} from '../../../../../domain/library/interfaces/repositories'
-import {ConfigRepository} from '../../../../../domain/general/interfaces/repositories'
-import {FileHandler} from '../../../../vendor/interfaces/handlers'
+import generalTypes from '../../../../domain/general/generalTypes'
+import libraryTypes from '../../../../domain/library/libraryTypes'
+import infraTypes from '../../../infraTypes'
+import ComicInfo from '../../../../domain/library/entities/ComicInfo'
+import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
+import {ComicInfoStorageRepository} from '../../../../domain/library/interfaces/repositories'
+import {ConfigRepository} from '../../../../domain/general/interfaces/repositories'
+import {FileHandler} from '../../../vendor/interfaces/handlers'
 
 
 @injectable()
@@ -19,7 +19,7 @@ export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageR
   public constructor(
     @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
     @inject(generalTypes.ConfigRepository) configRepository: ConfigRepository,
-    @inject(coreTypes.FileHandler) fileHandler: FileHandler,
+    @inject(infraTypes.FileHandler) fileHandler: FileHandler,
   ) {
     this._comicInfoFactory = comicInfoFactory
     this._configRepository = configRepository

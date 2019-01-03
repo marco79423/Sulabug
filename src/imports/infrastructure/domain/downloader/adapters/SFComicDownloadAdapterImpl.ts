@@ -2,13 +2,13 @@ import {map} from 'rxjs/operators'
 import {inject, injectable} from 'inversify'
 import * as path from 'path'
 
-import generalTypes from '../../../../../domain/general/generalTypes'
-import coreTypes from '../../../coreTypes'
-import {SFComicDownloadAdapter} from '../../../../../domain/downloader/interfaces/adapters'
-import DownloadTask from '../../../../../domain/downloader/entities/DownloadTask'
-import {QueryConfigUseCase} from '../../../../../domain/general/interfaces/use-cases'
-import {SFSourceSite} from '../../../../shared/interfaces/source-sites'
-import {FileHandler, NetHandler} from '../../../../vendor/interfaces/handlers'
+import generalTypes from '../../../../domain/general/generalTypes'
+import infraTypes from '../../../infraTypes'
+import {SFComicDownloadAdapter} from '../../../../domain/downloader/interfaces/adapters'
+import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
+import {QueryConfigUseCase} from '../../../../domain/general/interfaces/use-cases'
+import {SFSourceSite} from '../../../shared/interfaces/source-sites'
+import {FileHandler, NetHandler} from '../../../vendor/interfaces/handlers'
 
 
 @injectable()
@@ -20,9 +20,9 @@ export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapte
 
   public constructor(
     @inject(generalTypes.QueryConfigUseCase) queryConfigUseCase: QueryConfigUseCase,
-    @inject(coreTypes.SFSourceSite) sfSourceSite: SFSourceSite,
-    @inject(coreTypes.FileHandler) fileHandler: FileHandler,
-    @inject(coreTypes.NetHandler) netHandler: NetHandler,
+    @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
+    @inject(infraTypes.FileHandler) fileHandler: FileHandler,
+    @inject(infraTypes.NetHandler) netHandler: NetHandler,
   ) {
     this._queryConfigUseCase = queryConfigUseCase
     this._sfSourceSite = sfSourceSite

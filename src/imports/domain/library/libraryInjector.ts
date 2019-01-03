@@ -6,7 +6,7 @@ import {ComicInfoFactory} from './interfaces/factories'
 import {ComicInfoStorageRepository} from './interfaces/repositories'
 import UpdateComicInfoDatabaseUseCaseImpl from './use-cases/UpdateComicInfoDatabaseUseCaseImpl'
 import QueryComicInfosFromDatabaseUseCaseImpl from './use-cases/QueryComicInfosFromDatabaseUseCaseImpl'
-import ComicInfoStorageRepositoryImpl from '../../infrastructure/core/domain/library/repositories/ComicStorageRepositoryImpl'
+import ComicInfoStorageRepositoryImpl from '../../infrastructure/domain/library/repositories/ComicStorageRepositoryImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 import {
   QueryComicInfoByIdentityFromDatabaseUseCase,
@@ -15,7 +15,7 @@ import {
 } from './interfaces/use-cases'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl
   from './use-cases/QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
-import SFComicInfoQueryAdapterImpl from '../../infrastructure/core/domain/library/adapters/SFComicInfoQueryAdapterImpl'
+import SFComicInfoQueryAdapterImpl from '../../infrastructure/domain/library/adapters/SFComicInfoQueryAdapterImpl'
 
 const libraryInjector = new Container()
 

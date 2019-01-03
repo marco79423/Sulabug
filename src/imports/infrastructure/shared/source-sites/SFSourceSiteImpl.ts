@@ -3,14 +3,14 @@ import * as cheerio from 'cheerio'
 
 import {SFSourceSite} from '../interfaces/source-sites'
 import {NetHandler} from '../../vendor/interfaces/handlers'
-import coreTypes from '../../core/coreTypes'
+import infraTypes from '../../infraTypes'
 
 @injectable()
 export class SFSourceSiteImpl implements SFSourceSite {
   private readonly _netHandler: NetHandler
 
   public constructor(
-    @inject(coreTypes.NetHandler) netHandler: NetHandler,
+    @inject(infraTypes.NetHandler) netHandler: NetHandler,
   ) {
     this._netHandler = netHandler
   }
