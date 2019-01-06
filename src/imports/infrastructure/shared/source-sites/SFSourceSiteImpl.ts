@@ -6,7 +6,7 @@ import {NetHandler} from '../../vendor/interfaces/handlers'
 import infraTypes from '../../infraTypes'
 
 @injectable()
-export class SFSourceSiteImpl implements SFSourceSite {
+export default class SFSourceSiteImpl implements SFSourceSite {
   private readonly _netHandler: NetHandler
 
   public constructor(

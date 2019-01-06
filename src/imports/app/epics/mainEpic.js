@@ -3,9 +3,7 @@ import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map, mapTo} from 'rxjs/operators'
 
 import {Request} from '../../domain/base-types'
-import injector from '../injector'
 import {actions, ActionTypes} from '../ducks/mainDuck'
-import EventPublisher from '../../domain/downloader/event/EventPublisher'
 import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
 
 export const initializeEpic = () => of(

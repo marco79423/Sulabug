@@ -11,7 +11,6 @@ describe('QueryConfigUseCaseImpl', () => {
       const configFactory = new ConfigFactoryImpl()
       const config = configFactory.createFromJson({
         downloadFolderPath: 'downloadFolderPath',
-        comicInfoDatabasePath: 'comicInfoDatabasePath',
       })
 
       const configRepository: ConfigRepository = {

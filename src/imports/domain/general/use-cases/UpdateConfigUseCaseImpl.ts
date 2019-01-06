@@ -30,16 +30,15 @@ export default class UpdateConfigUseCaseImpl implements UpdateConfigUseCase {
     )
   }
 
-  private _createRawConfigDataStream = (request: Request): Observable<{ downloadFolderPath: string, comicInfoDatabasePath: string }> => {
+  private _createRawConfigDataStream = (request: Request): Observable<{ downloadFolderPath: string, }> => {
     const rawConfigData: {
       downloadFolderPath: string,
-      comicInfoDatabasePath: string,
     } = request.data
 
     return of(rawConfigData)
   }
 
-  private _createConfigFromJsonDataOpr = () => (source: Observable<{ downloadFolderPath: string, comicInfoDatabasePath: string }>): Observable<Config> => {
+  private _createConfigFromJsonDataOpr = () => (source: Observable<{ downloadFolderPath: string, }>): Observable<Config> => {
     return source.pipe(
       map(this._configFactory.createFromJson),
     )

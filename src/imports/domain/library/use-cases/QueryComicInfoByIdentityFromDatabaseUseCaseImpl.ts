@@ -5,18 +5,18 @@ import {map, mergeMap} from 'rxjs/operators'
 import {Request, Response} from '../../base-types'
 import libraryTypes from '../libraryTypes'
 import ComicInfo from '../entities/ComicInfo'
-import {ComicInfoStorageRepository} from '../interfaces/repositories'
+import {ComicInfoRepository} from '../interfaces/repositories'
 import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../interfaces/use-cases'
 
 
 @injectable()
 export default class QueryComicInfoByIdentityFromDatabaseUseCaseImpl implements QueryComicInfoByIdentityFromDatabaseUseCase {
-  private readonly _comicInfoStorageRepository: ComicInfoStorageRepository
+  private readonly _comicInfoInfoRepository: ComicInfoRepository
 
   public constructor(
-    @inject(libraryTypes.ComicInfoStorageRepository) comicInfoStorageRepository: ComicInfoStorageRepository
+    @inject(libraryTypes.ComicInfoInfoRepository) comicInfoInfoRepository: ComicInfoRepository
   ) {
-    this._comicInfoStorageRepository = comicInfoStorageRepository
+    this._comicInfoInfoRepository = comicInfoInfoRepository
   }
 
   execute = (request: Request): Observable<Response> => {
@@ -33,7 +33,7 @@ export default class QueryComicInfoByIdentityFromDatabaseUseCaseImpl implements 
 
   private _queryComicInfoByIdOpr = () => (source: Observable<string>): Observable<ComicInfo> => {
     return source.pipe(
-      mergeMap(comicInfoId => from(this._comicInfoStorageRepository.asyncGetById(comicInfoId))),
+      mergeMap(comicInfoId => from(this._comicInfoInfoRepository.asyncGetById(comicInfoId))),
     )
   }
 

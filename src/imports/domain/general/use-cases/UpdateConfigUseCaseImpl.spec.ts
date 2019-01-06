@@ -10,7 +10,6 @@ describe('UpdateConfigUseCaseImpl', () => {
     it('will update configuration by the request', async () => {
       const configData = {
         downloadFolderPath: 'downloadFolderPath',
-        comicInfoDatabasePath: 'comicInfoDatabasePath',
       }
       const request = new Request(configData)
 

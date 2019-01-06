@@ -100,7 +100,6 @@ export const defaultState = {
 
   config: {
     downloadFolderPath: '',
-    comicInfoDatabasePath: '',
   },
 }
 

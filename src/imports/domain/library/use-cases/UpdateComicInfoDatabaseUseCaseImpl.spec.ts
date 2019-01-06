@@ -3,7 +3,7 @@ import 'reflect-metadata'
 import {Response} from '../../base-types'
 import UpdateComicInfoDatabaseUseCaseImpl from './UpdateComicInfoDatabaseUseCaseImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
-import {ComicInfoStorageRepository} from '../interfaces/repositories'
+import {ComicInfoRepository} from '../interfaces/repositories'
 import {SFComicInfoQueryAdapter} from '../interfaces/adapters'
 
 describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
@@ -35,7 +35,7 @@ describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
         }),
       ]
 
-      const comicInfoStorageRepository: ComicInfoStorageRepository = {
+      const comicInfoInfoRepository: ComicInfoRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
         asyncGetAllBySearchTerm: jest.fn(),
@@ -45,13 +45,13 @@ describe('UpdateComicInfoDatabaseUseCaseImpl', () => {
         asyncGetComicInfos: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
-      const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoStorageRepository, sfComicInfoQueryAdapter)
+      const uc = new UpdateComicInfoDatabaseUseCaseImpl(comicInfoInfoRepository, sfComicInfoQueryAdapter)
       const res = await uc.execute().toPromise()
 
       expect(sfComicInfoQueryAdapter.asyncGetComicInfos).toBeCalled()
 
-      expect(comicInfoStorageRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[0])
-      expect(comicInfoStorageRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[1])
+      expect(comicInfoInfoRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[0])
+      expect(comicInfoInfoRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfos[1])
 
       expect(res instanceof Response).toBeTruthy()
     })
