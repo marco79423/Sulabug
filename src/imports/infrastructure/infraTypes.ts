@@ -1,8 +1,8 @@
 export default {
-  DBHandler: Symbol('Infrastructure/Core/DBHandler'),
-  FileHandler: Symbol('Infrastructure/Core/FileHandler'),
-  NetHandler: Symbol('Infrastructure/Core/NetHandler'),
+  DBHandler: Symbol('Infrastructure/vendor/DBHandler'),
+  FileHandler: Symbol('Infrastructure/vendor/FileHandler'),
+  NetHandler: Symbol('Infrastructure/vendor/NetHandler'),
 
-  Database: Symbol('Infrastructure/Core/Database'),
-  SFSourceSite: Symbol('Infrastructure/Core/SFSourceSite'),
+  Database: Symbol('Infrastructure/shared/Database'),
+  SFSourceSite: Symbol('Infrastructure/shared/SFSourceSite'),
 }
