@@ -5,7 +5,7 @@ import {FileHandler, NetHandler} from './vendor/interfaces/handlers'
 import {SFSourceSite} from './shared/interfaces/source-sites'
 import FileHandlerImpl from './vendor/handlers/FileHandlerImpl'
 import NetHandlerImpl from './vendor/handlers/NetHandlerImpl'
-import {SFSourceSiteImpl} from './shared/source-sites/SFSourceSiteImpl'
+import SFSourceSiteImpl from './shared/source-sites/SFSourceSiteImpl'
 
 const infraInjector = new Container()
 
