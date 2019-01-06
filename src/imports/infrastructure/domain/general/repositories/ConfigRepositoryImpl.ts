@@ -1,6 +1,4 @@
 import {inject, injectable} from 'inversify'
-
-import path from 'path'
 import Config from '../../../../domain/general/entities/Config'
 import generalTypes from '../../../../domain/general/generalTypes'
 import {ConfigFactory} from '../../../../domain/general/interfaces/factories'
@@ -11,8 +9,8 @@ import {ConfigCollection} from '../../../shared/database/collections'
 
 @injectable()
 export default class ConfigRepositoryImpl implements ConfigRepository {
-  defaultConfigData = {
-    downloadFolderPath: path.resolve('./comics'),
+  defaultRawConfig = {
+    downloadFolderPath: './comics',
   }
   private readonly _configFactory: ConfigFactory
   private readonly _database: Database
@@ -33,11 +31,14 @@ export default class ConfigRepositoryImpl implements ConfigRepository {
   }
 
   asyncGet = async (): Promise<Config> => {
-    const config = await this._database.asyncFindOne(ConfigCollection.name)
-    if (!config) {
-      await this.asyncSaveOrUpdate(this._configFactory.createFromJson(this.defaultConfigData))
+    let rawConfig = await this._database.asyncFindOne(ConfigCollection.name)
+    if (!rawConfig) {
+      await this._database.asyncSaveOrUpdate(ConfigCollection.name, {
+        id: 'default',
+        ...this.defaultRawConfig,
+      })
+      rawConfig = this.defaultRawConfig
     }
-    const rawConfig = await this._database.asyncFindOne(ConfigCollection.name)
     return this._configFactory.createFromJson(rawConfig)
   }
 }
