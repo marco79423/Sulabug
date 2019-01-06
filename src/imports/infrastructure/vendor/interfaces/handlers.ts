@@ -1,4 +1,5 @@
 export interface FileHandler {
+
   asyncEnsureDir(targetDirPath: string): Promise<void>
 
   asyncReadJson(targetPath: string, defaultJson: any): Promise<any>
@@ -9,7 +10,7 @@ export interface FileHandler {
 }
 
 export interface NetHandler {
-  
+
   asyncGetText(targetUrl: string): Promise<string>
 
   asyncDownload(targetUrl: string, targetPath: string): Promise<void>
