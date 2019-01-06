@@ -13,7 +13,6 @@ describe('Settings', () => {
         }}
         config={{
           downloadFolderPath: 'downloadFolderPath',
-          comicInfoDatabasePath: 'comicInfoDatabasePath',
         }}
       />
     )

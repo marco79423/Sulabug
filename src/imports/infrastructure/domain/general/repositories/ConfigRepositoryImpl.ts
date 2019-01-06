@@ -13,7 +13,6 @@ import {ConfigCollection} from '../../../shared/database/collections'
 export default class ConfigRepositoryImpl implements ConfigRepository {
   defaultConfigData = {
     downloadFolderPath: path.resolve('./comics'),
-    comicInfoDatabasePath: path.resolve('./comicInfoStore.json')
   }
   private readonly _configFactory: ConfigFactory
   private readonly _database: Database

@@ -13,11 +13,8 @@ export const ConfigCollection = {
       downloadFolderPath: {
         type: 'string',
       },
-      comicInfoDatabasePath: {
-        type: 'string',
-      },
     },
-    required: ['downloadFolderPath', 'comicInfoDatabasePath']
+    required: ['downloadFolderPath']
   }
 }
 
