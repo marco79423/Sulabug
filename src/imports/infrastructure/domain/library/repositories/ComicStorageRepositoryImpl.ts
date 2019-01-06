@@ -1,42 +1,35 @@
 import {inject, injectable} from 'inversify'
 
-import generalTypes from '../../../../domain/general/generalTypes'
 import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
+import Database from '../../../shared/interfaces/Database'
 import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
 import {ComicInfoStorageRepository} from '../../../../domain/library/interfaces/repositories'
-import {ConfigRepository} from '../../../../domain/general/interfaces/repositories'
-import {FileHandler} from '../../../vendor/interfaces/handlers'
+import {ComicInfoCollection} from '../../../shared/database/collections'
 
 
 @injectable()
 export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageRepository {
   private readonly _comicInfoFactory: ComicInfoFactory
-  private readonly _configRepository: ConfigRepository
-  private readonly _fileHandler: FileHandler
+  private readonly _database: Database
 
   public constructor(
     @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
-    @inject(generalTypes.ConfigRepository) configRepository: ConfigRepository,
-    @inject(infraTypes.FileHandler) fileHandler: FileHandler,
+    @inject(infraTypes.Database) database: Database,
   ) {
     this._comicInfoFactory = comicInfoFactory
-    this._configRepository = configRepository
-    this._fileHandler = fileHandler
+    this._database = database
   }
 
   asyncSaveOrUpdate = async (comicInfo: ComicInfo): Promise<void> => {
-    const config = await this._configRepository.asyncGet()
-    const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
-    rawComicInfos[comicInfo.identity] = comicInfo.serialize()
-    await this._fileHandler.asyncWriteJson(config.comicInfoDatabasePath, rawComicInfos)
+    await this._database.asyncSaveOrUpdate(ComicInfoCollection.name, comicInfo.serialize())
   }
 
-  asyncGetById = async (identity: string): Promise<ComicInfo>  => {
-    const config = await this._configRepository.asyncGet()
-    const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
-    const rawComicInfo = rawComicInfos[identity]
+  asyncGetById = async (identity: string): Promise<ComicInfo> => {
+    const rawComicInfo = await this._database.asyncFindOne(ComicInfoCollection.name, {
+      id: identity
+    })
     if (!rawComicInfo) {
       throw new Error('Target comic info not found')
     }
@@ -44,10 +37,12 @@ export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageR
   }
 
   asyncGetAllBySearchTerm = async (searchTerm: string = ''): Promise<ComicInfo[]> => {
-    const config = await this._configRepository.asyncGet()
-    const rawComicInfos = await this._fileHandler.asyncReadJson(config.comicInfoDatabasePath, {})
-    return Object.keys(rawComicInfos)
-      .map(id => this._comicInfoFactory.createFromJson(rawComicInfos[id]))
-      .filter(comicInfo => !searchTerm || comicInfo.name.includes(searchTerm))
+    const rawComicInfos = await this._database.asyncFind(ComicInfoCollection.name, {
+      name: {
+        $regex: `.*${searchTerm}.*`,
+      }
+    })
+    return rawComicInfos
+      .map(rawComicInfo => this._comicInfoFactory.createFromJson(rawComicInfo))
   }
 }
