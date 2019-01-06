@@ -3,7 +3,7 @@ export default {
 
   ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
 
-  ComicInfoStorageRepository: Symbol('Domain/Library/ComicInfoStorageRepository'),
+  ComicInfoInfoRepository: Symbol('Domain/Library/ComicInfoRepository'),
 
   QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Domain/Library/QueryComicInfoByIdentityFromDatabaseUseCase'),
   QueryComicInfosFromDatabaseUseCase: Symbol('Domain/Library/QueryComicInfosFromDatabaseUseCase'),

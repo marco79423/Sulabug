@@ -3,7 +3,7 @@ import 'reflect-metadata'
 import {Request, Response} from '../../base-types'
 import QueryComicInfosFromDatabaseUseCaseImpl from './QueryComicInfosFromDatabaseUseCaseImpl'
 import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
-import {ComicInfoStorageRepository} from '../interfaces/repositories'
+import {ComicInfoRepository} from '../interfaces/repositories'
 
 describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
   const comicInfoFactory = new ComicInfoFactoryImpl()
@@ -34,32 +34,32 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
 
   describe('execute', () => {
     it('will get all comic infos from database without request object', async () => {
-      const comicInfoStorageRepository: ComicInfoStorageRepository = {
+      const comicInfoInfoRepository: ComicInfoRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
         asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoInfoRepository)
       const res = await uc.execute().toPromise()
 
-      expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
+      expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalled()
 
       expect(res instanceof Response).toBeTruthy()
       expect((res as Response).data).toEqual(comicInfos.map(comicInfo => comicInfo.serialize()))
     })
 
     it('will get all comic infos from database with empty request object', async () => {
-      const comicInfoStorageRepository: ComicInfoStorageRepository = {
+      const comicInfoInfoRepository: ComicInfoRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
         asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoInfoRepository)
       const res = await uc.execute(new Request(undefined)).toPromise()
 
-      expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalled()
+      expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalled()
 
       expect(res instanceof Response).toBeTruthy()
       expect((res as Response).data).toEqual(comicInfos.map(comicInfo => comicInfo.serialize()))
@@ -68,16 +68,16 @@ describe('QueryComicInfosFromDatabaseUseCaseImpl', () => {
     it('will get filtered comic infos by search term from database', async () => {
       const filteredComicInfos = comicInfos.filter(comicInfo => comicInfo.name.includes('name-1'))
 
-      const comicInfoStorageRepository: ComicInfoStorageRepository = {
+      const comicInfoInfoRepository: ComicInfoRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
         asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(filteredComicInfos)),
       }
 
-      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoStorageRepository)
+      const uc = new QueryComicInfosFromDatabaseUseCaseImpl(comicInfoInfoRepository)
       const res = await uc.execute(new Request('name-1')).toPromise()
 
-      expect(comicInfoStorageRepository.asyncGetAllBySearchTerm).toBeCalledWith('name-1')
+      expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalledWith('name-1')
 
       expect(res instanceof Response).toBeTruthy()
       expect((res as Response).data).toEqual(filteredComicInfos.map(comicInfo => comicInfo.serialize()))

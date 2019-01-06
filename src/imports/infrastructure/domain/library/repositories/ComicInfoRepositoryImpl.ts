@@ -5,12 +5,12 @@ import infraTypes from '../../../infraTypes'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
 import Database from '../../../shared/interfaces/Database'
 import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
-import {ComicInfoStorageRepository} from '../../../../domain/library/interfaces/repositories'
+import {ComicInfoRepository} from '../../../../domain/library/interfaces/repositories'
 import {ComicInfoCollection} from '../../../shared/database/collections'
 
 
 @injectable()
-export default class ComicInfoStorageRepositoryImpl implements ComicInfoStorageRepository {
+export default class ComicInfoRepositoryImpl implements ComicInfoRepository {
   private readonly _comicInfoFactory: ComicInfoFactory
   private readonly _database: Database
 

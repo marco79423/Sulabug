@@ -1,6 +1,6 @@
 import ComicInfo from '../entities/ComicInfo'
 
-export interface ComicInfoStorageRepository {
+export interface ComicInfoRepository {
 
   asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
 
