@@ -2,9 +2,9 @@ import {concat, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map, mapTo} from 'rxjs/operators'
 
-import {Request} from '../../domain/base-types'
-import {actions, ActionTypes} from '../ducks/mainDuck'
-import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import {Request} from '../domain/base-types'
+import {actions, ActionTypes} from '../app/ducks/mainDuck'
+import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 
 export const initializeEpic = () => of(
   actions.queryConfig(),

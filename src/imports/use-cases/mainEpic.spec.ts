@@ -2,8 +2,8 @@ import 'reflect-metadata'
 
 import {of} from 'rxjs'
 
-import {Request, Response} from '../../domain/base-types'
-import {actions} from '../ducks/mainDuck'
+import {Request, Response} from '../domain/base-types'
+import {actions} from '../app/ducks/mainDuck'
 import {
   changeCurrentPageEpic,
   createDownloadTaskEpic,
@@ -17,7 +17,7 @@ import {
   updateConfigEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
-import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 
 
 describe('initializeEpic', () => {
