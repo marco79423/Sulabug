@@ -1,16 +1,17 @@
 import 'reflect-metadata'
-import {of} from 'rxjs'
 
 import {Request, Response} from '../../base-types'
 import CreateDownloadTaskUseCaseImpl from './CreateDownloadTaskUseCaseImpl'
 import DownloadTaskFactoryImpl from '../factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../interfaces/repositories'
-import {QueryComicInfoByIdentityFromDatabaseUseCase} from '../../library/interfaces/use-cases'
+import {ComicInfoRepository} from '../../library/interfaces/repositories'
+import ComicInfoFactoryImpl from '../../library/factories/ComicInfoFactoryImpl'
 
 describe('CreateDownloadTaskUseCaseImpl', () => {
   describe('execute', () => {
     it('will create a download task', async () => {
-      const comicInfo = {
+      const comicInfoFactory = new ComicInfoFactoryImpl()
+      const comicInfo = comicInfoFactory.createFromJson({
         id: 'id',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
@@ -20,10 +21,12 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
         author: 'author',
         lastUpdated: 'lastUpdated',
         summary: 'summary',
-      }
+      })
 
-      const queryComicInfoByIdentityFromDatabaseUseCase: QueryComicInfoByIdentityFromDatabaseUseCase = {
-        execute: () => of(new Response(comicInfo)),
+      const comicInfoInfoRepository: ComicInfoRepository = {
+        asyncSaveOrUpdate: jest.fn(),
+        asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
+        asyncGetAllBySearchTerm: jest.fn(),
       }
 
       const downloadTaskRepository: DownloadTaskRepository = {
@@ -34,11 +37,13 @@ describe('CreateDownloadTaskUseCaseImpl', () => {
       }
 
       const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
-      const uc = new CreateDownloadTaskUseCaseImpl(queryComicInfoByIdentityFromDatabaseUseCase, downloadTaskFactory, downloadTaskRepository)
-      const res = await uc.execute(new Request(comicInfo.id)).toPromise()
+      const uc = new CreateDownloadTaskUseCaseImpl(comicInfoInfoRepository, downloadTaskFactory, downloadTaskRepository)
+      const res = await uc.execute(new Request(comicInfo.identity)).toPromise()
+
+      expect(comicInfoInfoRepository.asyncGetById).toBeCalledWith(comicInfo.identity)
 
       expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTaskFactory.createFromJson({
-        id: comicInfo.id,
+        id: comicInfo.identity,
         name: comicInfo.name,
         coverDataUrl: comicInfo.coverDataUrl,
         sourceUrl: comicInfo.pageUrl,

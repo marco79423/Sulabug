@@ -4,6 +4,4 @@ export default {
   ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
 
   ComicInfoInfoRepository: Symbol('Domain/Library/ComicInfoRepository'),
-
-  QueryComicInfoByIdentityFromDatabaseUseCase: Symbol('Domain/Library/QueryComicInfoByIdentityFromDatabaseUseCase'),
 }
