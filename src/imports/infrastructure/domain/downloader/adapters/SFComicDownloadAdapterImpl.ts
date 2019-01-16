@@ -18,7 +18,7 @@ export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapte
   private readonly _netHandler: NetHandler
 
   public constructor(
-    @inject(generalTypes.ConfigFactory) configRepository: ConfigRepository,
+    @inject(generalTypes.ConfigRepository) configRepository: ConfigRepository,
     @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
     @inject(infraTypes.FileHandler) fileHandler: FileHandler,
     @inject(infraTypes.NetHandler) netHandler: NetHandler,
