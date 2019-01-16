@@ -1,4 +1,3 @@
-import {map} from 'rxjs/operators'
 import {inject, injectable} from 'inversify'
 import * as path from 'path'
 
@@ -6,25 +5,25 @@ import generalTypes from '../../../../domain/general/generalTypes'
 import infraTypes from '../../../infraTypes'
 import {SFComicDownloadAdapter} from '../../../../domain/downloader/interfaces/adapters'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
-import {QueryConfigUseCase} from '../../../../domain/general/interfaces/use-cases'
 import {SFSourceSite} from '../../../shared/interfaces/source-sites'
 import {FileHandler, NetHandler} from '../../../vendor/interfaces/handlers'
+import {ConfigRepository} from '../../../../domain/general/interfaces/repositories'
 
 
 @injectable()
 export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapter {
-  private readonly _queryConfigUseCase: QueryConfigUseCase
+  private readonly _configRepository: ConfigRepository
   private readonly _sfSourceSite: SFSourceSite
   private readonly _fileHandler: FileHandler
   private readonly _netHandler: NetHandler
 
   public constructor(
-    @inject(generalTypes.QueryConfigUseCase) queryConfigUseCase: QueryConfigUseCase,
+    @inject(generalTypes.ConfigFactory) configRepository: ConfigRepository,
     @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
     @inject(infraTypes.FileHandler) fileHandler: FileHandler,
     @inject(infraTypes.NetHandler) netHandler: NetHandler,
   ) {
-    this._queryConfigUseCase = queryConfigUseCase
+    this._configRepository = configRepository
     this._sfSourceSite = sfSourceSite
     this._fileHandler = fileHandler
     this._netHandler = netHandler
@@ -57,9 +56,7 @@ export default class SFComicDownloadAdapterImpl implements SFComicDownloadAdapte
   }
 
   private async _asyncGetDownloadFolderPath() {
-    return await this._queryConfigUseCase.execute().pipe(
-      map(res => res.data),
-      map(config => config.downloadFolderPath),
-    ).toPromise()
+    const config = await this._configRepository.asyncGet()
+    return config.downloadFolderPath
   }
 }

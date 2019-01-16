@@ -1,4 +1,4 @@
-import {concat, of} from 'rxjs'
+import {concat, from, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map, mapTo} from 'rxjs/operators'
 
@@ -12,15 +12,14 @@ export const initializeEpic = () => of(
   actions.queryDownloadTasks(),
 )
 
-export const queryConfigEpic = (action$, state$, {queryConfigUseCase}) => action$.pipe(
+export const queryConfigEpic = (action$, state$, {general: {configRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_CONFIG
   ),
   flatMap(() => concat(
     of(actions.queryingConfig()),
-    queryConfigUseCase.execute().pipe(
-      map(res => res.data),
-      map(config => actions.configQueried(config))
+    from(configRepository.asyncGet()).pipe(
+      map(config => actions.configQueried(config.serialize()))
     ),
   ))
 )

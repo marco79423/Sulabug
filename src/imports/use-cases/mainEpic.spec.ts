@@ -18,6 +18,7 @@ import {
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
+import Config from '../domain/general/entities/Config'
 
 
 describe('initializeEpic', () => {
@@ -42,20 +43,22 @@ export const initializeEpic = () => of(
 
 describe('queryConfigEpic', () => {
   it('will retrieve config from database', async () => {
-    const config = {}
+    const config = new Config(
+      'comicsFolder'
+    )
 
-    const queryConfigUseCase = {
-      execute: jest.fn(() => of(new Response(config))),
+    const configRepository = {
+      asyncGet: jest.fn(() => Promise.resolve(config)),
     }
 
     const actions$ = of(actions.queryConfig())
-    const result = await queryConfigEpic(actions$, {}, {queryConfigUseCase}).pipe(
+    const result = await queryConfigEpic(actions$, {}, {general: {configRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
       actions.queryingConfig(),
-      actions.configQueried(config),
+      actions.configQueried(config.serialize()),
     ])
   })
 })

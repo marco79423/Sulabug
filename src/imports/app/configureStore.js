@@ -12,7 +12,9 @@ export default function configureStore() {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
       // general
-      queryConfigUseCase: injector.get(generalTypes.QueryConfigUseCase),
+      general: {
+        configRepository: injector.get(generalTypes.ConfigRepository),
+      },
       updateConfigUseCase: injector.get(generalTypes.UpdateConfigUseCase),
       // library
       queryComicInfoByIdentityFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase),
