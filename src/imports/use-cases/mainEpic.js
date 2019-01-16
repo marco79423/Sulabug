@@ -24,7 +24,7 @@ export const queryConfigEpic = (action$, state$, {general: {configRepository}}) 
   ))
 )
 
-export const queryComicInfosFromDatabaseEpic = (action$, state$, {queryComicInfosFromDatabaseUseCase}) => action$.pipe(
+export const queryComicInfosFromDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE,
     ActionTypes.COMIC_INFO_DATABASE_UPDATED,
@@ -33,9 +33,8 @@ export const queryComicInfosFromDatabaseEpic = (action$, state$, {queryComicInfo
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
     of(actions.queryingComicInfosFromDatabase()),
-    queryComicInfosFromDatabaseUseCase.execute(new Request(searchTerm)).pipe(
-      map(res => res.data),
-      map(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos))
+    from(comicInfoInfoRepository.asyncGetAllBySearchTerm(searchTerm)).pipe(
+      map(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos.map(comicInfo => comicInfo.serialize())))
     ),
   ))
 )

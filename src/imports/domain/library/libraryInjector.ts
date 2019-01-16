@@ -4,13 +4,9 @@ import libraryTypes from './libraryTypes'
 import {SFComicInfoQueryAdapter} from './interfaces/adapters'
 import {ComicInfoFactory} from './interfaces/factories'
 import {ComicInfoRepository} from './interfaces/repositories'
-import QueryComicInfosFromDatabaseUseCaseImpl from './use-cases/QueryComicInfosFromDatabaseUseCaseImpl'
 import ComicInfoRepositoryImpl from '../../infrastructure/domain/library/repositories/ComicInfoRepositoryImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
-import {
-  QueryComicInfoByIdentityFromDatabaseUseCase,
-  QueryComicInfosFromDatabaseUseCase,
-} from './interfaces/use-cases'
+import {QueryComicInfoByIdentityFromDatabaseUseCase,} from './interfaces/use-cases'
 import QueryComicInfoByIdentityFromDatabaseUseCaseImpl
   from './use-cases/QueryComicInfoByIdentityFromDatabaseUseCaseImpl'
 import SFComicInfoQueryAdapterImpl from '../../infrastructure/domain/library/adapters/SFComicInfoQueryAdapterImpl'
@@ -23,6 +19,5 @@ libraryInjector.bind<ComicInfoFactory>(libraryTypes.ComicInfoFactory).to(ComicIn
 libraryInjector.bind<ComicInfoRepository>(libraryTypes.ComicInfoInfoRepository).to(ComicInfoRepositoryImpl).inSingletonScope()
 
 libraryInjector.bind<QueryComicInfoByIdentityFromDatabaseUseCase>(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase).to(QueryComicInfoByIdentityFromDatabaseUseCaseImpl).inSingletonScope()
-libraryInjector.bind<QueryComicInfosFromDatabaseUseCase>(libraryTypes.QueryComicInfosFromDatabaseUseCase).to(QueryComicInfosFromDatabaseUseCaseImpl).inSingletonScope()
 
 export default libraryInjector
