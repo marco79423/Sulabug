@@ -11,11 +11,10 @@ import downloaderTypes from '../domain/downloader/downloaderTypes'
 export default function configureStore() {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
-      // general
       general: {
+        configFactory: injector.get(generalTypes.ConfigFactory),
         configRepository: injector.get(generalTypes.ConfigRepository),
       },
-      updateConfigUseCase: injector.get(generalTypes.UpdateConfigUseCase),
       // library
       queryComicInfoByIdentityFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase),
       queryComicInfosFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase),

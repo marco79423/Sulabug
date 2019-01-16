@@ -19,6 +19,7 @@ import {
 import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
+import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
 
 
 describe('initializeEpic', () => {
@@ -284,22 +285,26 @@ describe('handleDownloadTaskEpic', () => {
 
 describe('updateConfigEpic', () => {
   it('will update configuration from database', async () => {
-    const config = {}
-
-    const updateConfigUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const configData = {
+      downloadFolderPath: 'downloadFolderPath',
     }
 
-    const actions$ = of(actions.updateConfig(config))
-    const result = await updateConfigEpic(actions$, {}, {updateConfigUseCase}).pipe(
+    const configFactory = new ConfigFactoryImpl()
+
+    const configRepository = {
+      asyncSaveOrUpdate: jest.fn()
+    }
+
+    const actions$ = of(actions.updateConfig(configData))
+    const result = await updateConfigEpic(actions$, {}, {general: {configFactory, configRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(updateConfigUseCase.execute).toBeCalledWith(new Request(config))
+    expect(configRepository.asyncSaveOrUpdate).toBeCalledWith(configFactory.createFromJson(configData))
 
     expect(result).toEqual([
       actions.updatingConfig(),
-      actions.configUpdated(config),
+      actions.configUpdated(configData),
     ])
   })
 })

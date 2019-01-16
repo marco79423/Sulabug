@@ -1,6 +1,6 @@
 import {concat, from, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
-import {filter, flatMap, map, mapTo} from 'rxjs/operators'
+import {filter, flatMap, map, mapTo, tap} from 'rxjs/operators'
 
 import {Request} from '../domain/base-types'
 import {actions, ActionTypes} from '../app/ducks/mainDuck'
@@ -115,15 +115,17 @@ export const handleDownloadTaskEpic = (action$, state$, {downloadComicUseCase}) 
   ))
 )
 
-export const updateConfigEpic = (action$, state$, {updateConfigUseCase}) => action$.pipe(
+export const updateConfigEpic = (action$, state$, {general: {configFactory, configRepository}}) => action$.pipe(
   ofType(
     ActionTypes.UPDATE_CONFIG
   ),
   map(action => action.payload),
+  map(rawConfig => configFactory.createFromJson(rawConfig)),
   flatMap(config => concat(
     of(actions.updatingConfig()),
-    updateConfigUseCase.execute(new Request(config)).pipe(
-      mapTo(actions.configUpdated(config))
+    of(config).pipe(
+      tap(configRepository.asyncSaveOrUpdate(config)),
+      mapTo(actions.configUpdated(config.serialize()))
     ),
   ))
 )
