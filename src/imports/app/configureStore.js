@@ -15,10 +15,13 @@ export default function configureStore() {
         configFactory: injector.get(generalTypes.ConfigFactory),
         configRepository: injector.get(generalTypes.ConfigRepository),
       },
-      // library
+      library: {
+        sfComicInfoQueryAdapter: injector.get(libraryTypes.SFComicInfoQueryAdapter),
+        comicInfoFactory: injector.get(libraryTypes.ComicInfoFactory),
+        comicInfoInfoRepository: injector.get(libraryTypes.ComicInfoInfoRepository),
+      },
       queryComicInfoByIdentityFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase),
       queryComicInfosFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase),
-      updateComicInfoDatabaseUseCase: injector.get(libraryTypes.UpdateComicInfoDatabaseUseCase),
       // downloader
       eventPublisher: injector.get(downloaderTypes.EventPublisher),
       createDownloadTaskUseCase: injector.get(downloaderTypes.CreateDownloadTaskUseCase),

@@ -20,6 +20,9 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
 import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
+import {ComicInfoRepository} from '../domain/library/interfaces/repositories'
+import {SFComicInfoQueryAdapter} from '../domain/library/interfaces/adapters'
+import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
 
 
 describe('initializeEpic', () => {
@@ -195,16 +198,40 @@ describe('changeCurrentPageEpic', () => {
 
 describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network automatically when the result of querying comic infos is empty', async () => {
-    const updateComicInfoDatabaseUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfo = comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdated: 'lastUpdated-1',
+        summary: 'summary-1',
+      })
+
+    const comicInfoInfoRepository: ComicInfoRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGetById: jest.fn(),
+      asyncGetAllBySearchTerm: jest.fn(),
+    }
+    const sfComicInfoQueryAdapter: SFComicInfoQueryAdapter = {
+      asyncGetComicInfos: jest.fn(() => Promise.resolve([comicInfo])),
     }
 
     const actions$ = of(actions.comicInfosFromDatabaseQueried([]))
-    const result = await updateComicInfoDatabaseEpic(actions$, {}, {updateComicInfoDatabaseUseCase}).pipe(
+    const result = await updateComicInfoDatabaseEpic(actions$, {}, {
+      library: {
+        comicInfoInfoRepository,
+        sfComicInfoQueryAdapter
+      }
+    }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(updateComicInfoDatabaseUseCase.execute).toBeCalled()
+    expect(sfComicInfoQueryAdapter.asyncGetComicInfos).toBeCalled()
+    expect(comicInfoInfoRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfo)
 
     expect(result).toEqual([
       actions.updatingComicInfoDatabase(),

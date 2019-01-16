@@ -9,7 +9,3 @@ export interface QueryComicInfoByIdentityFromDatabaseUseCase {
 export interface QueryComicInfosFromDatabaseUseCase {
   execute(request?: Request): Observable<Response>
 }
-
-export interface UpdateComicInfoDatabaseUseCase {
-  execute(): Observable<Response>
-}
