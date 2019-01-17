@@ -18,11 +18,11 @@ import {
 import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
-import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
+import ConfigFactory from '../domain/general/factories/ConfigFactory'
 import {IComicInfoRepository} from '../domain/library/interfaces'
 import {ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
-import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
-import DownloadTaskFactoryImpl from '../domain/downloader/factories/DownloadTaskFactoryImpl'
+import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
+import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import {IDownloadTaskRepository} from '../domain/downloader/interfaces'
 import {ISFComicDownloadAdapter} from '../domain/downloader/interfaces'
 
@@ -71,7 +71,7 @@ describe('queryConfigEpic', () => {
 
 describe('queryComicInfosFromDatabaseEpic', () => {
   it('will retrieve comic infos from database when getting query command', async () => {
-    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
       comicInfoFactory.createFromJson({
         id: 'id-1',
@@ -113,7 +113,7 @@ describe('queryComicInfosFromDatabaseEpic', () => {
   })
 
   it('will retrieve comic infos from database when database updated', async () => {
-    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
       comicInfoFactory.createFromJson({
         id: 'id-1',
@@ -155,7 +155,7 @@ describe('queryComicInfosFromDatabaseEpic', () => {
   })
 
   it('will retrieve comic infos by search term from database', async () => {
-    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
       comicInfoFactory.createFromJson({
         id: 'id-1',
@@ -208,7 +208,7 @@ describe('queryDownloadTasksEpic', () => {
       getAll: jest.fn(),
       delete: jest.fn(),
     }
-    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
@@ -244,7 +244,7 @@ describe('queryDownloadTasksEpic', () => {
       getAll: jest.fn(),
       delete: jest.fn(),
     }
-    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
@@ -280,7 +280,7 @@ describe('queryDownloadTasksEpic', () => {
       getAll: jest.fn(),
       delete: jest.fn(),
     }
-    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
@@ -326,7 +326,7 @@ describe('changeCurrentPageEpic', () => {
 
 describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network automatically when the result of querying comic infos is empty', async () => {
-    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfoFactory = new ComicInfoFactory()
     const comicInfo = comicInfoFactory.createFromJson({
       id: 'id-1',
       name: 'name-1',
@@ -371,7 +371,7 @@ describe('updateComicInfoDatabaseEpic', () => {
 describe('createDownloadTaskEpic', () => {
   it('will create download task by id', async () => {
 
-    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfoFactory = new ComicInfoFactory()
     const comicInfo = comicInfoFactory.createFromJson({
       id: 'id',
       name: 'name',
@@ -397,7 +397,7 @@ describe('createDownloadTaskEpic', () => {
       delete: jest.fn(),
     }
 
-    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: comicInfo.identity,
@@ -460,7 +460,7 @@ describe('handleDownloadTaskEpic', () => {
       delete: jest.fn(),
     }
 
-    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: 'id',
@@ -499,7 +499,7 @@ describe('updateConfigEpic', () => {
       downloadFolderPath: 'downloadFolderPath',
     }
 
-    const configFactory = new ConfigFactoryImpl()
+    const configFactory = new ConfigFactory()
 
     const configRepository = {
       asyncSaveOrUpdate: jest.fn()

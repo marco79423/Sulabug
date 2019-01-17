@@ -11,7 +11,7 @@ import {IConfigRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()
-export default class SFComicDownloadAdapterImpl implements ISFComicDownloadAdapter {
+export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   private readonly _configRepository: IConfigRepository
   private readonly _sfSourceSite: ISFSourceSite
   private readonly _fileHandler: IFileHandler

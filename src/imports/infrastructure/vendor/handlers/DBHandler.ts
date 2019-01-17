@@ -6,7 +6,7 @@ import {IDBHandler} from '../interfaces'
 RxDB.plugin(require('pouchdb-adapter-idb'))
 
 @injectable()
-export default class DBHandlerImpl implements IDBHandler {
+export default class DBHandler implements IDBHandler {
 
   private _database
 

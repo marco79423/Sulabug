@@ -8,7 +8,7 @@ import {IDownloadTaskRepository} from '../../../../domain/downloader/interfaces'
 
 
 @injectable()
-export default class DownloadTaskRepositoryImpl implements IDownloadTaskRepository {
+export default class DownloadTaskRepository implements IDownloadTaskRepository {
   private readonly _eventPublisher: EventPublisher
   private downloadTaskIds: string[] = []
   private downloadTaskMap = {}

@@ -4,7 +4,7 @@ import * as fs from 'fs-extra'
 import {IFileHandler} from '../interfaces'
 
 @injectable()
-export default class FileHandlerImpl implements IFileHandler {
+export default class FileHandler implements IFileHandler {
 
   async asyncEnsureDir(targetDirPath: string): Promise<void> {
     await fs.ensureDir(targetDirPath)

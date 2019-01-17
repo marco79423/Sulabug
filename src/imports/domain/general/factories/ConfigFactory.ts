@@ -4,7 +4,7 @@ import Config from '../entities/Config'
 import {IConfigFactory} from '../interfaces'
 
 @injectable()
-export default class ConfigFactoryImpl implements IConfigFactory {
+export default class ConfigFactory implements IConfigFactory {
 
   createFromJson(json: {
     downloadFolderPath: string,

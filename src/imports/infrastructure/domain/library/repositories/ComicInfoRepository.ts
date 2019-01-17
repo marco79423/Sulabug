@@ -10,7 +10,7 @@ import {ComicInfoCollection} from '../../../shared/database/collections'
 
 
 @injectable()
-export default class ComicInfoRepositoryImpl implements IComicInfoRepository {
+export default class ComicInfoRepository implements IComicInfoRepository {
   private readonly _comicInfoFactory: IComicInfoFactory
   private readonly _database: IDatabase
 

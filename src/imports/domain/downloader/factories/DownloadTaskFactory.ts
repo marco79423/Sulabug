@@ -7,7 +7,7 @@ import {IDownloadTaskRepository} from '../interfaces'
 
 
 @injectable()
-export default class DownloadTaskFactoryImpl implements IDownloadTaskFactory {
+export default class DownloadTaskFactory implements IDownloadTaskFactory {
   private readonly _downloadTaskRepository: IDownloadTaskRepository
 
   constructor(

@@ -5,7 +5,7 @@ import fetch from 'node-fetch'
 import {INetHandler} from '../interfaces'
 
 @injectable()
-export default class NetHandlerImpl implements INetHandler {
+export default class NetHandler implements INetHandler {
 
   async asyncGetText(targetUrl: string): Promise<string> {
     const response = await fetch(targetUrl)

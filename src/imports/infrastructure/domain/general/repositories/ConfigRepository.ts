@@ -8,7 +8,7 @@ import IDatabase from '../../../shared/interfaces'
 import {ConfigCollection} from '../../../shared/database/collections'
 
 @injectable()
-export default class ConfigRepositoryImpl implements IConfigRepository {
+export default class ConfigRepository implements IConfigRepository {
   defaultRawConfig = {
     downloadFolderPath: './comics',
   }

@@ -8,7 +8,7 @@ import {IComicInfoFactory} from '../../../../domain/library/interfaces'
 import {ISFSourceSite} from '../../../shared/interfaces'
 
 @injectable()
-export default class SFComicInfoQueryAdapterImpl implements ISFComicInfoQueryAdapter {
+export default class SFComicInfoQueryAdapter implements ISFComicInfoQueryAdapter {
   private readonly _comicInfoFactory: IComicInfoFactory
   private readonly _sfSourceSite: ISFSourceSite
 

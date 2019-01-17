@@ -10,7 +10,7 @@ function sleep(ms) {
 }
 
 @injectable()
-export default class DatabaseImpl implements IDatabase {
+export default class Database implements IDatabase {
 
   private readonly _dbHandler: IDBHandler
   private _created: boolean

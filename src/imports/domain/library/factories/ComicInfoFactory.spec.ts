@@ -1,6 +1,6 @@
-import ComicInfoFactoryImpl from './ComicInfoFactoryImpl'
+import ComicInfoFactory from './ComicInfoFactory'
 
-describe('ComicInfoFactoryImpl', () => {
+describe('ComicInfoFactory', () => {
   describe('createFromJson', () => {
     it('will generate a new ComicInfo instance from json data', () => {
       const jsonData = {
@@ -15,7 +15,7 @@ describe('ComicInfoFactoryImpl', () => {
         summary: 'summary',
       }
 
-      const factory = new ComicInfoFactoryImpl()
+      const factory = new ComicInfoFactory()
       const comicInfo = factory.createFromJson(jsonData)
       expect(comicInfo.identity).toBe(jsonData.id)
       expect(comicInfo.name).toBe(jsonData.name)

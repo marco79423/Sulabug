@@ -3,11 +3,11 @@ import 'reflect-metadata'
 import Config from '../../../../domain/general/entities/Config'
 import IDatabase from '../../../shared/interfaces'
 import {ConfigCollection} from '../../../shared/database/collections'
-import ConfigFactoryImpl from '../../../../domain/general/factories/ConfigFactoryImpl'
-import ConfigRepositoryImpl from './ConfigRepositoryImpl'
+import ConfigFactory from '../../../../domain/general/factories/ConfigFactory'
+import ConfigRepository from './ConfigRepository'
 
 
-describe('ConfigRepositoryImpl', () => {
+describe('ConfigRepository', () => {
   describe('asyncSaveOrUpdate', () => {
     it('will save or update the target config into repository', async () => {
 
@@ -15,7 +15,7 @@ describe('ConfigRepositoryImpl', () => {
         'comicsFolder'
       )
 
-      const configFactory = new ConfigFactoryImpl()
+      const configFactory = new ConfigFactory()
 
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
@@ -23,12 +23,12 @@ describe('ConfigRepositoryImpl', () => {
         asyncFindOne: jest.fn(),
       }
 
-      const configRepositoryImpl = new ConfigRepositoryImpl(
+      const configRepository = new ConfigRepository(
         configFactory,
         database
       )
 
-      await configRepositoryImpl.asyncSaveOrUpdate(config)
+      await configRepository.asyncSaveOrUpdate(config)
 
       expect(database.asyncSaveOrUpdate).toBeCalledWith(ConfigCollection.name, {
         id: 'default',
@@ -44,7 +44,7 @@ describe('ConfigRepositoryImpl', () => {
         'comicsFolder'
       )
 
-      const configFactory = new ConfigFactoryImpl()
+      const configFactory = new ConfigFactory()
 
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
@@ -52,19 +52,19 @@ describe('ConfigRepositoryImpl', () => {
         asyncFindOne: jest.fn(() => config.serialize()),
       }
 
-      const configRepositoryImpl = new ConfigRepositoryImpl(
+      const configRepository = new ConfigRepository(
         configFactory,
         database
       )
 
-      const result = await configRepositoryImpl.asyncGet()
+      const result = await configRepository.asyncGet()
 
       expect(database.asyncFindOne).toBeCalledWith(ConfigCollection.name)
       expect(result.serialize()).toEqual(config.serialize())
     })
 
     it('will insert default config before get config from repository', async () => {
-      const configFactory = new ConfigFactoryImpl()
+      const configFactory = new ConfigFactory()
 
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
@@ -72,20 +72,20 @@ describe('ConfigRepositoryImpl', () => {
         asyncFindOne: jest.fn(() => null),
       }
 
-      const configRepositoryImpl = new ConfigRepositoryImpl(
+      const configRepository = new ConfigRepository(
         configFactory,
         database
       )
 
-      const result = await configRepositoryImpl.asyncGet()
+      const result = await configRepository.asyncGet()
 
       expect(database.asyncFindOne).toBeCalledWith(ConfigCollection.name)
       expect(database.asyncSaveOrUpdate).toBeCalledWith(ConfigCollection.name, {
         id: 'default',
-        ...configRepositoryImpl.defaultRawConfig,
+        ...configRepository.defaultRawConfig,
       })
 
-      expect(result.serialize()).toEqual(configRepositoryImpl.defaultRawConfig)
+      expect(result.serialize()).toEqual(configRepository.defaultRawConfig)
     })
   })
 })

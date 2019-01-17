@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 
-import DownloadTaskFactoryImpl from './DownloadTaskFactoryImpl'
+import DownloadTaskFactory from './DownloadTaskFactory'
 import {IDownloadTaskRepository} from '../interfaces'
 
-describe('DownloadTaskFactoryImpl', () => {
+describe('DownloadTaskFactory', () => {
   describe('createFromJson', () => {
     it('will generate a new DownloadTask instance from json data', () => {
       const downloadTaskRepository: IDownloadTaskRepository = {
@@ -20,7 +20,7 @@ describe('DownloadTaskFactoryImpl', () => {
         sourceUrl: 'sourceUrl',
       }
 
-      const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+      const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
       const downloadTask = downloadTaskFactory.createFromJson(jsonData)
       expect(downloadTask.identity).toBe(jsonData.id)
       expect(downloadTask.name).toBe(jsonData.name)
