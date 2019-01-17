@@ -79,16 +79,22 @@ export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInf
 )
 
 
-export const createDownloadTaskEpic = (action$, state$, {createDownloadTaskUseCase}) => action$.pipe(
+export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfoRepository}, downloader: {downloadTaskFactory, downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.CREATE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
-  flatMap(comicIInfoId => concat(
+  flatMap(comicInfoId => concat(
     of(actions.creatingDownloadTask()),
-    createDownloadTaskUseCase.execute(new Request(comicIInfoId)).pipe(
-      map(res => res.data),
-      map(downloadTask => actions.downloadTaskCreated(downloadTask)),
+    from(comicInfoInfoRepository.asyncGetById(comicInfoId)).pipe(
+      map(comicInfo => downloadTaskFactory.createFromJson({
+        id: comicInfo.identity,
+        name: comicInfo.name,
+        coverDataUrl: comicInfo.coverDataUrl,
+        sourceUrl: comicInfo.pageUrl,
+      })),
+      tap(downloadTask => downloadTaskRepository.saveOrUpdate(downloadTask)),
+      map(downloadTask => actions.downloadTaskCreated(downloadTask.serialize())),
     ),
   ))
 )

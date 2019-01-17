@@ -20,9 +20,13 @@ export default function configureStore() {
         comicInfoFactory: injector.get(libraryTypes.ComicInfoFactory),
         comicInfoInfoRepository: injector.get(libraryTypes.ComicInfoInfoRepository),
       },
-      // downloader
+      downloader: {
+        eventPublisher: injector.get(downloaderTypes.EventPublisher),
+        sfComicDownloadAdapter: injector.get(downloaderTypes.SFComicDownloadAdapter),
+        downloadTaskFactory: injector.get(downloaderTypes.DownloadTaskFactory),
+        downloadTaskRepository: injector.get(downloaderTypes.DownloadTaskRepository),
+      },
       eventPublisher: injector.get(downloaderTypes.EventPublisher),
-      createDownloadTaskUseCase: injector.get(downloaderTypes.CreateDownloadTaskUseCase),
       deleteDownloadTaskUseCase: injector.get(downloaderTypes.DeleteDownloadTaskUseCase),
       downloadComicUseCase: injector.get(downloaderTypes.DownloadComicUseCase),
       queryDownloadTasksUseCase: injector.get(downloaderTypes.QueryDownloadTasksUseCase),

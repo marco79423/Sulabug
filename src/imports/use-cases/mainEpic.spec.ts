@@ -23,6 +23,8 @@ import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
 import {ComicInfoRepository} from '../domain/library/interfaces/repositories'
 import {SFComicInfoQueryAdapter} from '../domain/library/interfaces/adapters'
 import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
+import DownloadTaskFactoryImpl from '../domain/downloader/factories/DownloadTaskFactoryImpl'
+import {DownloadTaskRepository} from '../domain/downloader/interfaces/repositories'
 
 
 describe('initializeEpic', () => {
@@ -142,7 +144,7 @@ describe('queryComicInfosFromDatabaseEpic', () => {
     }
 
     const actions$ = of(actions.comicInfoDatabaseUpdated())
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {},  {library: {comicInfoInfoRepository}}).pipe(
+    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
       toArray(),
     ).toPromise()
 
@@ -272,16 +274,16 @@ describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network automatically when the result of querying comic infos is empty', async () => {
     const comicInfoFactory = new ComicInfoFactoryImpl()
     const comicInfo = comicInfoFactory.createFromJson({
-        id: 'id-1',
-        name: 'name-1',
-        coverDataUrl: 'coverDataUrl-1',
-        source: 'source-1',
-        pageUrl: 'pageUrl-1',
-        catalog: 'catalog-1',
-        author: 'author-1',
-        lastUpdated: 'lastUpdated-1',
-        summary: 'summary-1',
-      })
+      id: 'id-1',
+      name: 'name-1',
+      coverDataUrl: 'coverDataUrl-1',
+      source: 'source-1',
+      pageUrl: 'pageUrl-1',
+      catalog: 'catalog-1',
+      author: 'author-1',
+      lastUpdated: 'lastUpdated-1',
+      summary: 'summary-1',
+    })
 
     const comicInfoInfoRepository: ComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
@@ -314,22 +316,56 @@ describe('updateComicInfoDatabaseEpic', () => {
 
 describe('createDownloadTaskEpic', () => {
   it('will create download task by id', async () => {
-    const downloadTask = {}
 
-    const createDownloadTaskUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTask))),
+    const comicInfoFactory = new ComicInfoFactoryImpl()
+    const comicInfo = comicInfoFactory.createFromJson({
+      id: 'id',
+      name: 'name',
+      coverDataUrl: 'coverDataUrl',
+      source: 'source',
+      pageUrl: 'pageUrl',
+      catalog: 'catalog',
+      author: 'author',
+      lastUpdated: 'lastUpdated',
+      summary: 'summary',
+    })
+
+    const comicInfoInfoRepository: ComicInfoRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
+      asyncGetAllBySearchTerm: jest.fn(),
     }
 
-    const actions$ = of(actions.createDownloadTask('comicInfoId'))
-    const result = await createDownloadTaskEpic(actions$, {}, {createDownloadTaskUseCase}).pipe(
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
+    }
+
+    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+
+    const downloadTask = downloadTaskFactory.createFromJson({
+      id: comicInfo.identity,
+      name: comicInfo.name,
+      coverDataUrl: comicInfo.coverDataUrl,
+      sourceUrl: comicInfo.pageUrl,
+    })
+
+    const actions$ = of(actions.createDownloadTask(comicInfo.identity))
+    const result = await createDownloadTaskEpic(actions$, {}, {
+      library: {comicInfoInfoRepository},
+      downloader: {downloadTaskFactory, downloadTaskRepository}
+    }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(createDownloadTaskUseCase.execute).toBeCalledWith(new Request('comicInfoId'))
+    expect(comicInfoInfoRepository.asyncGetById).toBeCalledWith(comicInfo.identity)
+    expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
       actions.creatingDownloadTask(),
-      actions.downloadTaskCreated(downloadTask),
+      actions.downloadTaskCreated(downloadTask.serialize()),
     ])
   })
 })

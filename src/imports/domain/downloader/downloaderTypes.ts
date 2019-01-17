@@ -9,7 +9,6 @@ export default {
 
   SFDownloadComicService: Symbol('Domain/Downloader/SFDownloadComicService'),
 
-  CreateDownloadTaskUseCase: Symbol('Domain/Downloader/CreateDownloadTaskUseCase'),
   DeleteDownloadTaskUseCase: Symbol('Domain/Downloader/DeleteDownloadTaskUseCase'),
   DownloadComicUseCase: Symbol('Domain/Downloader/DownloadComicUseCase'),
   QueryDownloadTasksUseCase: Symbol('Domain/Downloader/QueryDownloadTasksUseCase'),
