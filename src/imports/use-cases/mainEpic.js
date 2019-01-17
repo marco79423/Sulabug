@@ -110,7 +110,7 @@ export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTa
   ))
 )
 
-export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository, sfComicDownloadAdapter}}) => action$.pipe(
+export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository, downloadComicService}}) => action$.pipe(
   ofType(
     ActionTypes.DOWNLOAD_TASK_CREATED,
   ),
@@ -119,7 +119,7 @@ export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTa
     of(actions.downloadingComic()),
     of(downloadTaskRepository.getById(rawDownloadTask.id)).pipe(
       tap(async (downloadTask) => {
-        await sfComicDownloadAdapter.asyncDownload(downloadTask)
+        await downloadComicService.asyncDownload(downloadTask)
       }),
       mapTo(actions.comicDownloaded())
     ),

@@ -22,3 +22,7 @@ export interface IDownloadTaskRepository {
 
   delete(identity: string): void
 }
+
+export interface IDownloadComicService {
+   asyncDownload(downloadTask: DownloadTask): Promise<void>
+}

@@ -19,12 +19,10 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
 import ConfigFactory from '../domain/general/factories/ConfigFactory'
-import {IComicInfoRepository} from '../domain/library/interfaces'
-import {ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
+import {IComicInfoRepository, ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
-import {IDownloadTaskRepository} from '../domain/downloader/interfaces'
-import {ISFComicDownloadAdapter} from '../domain/downloader/interfaces'
+import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
 
 
 describe('initializeEpic', () => {
@@ -452,7 +450,7 @@ describe('deleteDownloadTaskEpic', () => {
 
 
 describe('handleDownloadTaskEpic', () => {
-  it('will handle delete download tasks after a download created', async () => {
+  it('will download comic after a download created', async () => {
     const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
@@ -470,7 +468,7 @@ describe('handleDownloadTaskEpic', () => {
     })
     downloadTaskRepository.getById = jest.fn(() => downloadTask)
 
-    const sfComicDownloadAdapter: ISFComicDownloadAdapter = {
+    const downloadComicService: IDownloadComicService = {
       asyncDownload: jest.fn(),
     }
 
@@ -478,13 +476,13 @@ describe('handleDownloadTaskEpic', () => {
     const result = await handleDownloadTaskEpic(actions$, {}, {
       downloader: {
         downloadTaskRepository,
-        sfComicDownloadAdapter
+        downloadComicService
       }
     }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(sfComicDownloadAdapter.asyncDownload).toBeCalledWith(downloadTask)
+    expect(downloadComicService.asyncDownload).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
       actions.downloadingComic(),

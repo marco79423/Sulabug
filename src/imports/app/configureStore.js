@@ -21,10 +21,9 @@ export default function configureStore() {
         comicInfoInfoRepository: injector.get(libraryTypes.ComicInfoInfoRepository),
       },
       downloader: {
-        eventPublisher: injector.get(downloaderTypes.EventPublisher),
-        sfComicDownloadAdapter: injector.get(downloaderTypes.SFComicDownloadAdapter),
         downloadTaskFactory: injector.get(downloaderTypes.DownloadTaskFactory),
         downloadTaskRepository: injector.get(downloaderTypes.DownloadTaskRepository),
+        downloadComicService: injector.get(downloaderTypes.DownloadComicService),
       },
       eventPublisher: injector.get(downloaderTypes.EventPublisher),
     }

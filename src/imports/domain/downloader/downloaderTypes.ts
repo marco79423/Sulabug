@@ -6,4 +6,6 @@ export default {
   DownloadTaskFactory: Symbol('Domain/Downloader/DownloadTaskFactory'),
 
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
+
+  DownloadComicService: Symbol('Domain/Downloader/DownloadComicService'),
 }
