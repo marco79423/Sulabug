@@ -39,7 +39,7 @@ export const queryComicInfosFromDatabaseEpic = (action$, state$, {library: {comi
   ))
 )
 
-export const queryDownloadTasksEpic = (action$, state$, {queryDownloadTasksUseCase}) => action$.pipe(
+export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_DOWNLOAD_TASKS,
     ActionTypes.DOWNLOAD_TASK_CREATED,
@@ -47,11 +47,10 @@ export const queryDownloadTasksEpic = (action$, state$, {queryDownloadTasksUseCa
   ),
   flatMap(() => concat(
     of(actions.queryingDownloadTasks()),
-    queryDownloadTasksUseCase.execute().pipe(
-      map(res => res.data),
-      map(downloadTasks => actions.downloadTasksQueried(downloadTasks))),
-    ),
-  )
+    of(downloadTaskRepository.getAll()).pipe(
+      map(downloadTasks => actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize()))),
+    )
+  ))
 )
 
 export const changeCurrentPageEpic = action$ => action$.pipe(

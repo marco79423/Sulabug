@@ -5,9 +5,8 @@ import EventPublisher from './event/EventPublisher'
 import {SFComicDownloadAdapter} from './interfaces/adapters'
 import {DownloadTaskFactory} from './interfaces/factories'
 import {DownloadTaskRepository} from './interfaces/repositories'
-import {DeleteDownloadTaskUseCase, DownloadComicUseCase, QueryDownloadTasksUseCase} from './interfaces/use-cases'
+import {DeleteDownloadTaskUseCase, DownloadComicUseCase} from './interfaces/use-cases'
 import DeleteDownloadTaskUseCaseImpl from './use-cases/DeleteDownloadTaskUseCaseImpl'
-import QueryDownloadTasksUseCaseImpl from './use-cases/QueryDownloadTasksUseCaseImpl'
 import DownloadComicUseCaseImpl from './use-cases/DownloadComicUseCaseImpl'
 import DownloadTaskRepositoryImpl from '../../infrastructure/domain/downloader/repositories/DownloadTaskRepositoryImpl'
 import DownloadTaskFactoryImpl from './factories/DownloadTaskFactoryImpl'
@@ -24,7 +23,6 @@ downloaderInjector.bind<DownloadTaskFactory>(downloaderTypes.DownloadTaskFactory
 downloaderInjector.bind<DownloadTaskRepository>(downloaderTypes.DownloadTaskRepository).to(DownloadTaskRepositoryImpl).inSingletonScope()
 
 downloaderInjector.bind<DeleteDownloadTaskUseCase>(downloaderTypes.DeleteDownloadTaskUseCase).to(DeleteDownloadTaskUseCaseImpl).inSingletonScope()
-downloaderInjector.bind<QueryDownloadTasksUseCase>(downloaderTypes.QueryDownloadTasksUseCase).to(QueryDownloadTasksUseCaseImpl).inSingletonScope()
 downloaderInjector.bind<DownloadComicUseCase>(downloaderTypes.DownloadComicUseCase).to(DownloadComicUseCaseImpl).inSingletonScope()
 
 export default downloaderInjector

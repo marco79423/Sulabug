@@ -11,5 +11,4 @@ export default {
 
   DeleteDownloadTaskUseCase: Symbol('Domain/Downloader/DeleteDownloadTaskUseCase'),
   DownloadComicUseCase: Symbol('Domain/Downloader/DownloadComicUseCase'),
-  QueryDownloadTasksUseCase: Symbol('Domain/Downloader/QueryDownloadTasksUseCase'),
 }

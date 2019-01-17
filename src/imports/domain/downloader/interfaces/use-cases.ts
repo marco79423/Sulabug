@@ -9,7 +9,3 @@ export interface DeleteDownloadTaskUseCase{
 export interface DownloadComicUseCase{
   execute(request: Request): Observable<Response>
 }
-
-export interface QueryDownloadTasksUseCase{
-  execute(): Observable<Response>
-}

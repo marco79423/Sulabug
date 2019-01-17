@@ -202,56 +202,110 @@ describe('queryComicInfosFromDatabaseEpic', () => {
 
 describe('queryDownloadTasksEpic', () => {
   it('will retrieve download tasks from database', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
+    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
 
     const actions$ = of(actions.queryDownloadTasks())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
+    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
       actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
+      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
     ])
   })
 
   it('will retrieve download tasks again after a new download task created', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
+    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
 
     const actions$ = of(actions.downloadTaskCreated())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
+    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
       actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
+      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
     ])
   })
 
   it('will retrieve download tasks again after a new download task downloaded', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
+    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
 
     const actions$ = of(actions.comicDownloaded())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
+    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
       actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
+      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
     ])
   })
 })
