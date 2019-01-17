@@ -3,7 +3,7 @@ import {inject, injectable} from 'inversify'
 import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
-import Database from '../../../shared/interfaces/Database'
+import IDatabase from '../../../shared/interfaces'
 import {IComicInfoFactory} from '../../../../domain/library/interfaces'
 import {IComicInfoRepository} from '../../../../domain/library/interfaces'
 import {ComicInfoCollection} from '../../../shared/database/collections'
@@ -12,11 +12,11 @@ import {ComicInfoCollection} from '../../../shared/database/collections'
 @injectable()
 export default class ComicInfoRepositoryImpl implements IComicInfoRepository {
   private readonly _comicInfoFactory: IComicInfoFactory
-  private readonly _database: Database
+  private readonly _database: IDatabase
 
   public constructor(
     @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
-    @inject(infraTypes.Database) database: Database,
+    @inject(infraTypes.Database) database: IDatabase,
   ) {
     this._comicInfoFactory = comicInfoFactory
     this._database = database

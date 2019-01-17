@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 
-import Database from '../../../shared/interfaces/Database'
+import IDatabase from '../../../shared/interfaces'
 import {ComicInfoCollection} from '../../../shared/database/collections'
 import ComicInfoFactoryImpl from '../../../../domain/library/factories/ComicInfoFactoryImpl'
 import ComicInfoRepositoryImpl from './ComicInfoRepositoryImpl'
@@ -22,7 +22,7 @@ describe('ComicInfoRepositoryImpl', () => {
         summary: 'summary',
       })
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(),
@@ -55,7 +55,7 @@ describe('ComicInfoRepositoryImpl', () => {
         summary: 'summary',
       })
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(() => comicInfo.serialize()),
@@ -78,7 +78,7 @@ describe('ComicInfoRepositoryImpl', () => {
     it('will get null when there is no comic info with the same id', async () => {
       const comicInfoFactory = new ComicInfoFactoryImpl()
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(() => null),
@@ -114,7 +114,7 @@ describe('ComicInfoRepositoryImpl', () => {
         summary: 'summary',
       })
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(() => [comicInfo.serialize()]),
         asyncFindOne: jest.fn(),

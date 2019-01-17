@@ -1,4 +1,4 @@
-export interface DBHandler {
+export interface IDBHandler {
 
   asyncCreate(databaseName: string, collections: any[]): Promise<void>
 
@@ -9,7 +9,7 @@ export interface DBHandler {
   asyncFindOne(collectionName: string, filter): Promise<any>
 }
 
-export interface FileHandler {
+export interface IFileHandler {
 
   asyncEnsureDir(targetDirPath: string): Promise<void>
 
@@ -20,7 +20,7 @@ export interface FileHandler {
   asyncPathExists(targetPath: string): Promise<boolean>
 }
 
-export interface NetHandler {
+export interface INetHandler {
 
   asyncGetText(targetUrl: string): Promise<string>
 

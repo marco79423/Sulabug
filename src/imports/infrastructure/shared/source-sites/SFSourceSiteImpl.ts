@@ -1,16 +1,16 @@
 import {inject, injectable} from 'inversify'
 import * as cheerio from 'cheerio'
 
-import {SFSourceSite} from '../interfaces/source-sites'
-import {NetHandler} from '../../vendor/interfaces/handlers'
+import {ISFSourceSite} from '../interfaces'
+import {INetHandler} from '../../vendor/interfaces'
 import infraTypes from '../../infraTypes'
 
 @injectable()
-export default class SFSourceSiteImpl implements SFSourceSite {
-  private readonly _netHandler: NetHandler
+export default class SFSourceSiteImpl implements ISFSourceSite {
+  private readonly _netHandler: INetHandler
 
   public constructor(
-    @inject(infraTypes.NetHandler) netHandler: NetHandler,
+    @inject(infraTypes.NetHandler) netHandler: INetHandler,
   ) {
     this._netHandler = netHandler
   }

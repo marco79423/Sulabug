@@ -1,10 +1,10 @@
 import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 
-import {FileHandler} from '../interfaces/handlers'
+import {IFileHandler} from '../interfaces'
 
 @injectable()
-export default class FileHandlerImpl implements FileHandler {
+export default class FileHandlerImpl implements IFileHandler {
 
   async asyncEnsureDir(targetDirPath: string): Promise<void> {
     await fs.ensureDir(targetDirPath)

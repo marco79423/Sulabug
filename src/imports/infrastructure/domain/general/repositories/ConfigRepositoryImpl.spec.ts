@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
 import Config from '../../../../domain/general/entities/Config'
-import Database from '../../../shared/interfaces/Database'
+import IDatabase from '../../../shared/interfaces'
 import {ConfigCollection} from '../../../shared/database/collections'
 import ConfigFactoryImpl from '../../../../domain/general/factories/ConfigFactoryImpl'
 import ConfigRepositoryImpl from './ConfigRepositoryImpl'
@@ -17,7 +17,7 @@ describe('ConfigRepositoryImpl', () => {
 
       const configFactory = new ConfigFactoryImpl()
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(),
@@ -46,7 +46,7 @@ describe('ConfigRepositoryImpl', () => {
 
       const configFactory = new ConfigFactoryImpl()
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(() => config.serialize()),
@@ -66,7 +66,7 @@ describe('ConfigRepositoryImpl', () => {
     it('will insert default config before get config from repository', async () => {
       const configFactory = new ConfigFactoryImpl()
 
-      const database: Database = {
+      const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
         asyncFindOne: jest.fn(() => null),

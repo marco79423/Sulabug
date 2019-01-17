@@ -5,23 +5,23 @@ import generalTypes from '../../../../domain/general/generalTypes'
 import infraTypes from '../../../infraTypes'
 import {ISFComicDownloadAdapter} from '../../../../domain/downloader/interfaces'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
-import {SFSourceSite} from '../../../shared/interfaces/source-sites'
-import {FileHandler, NetHandler} from '../../../vendor/interfaces/handlers'
+import {ISFSourceSite} from '../../../shared/interfaces'
+import {IFileHandler, INetHandler} from '../../../vendor/interfaces'
 import {IConfigRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()
 export default class SFComicDownloadAdapterImpl implements ISFComicDownloadAdapter {
   private readonly _configRepository: IConfigRepository
-  private readonly _sfSourceSite: SFSourceSite
-  private readonly _fileHandler: FileHandler
-  private readonly _netHandler: NetHandler
+  private readonly _sfSourceSite: ISFSourceSite
+  private readonly _fileHandler: IFileHandler
+  private readonly _netHandler: INetHandler
 
   public constructor(
     @inject(generalTypes.ConfigRepository) configRepository: IConfigRepository,
-    @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
-    @inject(infraTypes.FileHandler) fileHandler: FileHandler,
-    @inject(infraTypes.NetHandler) netHandler: NetHandler,
+    @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
+    @inject(infraTypes.FileHandler) fileHandler: IFileHandler,
+    @inject(infraTypes.NetHandler) netHandler: INetHandler,
   ) {
     this._configRepository = configRepository
     this._sfSourceSite = sfSourceSite

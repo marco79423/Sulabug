@@ -1,22 +1,22 @@
 import {inject, injectable} from 'inversify'
 
-import {DBHandler} from '../../vendor/interfaces/handlers'
+import {IDBHandler} from '../../vendor/interfaces'
 import infraTypes from '../../infraTypes'
 import collections from './collections'
-import Database from '../interfaces/Database'
+import IDatabase from '../interfaces'
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 @injectable()
-export default class DatabaseImpl implements Database {
+export default class DatabaseImpl implements IDatabase {
 
-  private readonly _dbHandler: DBHandler
+  private readonly _dbHandler: IDBHandler
   private _created: boolean
 
   public constructor(
-    @inject(infraTypes.DBHandler) dbHandler: DBHandler,
+    @inject(infraTypes.DBHandler) dbHandler: IDBHandler,
   ) {
     this._dbHandler = dbHandler
     this._created = false

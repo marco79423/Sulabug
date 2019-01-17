@@ -5,16 +5,16 @@ import infraTypes from '../../../infraTypes'
 import {ISFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
 import {IComicInfoFactory} from '../../../../domain/library/interfaces'
-import {SFSourceSite} from '../../../shared/interfaces/source-sites'
+import {ISFSourceSite} from '../../../shared/interfaces'
 
 @injectable()
 export default class SFComicInfoQueryAdapterImpl implements ISFComicInfoQueryAdapter {
   private readonly _comicInfoFactory: IComicInfoFactory
-  private readonly _sfSourceSite: SFSourceSite
+  private readonly _sfSourceSite: ISFSourceSite
 
   public constructor(
     @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
-    @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
+    @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
   ) {
     this._comicInfoFactory = comicInfoFactory
     this._sfSourceSite = sfSourceSite

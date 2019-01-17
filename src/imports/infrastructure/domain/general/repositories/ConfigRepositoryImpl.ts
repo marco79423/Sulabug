@@ -4,7 +4,7 @@ import generalTypes from '../../../../domain/general/generalTypes'
 import {IConfigFactory} from '../../../../domain/general/interfaces'
 import {IConfigRepository} from '../../../../domain/general/interfaces'
 import infraTypes from '../../../infraTypes'
-import Database from '../../../shared/interfaces/Database'
+import IDatabase from '../../../shared/interfaces'
 import {ConfigCollection} from '../../../shared/database/collections'
 
 @injectable()
@@ -13,11 +13,11 @@ export default class ConfigRepositoryImpl implements IConfigRepository {
     downloadFolderPath: './comics',
   }
   private readonly _configFactory: IConfigFactory
-  private readonly _database: Database
+  private readonly _database: IDatabase
 
   public constructor(
     @inject(generalTypes.ConfigFactory) configFactory: IConfigFactory,
-    @inject(infraTypes.Database) database: Database,
+    @inject(infraTypes.Database) database: IDatabase,
   ) {
     this._configFactory = configFactory
     this._database = database

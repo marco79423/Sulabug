@@ -2,10 +2,10 @@ import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 import fetch from 'node-fetch'
 
-import {NetHandler} from '../interfaces/handlers'
+import {INetHandler} from '../interfaces'
 
 @injectable()
-export default class NetHandlerImpl implements NetHandler {
+export default class NetHandlerImpl implements INetHandler {
 
   async asyncGetText(targetUrl: string): Promise<string> {
     const response = await fetch(targetUrl)
