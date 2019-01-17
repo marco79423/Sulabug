@@ -2,13 +2,13 @@ import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
-import {DownloadTaskFactory} from '../interfaces'
-import {DownloadTaskRepository} from '../interfaces'
+import {IDownloadTaskFactory} from '../interfaces'
+import {IDownloadTaskRepository} from '../interfaces'
 
 
 @injectable()
-export default class DownloadTaskFactoryImpl implements DownloadTaskFactory {
-  private readonly _downloadTaskRepository: DownloadTaskRepository
+export default class DownloadTaskFactoryImpl implements IDownloadTaskFactory {
+  private readonly _downloadTaskRepository: IDownloadTaskRepository
 
   constructor(
     @inject(downloaderTypes.DownloadTaskRepository) downloadTaskRepository

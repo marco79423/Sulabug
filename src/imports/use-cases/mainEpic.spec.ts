@@ -19,12 +19,12 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
 import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
-import {ComicInfoRepository} from '../domain/library/interfaces'
-import {SFComicInfoQueryAdapter} from '../domain/library/interfaces'
+import {IComicInfoRepository} from '../domain/library/interfaces'
+import {ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
 import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
 import DownloadTaskFactoryImpl from '../domain/downloader/factories/DownloadTaskFactoryImpl'
-import {DownloadTaskRepository} from '../domain/downloader/interfaces'
-import {SFComicDownloadAdapter} from '../domain/downloader/interfaces'
+import {IDownloadTaskRepository} from '../domain/downloader/interfaces'
+import {ISFComicDownloadAdapter} from '../domain/downloader/interfaces'
 
 
 describe('initializeEpic', () => {
@@ -202,7 +202,7 @@ describe('queryComicInfosFromDatabaseEpic', () => {
 
 describe('queryDownloadTasksEpic', () => {
   it('will retrieve download tasks from database', async () => {
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -238,7 +238,7 @@ describe('queryDownloadTasksEpic', () => {
   })
 
   it('will retrieve download tasks again after a new download task created', async () => {
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -274,7 +274,7 @@ describe('queryDownloadTasksEpic', () => {
   })
 
   it('will retrieve download tasks again after a new download task downloaded', async () => {
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -339,12 +339,12 @@ describe('updateComicInfoDatabaseEpic', () => {
       summary: 'summary-1',
     })
 
-    const comicInfoInfoRepository: ComicInfoRepository = {
+    const comicInfoInfoRepository: IComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
       asyncGetById: jest.fn(),
       asyncGetAllBySearchTerm: jest.fn(),
     }
-    const sfComicInfoQueryAdapter: SFComicInfoQueryAdapter = {
+    const sfComicInfoQueryAdapter: ISFComicInfoQueryAdapter = {
       asyncGetComicInfos: jest.fn(() => Promise.resolve([comicInfo])),
     }
 
@@ -384,13 +384,13 @@ describe('createDownloadTaskEpic', () => {
       summary: 'summary',
     })
 
-    const comicInfoInfoRepository: ComicInfoRepository = {
+    const comicInfoInfoRepository: IComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
       asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
       asyncGetAllBySearchTerm: jest.fn(),
     }
 
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -429,7 +429,7 @@ describe('deleteDownloadTaskEpic', () => {
   it('will delete download task by id', async () => {
     const downloadTaskId = 'downloadTaskId'
 
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -453,7 +453,7 @@ describe('deleteDownloadTaskEpic', () => {
 
 describe('handleDownloadTaskEpic', () => {
   it('will handle delete download tasks after a download created', async () => {
-    const downloadTaskRepository: DownloadTaskRepository = {
+    const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
       getAll: jest.fn(),
@@ -470,7 +470,7 @@ describe('handleDownloadTaskEpic', () => {
     })
     downloadTaskRepository.getById = jest.fn(() => downloadTask)
 
-    const sfComicDownloadAdapter: SFComicDownloadAdapter = {
+    const sfComicDownloadAdapter: ISFComicDownloadAdapter = {
       asyncDownload: jest.fn(),
     }
 

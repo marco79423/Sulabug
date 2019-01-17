@@ -1,12 +1,12 @@
 import 'reflect-metadata'
 
 import DownloadTaskFactoryImpl from './DownloadTaskFactoryImpl'
-import {DownloadTaskRepository} from '../interfaces'
+import {IDownloadTaskRepository} from '../interfaces'
 
 describe('DownloadTaskFactoryImpl', () => {
   describe('createFromJson', () => {
     it('will generate a new DownloadTask instance from json data', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),

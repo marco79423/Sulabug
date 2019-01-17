@@ -2,18 +2,18 @@ import {inject, injectable} from 'inversify'
 
 import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
-import {SFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
+import {ISFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
-import {ComicInfoFactory} from '../../../../domain/library/interfaces'
+import {IComicInfoFactory} from '../../../../domain/library/interfaces'
 import {SFSourceSite} from '../../../shared/interfaces/source-sites'
 
 @injectable()
-export default class SFComicInfoQueryAdapterImpl implements SFComicInfoQueryAdapter {
-  private readonly _comicInfoFactory: ComicInfoFactory
+export default class SFComicInfoQueryAdapterImpl implements ISFComicInfoQueryAdapter {
+  private readonly _comicInfoFactory: IComicInfoFactory
   private readonly _sfSourceSite: SFSourceSite
 
   public constructor(
-    @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
+    @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
     @inject(infraTypes.SFSourceSite) sfSourceSite: SFSourceSite,
   ) {
     this._comicInfoFactory = comicInfoFactory

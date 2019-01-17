@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 
 import {injectable} from 'inversify'
-import {ComicInfoFactory} from '../interfaces'
+import {IComicInfoFactory} from '../interfaces'
 import ComicInfo from '../entities/ComicInfo'
 
 @injectable()
-export default class ComicInfoFactoryImpl implements ComicInfoFactory {
+export default class ComicInfoFactoryImpl implements IComicInfoFactory {
 
   createFromJson(json: {
     id: string,

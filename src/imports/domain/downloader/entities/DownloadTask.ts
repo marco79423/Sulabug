@@ -1,5 +1,5 @@
 import {Entity} from '../../base-types'
-import {DownloadTaskRepository} from '../interfaces'
+import {IDownloadTaskRepository} from '../interfaces'
 
 
 export enum DownloadStatus {
@@ -10,7 +10,7 @@ export enum DownloadStatus {
 }
 
 export default class DownloadTask extends Entity {
-  private _downloadTaskRepository: DownloadTaskRepository
+  private _downloadTaskRepository: IDownloadTaskRepository
 
   public readonly name: string
   public readonly coverDataUrl: string
@@ -23,7 +23,7 @@ export default class DownloadTask extends Entity {
     name: string,
     coverDataUrl: string,
     sourceUrl: string,
-    downloadTaskRepository: DownloadTaskRepository
+    downloadTaskRepository: IDownloadTaskRepository
   ) {
     super(identity)
     this.name = name

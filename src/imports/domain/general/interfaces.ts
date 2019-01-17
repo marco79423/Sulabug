@@ -1,12 +1,12 @@
 import Config from './entities/Config'
 
-export interface ConfigFactory {
+export interface IConfigFactory {
   createFromJson(json: {
     downloadFolderPath: string,
   }): Config
 }
 
-export interface ConfigRepository {
+export interface IConfigRepository {
 
   asyncSaveOrUpdate(config: Config): Promise<void>
 

@@ -1,9 +1,9 @@
 import {Container} from 'inversify'
 
 import libraryTypes from './libraryTypes'
-import {SFComicInfoQueryAdapter} from './interfaces'
-import {ComicInfoFactory} from './interfaces'
-import {ComicInfoRepository} from './interfaces'
+import {ISFComicInfoQueryAdapter} from './interfaces'
+import {IComicInfoFactory} from './interfaces'
+import {IComicInfoRepository} from './interfaces'
 import ComicInfoRepositoryImpl from '../../infrastructure/domain/library/repositories/ComicInfoRepositoryImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 
@@ -11,9 +11,9 @@ import SFComicInfoQueryAdapterImpl from '../../infrastructure/domain/library/ada
 
 const libraryInjector = new Container()
 
-libraryInjector.bind<SFComicInfoQueryAdapter>(libraryTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapterImpl).inSingletonScope()
+libraryInjector.bind<ISFComicInfoQueryAdapter>(libraryTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapterImpl).inSingletonScope()
 
-libraryInjector.bind<ComicInfoFactory>(libraryTypes.ComicInfoFactory).to(ComicInfoFactoryImpl).inSingletonScope()
-libraryInjector.bind<ComicInfoRepository>(libraryTypes.ComicInfoInfoRepository).to(ComicInfoRepositoryImpl).inSingletonScope()
+libraryInjector.bind<IComicInfoFactory>(libraryTypes.ComicInfoFactory).to(ComicInfoFactoryImpl).inSingletonScope()
+libraryInjector.bind<IComicInfoRepository>(libraryTypes.ComicInfoInfoRepository).to(ComicInfoRepositoryImpl).inSingletonScope()
 
 export default libraryInjector

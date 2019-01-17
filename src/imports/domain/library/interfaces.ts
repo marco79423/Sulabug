@@ -1,10 +1,10 @@
 import ComicInfo from './entities/ComicInfo'
 
-export interface SFComicInfoQueryAdapter {
+export interface ISFComicInfoQueryAdapter {
   asyncGetComicInfos(): Promise<ComicInfo[]>
 }
 
-export interface ComicInfoFactory {
+export interface IComicInfoFactory {
   createFromJson(json: {
     id: string,
     name: string,
@@ -18,7 +18,7 @@ export interface ComicInfoFactory {
   }): ComicInfo
 }
 
-export interface ComicInfoRepository {
+export interface IComicInfoRepository {
 
   asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
 

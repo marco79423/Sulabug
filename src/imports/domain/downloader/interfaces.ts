@@ -1,10 +1,10 @@
 import DownloadTask from './entities/DownloadTask'
 
-export interface SFComicDownloadAdapter {
+export interface ISFComicDownloadAdapter {
   asyncDownload(downloadTask: DownloadTask): Promise<void>
 }
 
-export interface DownloadTaskFactory {
+export interface IDownloadTaskFactory {
   createFromJson(json: {
     id: string,
     name: string,
@@ -12,7 +12,7 @@ export interface DownloadTaskFactory {
   }): DownloadTask
 }
 
-export interface DownloadTaskRepository {
+export interface IDownloadTaskRepository {
 
   saveOrUpdate(downloadTask: DownloadTask): void
 

@@ -1,22 +1,22 @@
 import {inject, injectable} from 'inversify'
 import Config from '../../../../domain/general/entities/Config'
 import generalTypes from '../../../../domain/general/generalTypes'
-import {ConfigFactory} from '../../../../domain/general/interfaces'
-import {ConfigRepository} from '../../../../domain/general/interfaces'
+import {IConfigFactory} from '../../../../domain/general/interfaces'
+import {IConfigRepository} from '../../../../domain/general/interfaces'
 import infraTypes from '../../../infraTypes'
 import Database from '../../../shared/interfaces/Database'
 import {ConfigCollection} from '../../../shared/database/collections'
 
 @injectable()
-export default class ConfigRepositoryImpl implements ConfigRepository {
+export default class ConfigRepositoryImpl implements IConfigRepository {
   defaultRawConfig = {
     downloadFolderPath: './comics',
   }
-  private readonly _configFactory: ConfigFactory
+  private readonly _configFactory: IConfigFactory
   private readonly _database: Database
 
   public constructor(
-    @inject(generalTypes.ConfigFactory) configFactory: ConfigFactory,
+    @inject(generalTypes.ConfigFactory) configFactory: IConfigFactory,
     @inject(infraTypes.Database) database: Database,
   ) {
     this._configFactory = configFactory

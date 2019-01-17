@@ -4,18 +4,18 @@ import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
 import Database from '../../../shared/interfaces/Database'
-import {ComicInfoFactory} from '../../../../domain/library/interfaces'
-import {ComicInfoRepository} from '../../../../domain/library/interfaces'
+import {IComicInfoFactory} from '../../../../domain/library/interfaces'
+import {IComicInfoRepository} from '../../../../domain/library/interfaces'
 import {ComicInfoCollection} from '../../../shared/database/collections'
 
 
 @injectable()
-export default class ComicInfoRepositoryImpl implements ComicInfoRepository {
-  private readonly _comicInfoFactory: ComicInfoFactory
+export default class ComicInfoRepositoryImpl implements IComicInfoRepository {
+  private readonly _comicInfoFactory: IComicInfoFactory
   private readonly _database: Database
 
   public constructor(
-    @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: ComicInfoFactory,
+    @inject(libraryTypes.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
     @inject(infraTypes.Database) database: Database,
   ) {
     this._comicInfoFactory = comicInfoFactory
