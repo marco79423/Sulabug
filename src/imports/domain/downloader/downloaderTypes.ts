@@ -8,6 +8,4 @@ export default {
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
 
   SFDownloadComicService: Symbol('Domain/Downloader/SFDownloadComicService'),
-
-  DeleteDownloadTaskUseCase: Symbol('Domain/Downloader/DeleteDownloadTaskUseCase'),
 }

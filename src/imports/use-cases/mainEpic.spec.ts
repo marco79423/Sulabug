@@ -2,7 +2,6 @@ import 'reflect-metadata'
 
 import {of} from 'rxjs'
 
-import {Request, Response} from '../domain/base-types'
 import {actions} from '../app/ducks/mainDuck'
 import {
   changeCurrentPageEpic,
@@ -430,16 +429,19 @@ describe('deleteDownloadTaskEpic', () => {
   it('will delete download task by id', async () => {
     const downloadTaskId = 'downloadTaskId'
 
-    const deleteDownloadTaskUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
 
     const actions$ = of(actions.deleteDownloadTask(downloadTaskId))
-    const result = await deleteDownloadTaskEpic(actions$, {}, {deleteDownloadTaskUseCase}).pipe(
+    const result = await deleteDownloadTaskEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(deleteDownloadTaskUseCase.execute).toBeCalledWith(new Request(downloadTaskId))
+    expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)
 
     expect(result).toEqual([
       actions.deletingDownloadTask(),

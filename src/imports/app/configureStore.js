@@ -27,7 +27,6 @@ export default function configureStore() {
         downloadTaskRepository: injector.get(downloaderTypes.DownloadTaskRepository),
       },
       eventPublisher: injector.get(downloaderTypes.EventPublisher),
-      deleteDownloadTaskUseCase: injector.get(downloaderTypes.DeleteDownloadTaskUseCase),
     }
   })
 

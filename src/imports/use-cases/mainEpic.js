@@ -1,8 +1,6 @@
 import {concat, from, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map, mapTo, tap} from 'rxjs/operators'
-
-import {Request} from '../domain/base-types'
 import {actions, ActionTypes} from '../app/ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 
@@ -98,15 +96,16 @@ export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfo
   ))
 )
 
-export const deleteDownloadTaskEpic = (action$, state$, {deleteDownloadTaskUseCase}) => action$.pipe(
+export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.DELETE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
   flatMap(downloadTaskId => concat(
     of(actions.deletingDownloadTask()),
-    deleteDownloadTaskUseCase.execute(new Request(downloadTaskId)).pipe(
-      mapTo(actions.downloadTaskDeleted(downloadTaskId))
+    of(downloadTaskId).pipe(
+      tap(downloadTaskId => downloadTaskRepository.delete(downloadTaskId)),
+      mapTo(actions.downloadTaskDeleted(downloadTaskId)),
     ),
   ))
 )
