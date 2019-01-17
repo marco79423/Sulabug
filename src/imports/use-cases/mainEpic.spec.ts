@@ -25,6 +25,7 @@ import {SFComicInfoQueryAdapter} from '../domain/library/interfaces/adapters'
 import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
 import DownloadTaskFactoryImpl from '../domain/downloader/factories/DownloadTaskFactoryImpl'
 import {DownloadTaskRepository} from '../domain/downloader/interfaces/repositories'
+import {SFComicDownloadAdapter} from '../domain/downloader/interfaces/adapters'
 
 
 describe('initializeEpic', () => {
@@ -450,20 +451,38 @@ describe('deleteDownloadTaskEpic', () => {
 
 describe('handleDownloadTaskEpic', () => {
   it('will handle delete download tasks after a download created', async () => {
-    const downloadTask = {
-      id: 'downloadTaskId'
+    const downloadTaskRepository: DownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
 
-    const downloadComicUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const downloadTaskFactory = new DownloadTaskFactoryImpl(downloadTaskRepository)
+
+    const downloadTask = downloadTaskFactory.createFromJson({
+      id: 'id',
+      name: 'name',
+      coverDataUrl: 'coverDataUrl',
+      sourceUrl: 'sourceUrl',
+    })
+    downloadTaskRepository.getById = jest.fn(() => downloadTask)
+
+    const sfComicDownloadAdapter: SFComicDownloadAdapter = {
+      asyncDownload: jest.fn(),
     }
 
     const actions$ = of(actions.downloadTaskCreated(downloadTask))
-    const result = await handleDownloadTaskEpic(actions$, {}, {downloadComicUseCase}).pipe(
+    const result = await handleDownloadTaskEpic(actions$, {}, {
+      downloader: {
+        downloadTaskRepository,
+        sfComicDownloadAdapter
+      }
+    }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(downloadComicUseCase.execute).toBeCalledWith(new Request(downloadTask.id))
+    expect(sfComicDownloadAdapter.asyncDownload).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
       actions.downloadingComic(),
