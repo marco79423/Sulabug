@@ -19,12 +19,12 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import Config from '../domain/general/entities/Config'
 import ConfigFactoryImpl from '../domain/general/factories/ConfigFactoryImpl'
-import {ComicInfoRepository} from '../domain/library/interfaces/repositories'
-import {SFComicInfoQueryAdapter} from '../domain/library/interfaces/adapters'
+import {ComicInfoRepository} from '../domain/library/interfaces'
+import {SFComicInfoQueryAdapter} from '../domain/library/interfaces'
 import ComicInfoFactoryImpl from '../domain/library/factories/ComicInfoFactoryImpl'
 import DownloadTaskFactoryImpl from '../domain/downloader/factories/DownloadTaskFactoryImpl'
-import {DownloadTaskRepository} from '../domain/downloader/interfaces/repositories'
-import {SFComicDownloadAdapter} from '../domain/downloader/interfaces/adapters'
+import {DownloadTaskRepository} from '../domain/downloader/interfaces'
+import {SFComicDownloadAdapter} from '../domain/downloader/interfaces'
 
 
 describe('initializeEpic', () => {

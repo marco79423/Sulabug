@@ -1,8 +1,8 @@
 import {Container} from 'inversify'
 
 import generalTypes from './generalTypes'
-import {ConfigFactory} from './interfaces/factories'
-import {ConfigRepository} from './interfaces/repositories'
+import {ConfigFactory} from './interfaces'
+import {ConfigRepository} from './interfaces'
 import ConfigFactoryImpl from './factories/ConfigFactoryImpl'
 import ConfigRepositoryImpl from '../../infrastructure/domain/general/repositories/ConfigRepositoryImpl'
 

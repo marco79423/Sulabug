@@ -3,11 +3,11 @@ import * as path from 'path'
 
 import generalTypes from '../../../../domain/general/generalTypes'
 import infraTypes from '../../../infraTypes'
-import {SFComicDownloadAdapter} from '../../../../domain/downloader/interfaces/adapters'
+import {SFComicDownloadAdapter} from '../../../../domain/downloader/interfaces'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
 import {SFSourceSite} from '../../../shared/interfaces/source-sites'
 import {FileHandler, NetHandler} from '../../../vendor/interfaces/handlers'
-import {ConfigRepository} from '../../../../domain/general/interfaces/repositories'
+import {ConfigRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()

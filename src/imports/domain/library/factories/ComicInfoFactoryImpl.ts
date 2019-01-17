@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
 import {injectable} from 'inversify'
-import {ComicInfoFactory} from '../interfaces/factories'
+import {ComicInfoFactory} from '../interfaces'
 import ComicInfo from '../entities/ComicInfo'
 
 @injectable()

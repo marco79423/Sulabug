@@ -2,9 +2,9 @@ import {inject, injectable} from 'inversify'
 
 import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
-import {SFComicInfoQueryAdapter} from '../../../../domain/library/interfaces/adapters'
+import {SFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
-import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
+import {ComicInfoFactory} from '../../../../domain/library/interfaces'
 import {SFSourceSite} from '../../../shared/interfaces/source-sites'
 
 @injectable()

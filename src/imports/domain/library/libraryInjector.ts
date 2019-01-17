@@ -1,9 +1,9 @@
 import {Container} from 'inversify'
 
 import libraryTypes from './libraryTypes'
-import {SFComicInfoQueryAdapter} from './interfaces/adapters'
-import {ComicInfoFactory} from './interfaces/factories'
-import {ComicInfoRepository} from './interfaces/repositories'
+import {SFComicInfoQueryAdapter} from './interfaces'
+import {ComicInfoFactory} from './interfaces'
+import {ComicInfoRepository} from './interfaces'
 import ComicInfoRepositoryImpl from '../../infrastructure/domain/library/repositories/ComicInfoRepositoryImpl'
 import ComicInfoFactoryImpl from './factories/ComicInfoFactoryImpl'
 

@@ -2,8 +2,8 @@ import {inject, injectable} from 'inversify'
 
 import downloaderTypes from '../downloaderTypes'
 import DownloadTask from '../entities/DownloadTask'
-import {DownloadTaskFactory} from '../interfaces/factories'
-import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DownloadTaskFactory} from '../interfaces'
+import {DownloadTaskRepository} from '../interfaces'
 
 
 @injectable()

@@ -1,5 +1,5 @@
 import {Entity} from '../../base-types'
-import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DownloadTaskRepository} from '../interfaces'
 
 
 export enum DownloadStatus {

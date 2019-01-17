@@ -1,7 +1,7 @@
 import {injectable} from 'inversify'
 
 import Config from '../entities/Config'
-import {ConfigFactory} from '../interfaces/factories'
+import {ConfigFactory} from '../interfaces'
 
 @injectable()
 export default class ConfigFactoryImpl implements ConfigFactory {

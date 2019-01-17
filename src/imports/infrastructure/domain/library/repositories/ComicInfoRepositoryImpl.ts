@@ -4,8 +4,8 @@ import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
 import Database from '../../../shared/interfaces/Database'
-import {ComicInfoFactory} from '../../../../domain/library/interfaces/factories'
-import {ComicInfoRepository} from '../../../../domain/library/interfaces/repositories'
+import {ComicInfoFactory} from '../../../../domain/library/interfaces'
+import {ComicInfoRepository} from '../../../../domain/library/interfaces'
 import {ComicInfoCollection} from '../../../shared/database/collections'
 
 

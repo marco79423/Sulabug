@@ -1,5 +1,5 @@
 import DownloadTask, {DownloadStatus} from './DownloadTask'
-import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DownloadTaskRepository} from '../interfaces'
 
 describe('DownloadTask', () => {
   describe('serialize', () => {

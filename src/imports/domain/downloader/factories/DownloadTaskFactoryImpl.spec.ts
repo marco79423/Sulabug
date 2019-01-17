@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
 import DownloadTaskFactoryImpl from './DownloadTaskFactoryImpl'
-import {DownloadTaskRepository} from '../interfaces/repositories'
+import {DownloadTaskRepository} from '../interfaces'
 
 describe('DownloadTaskFactoryImpl', () => {
   describe('createFromJson', () => {
