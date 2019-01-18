@@ -5,19 +5,19 @@ import {actions, ActionTypes} from '../app/ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 
 export const initializeEpic = () => of(
-  actions.queryConfig(),
+  actions.queryUserProfile(),
   actions.queryComicInfosFromDatabase(),
   actions.queryDownloadTasks(),
 )
 
-export const queryConfigEpic = (action$, state$, {general: {configRepository}}) => action$.pipe(
+export const queryUserProfileEpic = (action$, state$, {general: {userProfileRepository}}) => action$.pipe(
   ofType(
-    ActionTypes.QUERY_CONFIG
+    ActionTypes.QUERY_USER_PROFILE
   ),
   flatMap(() => concat(
-    of(actions.queryingConfig()),
-    from(configRepository.asyncGet()).pipe(
-      map(config => actions.configQueried(config.serialize()))
+    of(actions.queryingUserProfile()),
+    from(userProfileRepository.asyncGet()).pipe(
+      map(userProfile => actions.userProfileQueried(userProfile.serialize()))
     ),
   ))
 )
@@ -126,17 +126,17 @@ export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTa
   ))
 )
 
-export const updateConfigEpic = (action$, state$, {general: {configFactory, configRepository}}) => action$.pipe(
+export const updateUserProfileEpic = (action$, state$, {general: {userProfileFactory, userProfileRepository}}) => action$.pipe(
   ofType(
-    ActionTypes.UPDATE_CONFIG
+    ActionTypes.UPDATE_USER_PROFILE
   ),
   map(action => action.payload),
-  map(rawConfig => configFactory.createFromJson(rawConfig)),
-  flatMap(config => concat(
-    of(actions.updatingConfig()),
-    of(config).pipe(
-      tap(configRepository.asyncSaveOrUpdate(config)),
-      mapTo(actions.configUpdated(config.serialize()))
+  map(userProfileData => userProfileFactory.createFromJson(userProfileData)),
+  flatMap(userProfile => concat(
+    of(actions.updatingUserProfile()),
+    of(userProfile).pipe(
+      tap(userProfileRepository.asyncSaveOrUpdate(userProfile)),
+      mapTo(actions.userProfileUpdated(userProfile.serialize()))
     ),
   ))
 )
@@ -148,7 +148,7 @@ export const handleDownloadTaskUpdatedEventEpic = (action$, state$, {eventPublis
 
 export default combineEpics(
   initializeEpic,
-  queryConfigEpic,
+  queryUserProfileEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
 
@@ -159,7 +159,7 @@ export default combineEpics(
   deleteDownloadTaskEpic,
   handleDownloadTaskEpic,
 
-  updateConfigEpic,
+  updateUserProfileEpic,
 
   handleDownloadTaskUpdatedEventEpic,
 )

@@ -47,8 +47,8 @@ export class Main extends React.Component {
   renderSettingsPage = () => {
     return (
       <Settings
-        updateConfig={this.props.updateConfig}
-        config={this.props.config}
+        updateUserProfile={this.props.updateUserProfile}
+        userProfile={this.props.userProfile}
       />
     )
   }
@@ -72,13 +72,13 @@ export default connect(
     comicInfos: selectors.selectComicInfos(state),
     loadingDownloadTasks: selectors.selectLoadingDownloadTaskInfos(state),
     downloadTasks: selectors.selectDownloadTasks(state),
-    config: selectors.selectConfig(state),
+    userProfile: selectors.selectUserProfile(state),
   }),
   dispatch => bindActionCreators({
     changeCurrentPage: actions.changeCurrentPage,
     searchComic: actions.searchComic,
     createDownloadTask: actions.createDownloadTask,
     deleteDownloadTask: actions.deleteDownloadTask,
-    updateConfig: actions.updateConfig,
+    updateUserProfile: actions.updateUserProfile,
   }, dispatch)
 )(Main)

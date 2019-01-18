@@ -12,8 +12,8 @@ export default function configureStore() {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
       general: {
-        configFactory: injector.get(generalTypes.ConfigFactory),
-        configRepository: injector.get(generalTypes.ConfigRepository),
+        userProfileFactory: injector.get(generalTypes.UserProfileFactory),
+        userProfileRepository: injector.get(generalTypes.UserProfileRepository),
       },
       library: {
         sfComicInfoQueryAdapter: injector.get(libraryTypes.SFComicInfoQueryAdapter),

@@ -12,13 +12,13 @@ export const ActionTypes = {
   CHANGING_CURRENT_PAGE: 'CHANGING_CURRENT_PAGE',
   CURRENT_PAGE_CHANGED: 'CURRENT_PAGE_CHANGED',
 
-  QUERY_CONFIG: 'QUERY_CONFIG',
-  QUERYING_CONFIG: 'QUERYING_CONFIG',
-  CONFIG_QUERIED: 'CONFIG_QUERIED',
+  QUERY_USER_PROFILE: 'QUERY_USER_PROFILE',
+  QUERYING_USER_PROFILE: 'QUERYING_USER_PROFILE',
+  USER_PROFILE_QUERIED: 'USER_PROFILE_QUERIED',
 
-  UPDATE_CONFIG: 'UPDATE_CONFIG',
-  UPDATING_CONFIG: 'UPDATING_CONFIG',
-  CONFIG_UPDATED: 'CONFIG_UPDATED',
+  UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
+  UPDATING_USER_PROFILE: 'UPDATING_USER_PROFILE',
+  USER_PROFILE_UPDATED: 'USER_PROFILE_UPDATED',
 
   QUERY_COMIC_INFOS_FROM_DATABASE: 'QUERY_COMIC_INFOS_FROM_DATABASE',
   QUERYING_COMIC_INFOS_FROM_DATABASE: 'QUERYING_COMIC_INFOS_FROM_DATABASE',
@@ -50,13 +50,13 @@ export const actions = {
   changingCurrentPage: createAction(ActionTypes.CHANGING_CURRENT_PAGE),
   currentPageChanged: createAction(ActionTypes.CURRENT_PAGE_CHANGED),
 
-  queryConfig: createAction(ActionTypes.QUERY_CONFIG),
-  queryingConfig: createAction(ActionTypes.QUERYING_CONFIG),
-  configQueried: createAction(ActionTypes.CONFIG_QUERIED),
+  queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
+  queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
+  userProfileQueried: createAction(ActionTypes.USER_PROFILE_QUERIED),
 
-  updateConfig: createAction(ActionTypes.UPDATE_CONFIG),
-  updatingConfig: createAction(ActionTypes.UPDATING_CONFIG),
-  configUpdated: createAction(ActionTypes.CONFIG_UPDATED),
+  updateUserProfile: createAction(ActionTypes.UPDATE_USER_PROFILE),
+  updatingUserProfile: createAction(ActionTypes.UPDATING_USER_PROFILE),
+  userProfileUpdated: createAction(ActionTypes.USER_PROFILE_UPDATED),
 
   queryComicInfosFromDatabase: createAction(ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE),
   queryingComicInfosFromDatabase: createAction(ActionTypes.QUERYING_COMIC_INFOS_FROM_DATABASE),
@@ -98,7 +98,7 @@ export const defaultState = {
     byId: {},
   },
 
-  config: {
+  userProfile: {
     downloadFolderPath: '',
   },
 }
@@ -108,13 +108,13 @@ export const reducer = handleActions({
     ...state,
     currentPage: action.payload,
   }),
-  [ActionTypes.CONFIG_QUERIED]: (state, action) => ({
+  [ActionTypes.USER_PROFILE_QUERIED]: (state, action) => ({
     ...state,
-    config: action.payload,
+    userProfile: action.payload,
   }),
-  [ActionTypes.CONFIG_UPDATED]: (state, action) => ({
+  [ActionTypes.USER_PROFILE_UPDATED]: (state, action) => ({
     ...state,
-    config: action.payload,
+    userProfile: action.payload,
   }),
   [ActionTypes.QUERYING_COMIC_INFOS_FROM_DATABASE]: (state) => ({
     ...state,
@@ -178,7 +178,7 @@ export const reducer = handleActions({
 
 const selectCurrentPage = state => state.currentPage
 
-const selectConfig = state => state.config
+const selectUserProfile = state => state.userProfile
 
 const selectLoadingComicInfos = state => state.comicInfo.loading
 
@@ -198,7 +198,7 @@ const selectDownloadTasks = state => state.downloadTask.allIds.map(id => state.d
 
 export const selectors = {
   selectCurrentPage,
-  selectConfig,
+  selectUserProfile,
   selectLoadingComicInfos,
   selectComicInfos,
   selectLoadingDownloadTaskInfos,

@@ -10,19 +10,20 @@ import {
   handleDownloadTaskEpic,
   handleDownloadTaskUpdatedEventEpic,
   queryComicInfosFromDatabaseEpic,
-  queryConfigEpic,
+  queryUserProfileEpic,
   queryDownloadTasksEpic,
   updateComicInfoDatabaseEpic,
-  updateConfigEpic
+  updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
-import Config from '../domain/general/entities/Config'
-import ConfigFactory from '../domain/general/factories/ConfigFactory'
+import UserProfile from '../domain/general/entities/UserProfile'
+import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
 import {IComicInfoRepository, ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
+import {IUserProfileRepository} from '../domain/general/interfaces'
 
 
 describe('initializeEpic', () => {
@@ -32,7 +33,7 @@ describe('initializeEpic', () => {
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryConfig(),
+      actions.queryUserProfile(),
       actions.queryComicInfosFromDatabase(),
       actions.queryDownloadTasks(),
     ])
@@ -40,29 +41,30 @@ describe('initializeEpic', () => {
 })
 
 export const initializeEpic = () => of(
-  actions.queryConfig(),
+  actions.queryUserProfile(),
   actions.queryComicInfosFromDatabase(),
   actions.queryDownloadTasks(),
 )
 
-describe('queryConfigEpic', () => {
-  it('will retrieve config from database', async () => {
-    const config = new Config(
+describe('queryUserProfileEpic', () => {
+  it('will retrieve userProfile from database', async () => {
+    const userProfile = new UserProfile(
       'comicsFolder'
     )
 
-    const configRepository = {
-      asyncGet: jest.fn(() => Promise.resolve(config)),
+    const userProfileRepository: IUserProfileRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGet: jest.fn(() => Promise.resolve(userProfile)),
     }
 
-    const actions$ = of(actions.queryConfig())
-    const result = await queryConfigEpic(actions$, {}, {general: {configRepository}}).pipe(
+    const actions$ = of(actions.queryUserProfile())
+    const result = await queryUserProfileEpic(actions$, {}, {general: {userProfileRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryingConfig(),
-      actions.configQueried(config.serialize()),
+      actions.queryingUserProfile(),
+      actions.userProfileQueried(userProfile.serialize()),
     ])
   })
 })
@@ -491,28 +493,29 @@ describe('handleDownloadTaskEpic', () => {
   })
 })
 
-describe('updateConfigEpic', () => {
-  it('will update configuration from database', async () => {
-    const configData = {
+describe('updateUserProfileEpic', () => {
+  it('will update user profile from database', async () => {
+    const userProfileData = {
       downloadFolderPath: 'downloadFolderPath',
     }
 
-    const configFactory = new ConfigFactory()
+    const userProfileFactory = new UserProfileFactory()
 
-    const configRepository = {
-      asyncSaveOrUpdate: jest.fn()
+    const userProfileRepository: IUserProfileRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGet: jest.fn(),
     }
 
-    const actions$ = of(actions.updateConfig(configData))
-    const result = await updateConfigEpic(actions$, {}, {general: {configFactory, configRepository}}).pipe(
+    const actions$ = of(actions.updateUserProfile(userProfileData))
+    const result = await updateUserProfileEpic(actions$, {}, {general: {userProfileFactory, userProfileRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(configRepository.asyncSaveOrUpdate).toBeCalledWith(configFactory.createFromJson(configData))
+    expect(userProfileRepository.asyncSaveOrUpdate).toBeCalledWith(userProfileFactory.createFromJson(userProfileData))
 
     expect(result).toEqual([
-      actions.updatingConfig(),
-      actions.configUpdated(configData),
+      actions.updatingUserProfile(),
+      actions.userProfileUpdated(userProfileData),
     ])
   })
 })

@@ -1,5 +1,5 @@
 export default {
-  ConfigFactory: Symbol('Domain/General/ConfigFactory'),
+  UserProfileFactory: Symbol('Domain/General/UserProfileFactory'),
 
-  ConfigRepository: Symbol('Domain/General/ConfigRepository'),
+  UserProfileRepository: Symbol('Domain/General/UserProfileRepository'),
 }

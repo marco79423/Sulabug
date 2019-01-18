@@ -1,14 +1,14 @@
-import Config from './entities/Config'
+import UserProfile from './entities/UserProfile'
 
-export interface IConfigFactory {
+export interface IUserProfileFactory {
   createFromJson(json: {
     downloadFolderPath: string,
-  }): Config
+  }): UserProfile
 }
 
-export interface IConfigRepository {
+export interface IUserProfileRepository {
 
-  asyncSaveOrUpdate(config: Config): Promise<void>
+  asyncSaveOrUpdate(userProfile: UserProfile): Promise<void>
 
-  asyncGet(): Promise<Config>
+  asyncGet(): Promise<UserProfile>
 }

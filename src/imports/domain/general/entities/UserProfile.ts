@@ -1,13 +1,13 @@
 import {Entity} from '../../base-types'
 
-export default class Config extends Entity {
+export default class UserProfile extends Entity {
   readonly downloadFolderPath: string
 
   constructor(
-    comicsFolder: string,
+    downloadFolderPath: string,
   ) {
     super(null)
-    this.downloadFolderPath = comicsFolder
+    this.downloadFolderPath = downloadFolderPath
   }
 
   serialize() {

@@ -7,23 +7,23 @@ import {ISFComicDownloadAdapter} from '../../../../domain/downloader/interfaces'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
 import {ISFSourceSite} from '../../../shared/interfaces'
 import {IFileHandler, INetHandler} from '../../../vendor/interfaces'
-import {IConfigRepository} from '../../../../domain/general/interfaces'
+import {IUserProfileRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()
 export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
-  private readonly _configRepository: IConfigRepository
+  private readonly _userProfileRepository: IUserProfileRepository
   private readonly _sfSourceSite: ISFSourceSite
   private readonly _fileHandler: IFileHandler
   private readonly _netHandler: INetHandler
 
   public constructor(
-    @inject(generalTypes.ConfigRepository) configRepository: IConfigRepository,
+    @inject(generalTypes.UserProfileRepository) userProfileRepository: IUserProfileRepository,
     @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
     @inject(infraTypes.FileHandler) fileHandler: IFileHandler,
     @inject(infraTypes.NetHandler) netHandler: INetHandler,
   ) {
-    this._configRepository = configRepository
+    this._userProfileRepository = userProfileRepository
     this._sfSourceSite = sfSourceSite
     this._fileHandler = fileHandler
     this._netHandler = netHandler
@@ -56,7 +56,7 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   }
 
   private async _asyncGetDownloadFolderPath() {
-    const config = await this._configRepository.asyncGet()
-    return config.downloadFolderPath
+    const userProfile = await this._userProfileRepository.asyncGet()
+    return userProfile.downloadFolderPath
   }
 }
