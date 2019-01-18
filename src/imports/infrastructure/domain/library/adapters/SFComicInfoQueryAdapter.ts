@@ -20,8 +20,8 @@ export default class SFComicInfoQueryAdapter implements ISFComicInfoQueryAdapter
     this._sfSourceSite = sfSourceSite
   }
 
-  asyncGetComicInfos = async (): Promise<ComicInfo[]> => {
-    const rawComicInfos = await this._sfSourceSite.asyncGetComicInfos()
+  asyncQueryComicInfos = async (): Promise<ComicInfo[]> => {
+    const rawComicInfos = await this._sfSourceSite.asyncQueryComicInfos()
     return rawComicInfos.map(rawComicInfo => this._comicInfoFactory.createFromJson({
       id: rawComicInfo.name,
       name: rawComicInfo.name,

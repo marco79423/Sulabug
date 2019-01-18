@@ -9,7 +9,7 @@ export default interface IDatabase {
 
 export interface ISFSourceSite {
 
-  asyncGetComicInfos(): Promise<{
+  asyncQueryComicInfos(): Promise<{
     name: string,
     coverDataUrl: string,
     pageUrl: string,

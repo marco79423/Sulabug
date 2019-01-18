@@ -1,7 +1,7 @@
 import ComicInfo from './entities/ComicInfo'
 
 export interface ISFComicInfoQueryAdapter {
-  asyncGetComicInfos(): Promise<ComicInfo[]>
+  asyncQueryComicInfos(): Promise<ComicInfo[]>
 }
 
 export interface IComicInfoFactory {

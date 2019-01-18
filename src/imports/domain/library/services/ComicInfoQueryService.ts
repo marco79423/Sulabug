@@ -16,6 +16,6 @@ export default class ComicInfoQueryService implements IComicInfoQueryService {
   }
 
   asyncQueryComicInfos = (): Promise<ComicInfo[]> => {
-    return this._sfComicInfoQueryAdapter.asyncGetComicInfos()
+    return this._sfComicInfoQueryAdapter.asyncQueryComicInfos()
   }
 }

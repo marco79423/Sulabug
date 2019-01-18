@@ -15,7 +15,7 @@ export default class SFSourceSite implements ISFSourceSite {
     this._netHandler = netHandler
   }
 
-  async asyncGetComicInfos(): Promise<{
+  async asyncQueryComicInfos(): Promise<{
     name: string,
     coverDataUrl: string,
     pageUrl: string,
@@ -36,7 +36,7 @@ export default class SFSourceSite implements ISFSourceSite {
       summary: string,
     }[] = []
     for (const comicListPageUrl of comicListPageUrls) {
-      const comicInfos = await this._asyncGetComicInfosFromComicListPage(comicListPageUrl)
+      const comicInfos = await this._asyncQueryComicInfosFromComicListPage(comicListPageUrl)
       allComicInfos = allComicInfos.concat(comicInfos)
     }
     return allComicInfos
@@ -105,7 +105,7 @@ export default class SFSourceSite implements ISFSourceSite {
     return comicListPageUrls
   }
 
-  private _asyncGetComicInfosFromComicListPage = async (comicListPageUrl) => {
+  private _asyncQueryComicInfosFromComicListPage = async (comicListPageUrl) => {
     const $ = await this._asyncGetSelector(comicListPageUrl)
 
     const elements = $('.Comic_Pic_List').map((index, element) => element).get()
