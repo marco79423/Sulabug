@@ -14,7 +14,12 @@ import DBHandler from '../infrastructure/vendor/handlers/DBHandler'
 import SFComicDownloadAdapter from '../infrastructure/domain/downloader/adapters/SFComicDownloadAdapter'
 import Database from '../infrastructure/shared/database/Database'
 import generalTypes from '../domain/general/generalTypes'
-import {IComicInfoFactory, IComicInfoRepository, ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
+import {
+  IComicInfoFactory,
+  IComicInfoQueryService,
+  IComicInfoRepository,
+  ISFComicInfoQueryAdapter
+} from '../domain/library/interfaces'
 import ComicInfoRepository from '../infrastructure/domain/library/repositories/ComicInfoRepository'
 import NetHandler from '../infrastructure/vendor/handlers/NetHandler'
 import IDatabase, {ISFSourceSite} from '../infrastructure/shared/interfaces'
@@ -29,6 +34,7 @@ import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFact
 import DownloadComicService from '../domain/downloader/services/DownloadComicService'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import libraryTypes from '../domain/library/libraryTypes'
+import ComicInfoQueryService from '../domain/library/services/ComicInfoQueryService'
 
 
 // domain
@@ -42,6 +48,7 @@ injector.bind<IUserProfileRepository>(generalTypes.UserProfileRepository).to(Use
 injector.bind<ISFComicInfoQueryAdapter>(libraryTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()
 injector.bind<IComicInfoFactory>(libraryTypes.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
 injector.bind<IComicInfoRepository>(libraryTypes.ComicInfoInfoRepository).to(ComicInfoRepository).inSingletonScope()
+injector.bind<IComicInfoQueryService>(libraryTypes.ComicInfoQueryService).to(ComicInfoQueryService).inSingletonScope()
 
 // domain - downloader
 injector.bind<EventPublisher>(downloaderTypes.EventPublisher).to(EventPublisher).inSingletonScope()

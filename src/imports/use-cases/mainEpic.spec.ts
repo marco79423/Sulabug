@@ -10,8 +10,8 @@ import {
   handleDownloadTaskEpic,
   handleDownloadTaskUpdatedEventEpic,
   queryComicInfosFromDatabaseEpic,
-  queryUserProfileEpic,
   queryDownloadTasksEpic,
+  queryUserProfileEpic,
   updateComicInfoDatabaseEpic,
   updateUserProfileEpic
 } from './mainEpic'
@@ -19,7 +19,7 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import UserProfile from '../domain/general/entities/UserProfile'
 import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import {IComicInfoRepository, ISFComicInfoQueryAdapter} from '../domain/library/interfaces'
+import {IComicInfoQueryService, IComicInfoRepository} from '../domain/library/interfaces'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
@@ -344,21 +344,21 @@ describe('updateComicInfoDatabaseEpic', () => {
       asyncGetById: jest.fn(),
       asyncGetAllBySearchTerm: jest.fn(),
     }
-    const sfComicInfoQueryAdapter: ISFComicInfoQueryAdapter = {
-      asyncGetComicInfos: jest.fn(() => Promise.resolve([comicInfo])),
+    const comicInfoQueryService: IComicInfoQueryService = {
+      asyncQueryComicInfos: jest.fn(() => Promise.resolve([comicInfo])),
     }
 
     const actions$ = of(actions.comicInfosFromDatabaseQueried([]))
     const result = await updateComicInfoDatabaseEpic(actions$, {}, {
       library: {
         comicInfoInfoRepository,
-        sfComicInfoQueryAdapter
+        comicInfoQueryService,
       }
     }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(sfComicInfoQueryAdapter.asyncGetComicInfos).toBeCalled()
+    expect(comicInfoQueryService.asyncQueryComicInfos).toBeCalled()
     expect(comicInfoInfoRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfo)
 
     expect(result).toEqual([
@@ -507,7 +507,12 @@ describe('updateUserProfileEpic', () => {
     }
 
     const actions$ = of(actions.updateUserProfile(userProfileData))
-    const result = await updateUserProfileEpic(actions$, {}, {general: {userProfileFactory, userProfileRepository}}).pipe(
+    const result = await updateUserProfileEpic(actions$, {}, {
+      general: {
+        userProfileFactory,
+        userProfileRepository
+      }
+    }).pipe(
       toArray(),
     ).toPromise()
 
