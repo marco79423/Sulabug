@@ -27,7 +27,7 @@ export interface IComicInfoRepository {
   asyncGetAllBySearchTerm(searchTerm: string): Promise<ComicInfo[]>
 }
 
-export interface IComicInfoQueryService {
+export interface IComicInfoDatabaseService {
 
-  asyncQueryComicInfos(): Promise<ComicInfo[]>
+  asyncUpdate(): Promise<void>
 }

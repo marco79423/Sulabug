@@ -18,7 +18,7 @@ export default function configureStore() {
       library: {
         comicInfoFactory: injector.get(libraryTypes.ComicInfoFactory),
         comicInfoInfoRepository: injector.get(libraryTypes.ComicInfoInfoRepository),
-        comicInfoQueryService: injector.get(libraryTypes.ComicInfoQueryService),
+        comicInfoDatabaseService: injector.get(libraryTypes.ComicInfoDatabaseService),
       },
       downloader: {
         downloadTaskFactory: injector.get(downloaderTypes.DownloadTaskFactory),

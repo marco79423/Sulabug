@@ -19,7 +19,7 @@ import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
 import UserProfile from '../domain/general/entities/UserProfile'
 import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import {IComicInfoQueryService, IComicInfoRepository} from '../domain/library/interfaces'
+import {IComicInfoDatabaseService, IComicInfoRepository} from '../domain/library/interfaces'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
@@ -326,40 +326,23 @@ describe('changeCurrentPageEpic', () => {
 
 describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network automatically when the result of querying comic infos is empty', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfo = comicInfoFactory.createFromJson({
-      id: 'id-1',
-      name: 'name-1',
-      coverDataUrl: 'coverDataUrl-1',
-      source: 'source-1',
-      pageUrl: 'pageUrl-1',
-      catalog: 'catalog-1',
-      author: 'author-1',
-      lastUpdated: 'lastUpdated-1',
-      summary: 'summary-1',
-    })
-
     const comicInfoInfoRepository: IComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
       asyncGetById: jest.fn(),
       asyncGetAllBySearchTerm: jest.fn(),
     }
-    const comicInfoQueryService: IComicInfoQueryService = {
-      asyncQueryComicInfos: jest.fn(() => Promise.resolve([comicInfo])),
+    const comicInfoDatabaseService: IComicInfoDatabaseService = {
+      asyncUpdate: jest.fn(),
     }
 
     const actions$ = of(actions.comicInfosFromDatabaseQueried([]))
     const result = await updateComicInfoDatabaseEpic(actions$, {}, {
-      library: {
-        comicInfoInfoRepository,
-        comicInfoQueryService,
-      }
+      library: {comicInfoInfoRepository, comicInfoDatabaseService}
     }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(comicInfoQueryService.asyncQueryComicInfos).toBeCalled()
-    expect(comicInfoInfoRepository.asyncSaveOrUpdate).toBeCalledWith(comicInfo)
+    expect(comicInfoDatabaseService.asyncUpdate).toBeCalled()
 
     expect(result).toEqual([
       actions.updatingComicInfoDatabase(),

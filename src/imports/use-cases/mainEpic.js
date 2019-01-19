@@ -56,7 +56,7 @@ export const changeCurrentPageEpic = action$ => action$.pipe(
   map(action => actions.currentPageChanged(action.payload)),
 )
 
-export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository, comicInfoQueryService}}) => action$.pipe(
+export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository, comicInfoDatabaseService}}) => action$.pipe(
   ofType(
     ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED
   ),
@@ -64,12 +64,7 @@ export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInf
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    from(comicInfoQueryService.asyncQueryComicInfos()).pipe(
-      tap(async (comicInfos) => {
-        for (let comicInfo of comicInfos) {
-          await comicInfoInfoRepository.asyncSaveOrUpdate(comicInfo)
-        }
-      }),
+    from(comicInfoDatabaseService.asyncUpdate()).pipe(
       mapTo(actions.comicInfoDatabaseUpdated())
     ),
   )),

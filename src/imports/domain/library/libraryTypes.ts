@@ -5,5 +5,5 @@ export default {
 
   ComicInfoInfoRepository: Symbol('Domain/Library/ComicInfoRepository'),
 
-  ComicInfoQueryService: Symbol('Domain/Library/ComicInfoQueryService'),
+  ComicInfoDatabaseService: Symbol('Domain/Library/ComicInfoDatabaseService'),
 }
