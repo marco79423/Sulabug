@@ -6,12 +6,12 @@ import {actions} from '../app/ducks/mainDuck'
 import {
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
-  handleDownloadTaskEpic,
-  handleDownloadTaskUpdatedEventEpic,
   initializeDataFromDBWhenAppStartsEpic,
-  queryDownloadTasksEpic, searchComicInfosEpic,
+  searchComicInfosEpic,
   sendAppStartSignalWhenAppStartsEpic,
   sendSignalWhenComicInfoDBIsEmptyEpic,
+  startToDownloadComicWhenNewDownloadTaskCreatedEpic,
+  syncDownloadTasksToStateWhenDownloadStatusChanged, transformDownloadTaskUpdatedEventToSignalEpic,
   updateComicInfoDBWhenDBIsEmptyEpic,
   updateUserProfileEpic
 } from './mainEpic'
@@ -253,81 +253,6 @@ describe('searchComicInfosEpic', () => {
   })
 })
 
-
-describe('queryDownloadTasksEpic', () => {
-  it('will retrieve download tasks from database', async () => {
-    const downloadTaskRepository: IDownloadTaskRepository = {
-      saveOrUpdate: jest.fn(),
-      getById: jest.fn(),
-      getAll: jest.fn(),
-      delete: jest.fn(),
-    }
-    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
-
-    const downloadTasks = [
-      downloadTaskFactory.createFromJson({
-        id: 'id-1',
-        name: 'name-1',
-        coverDataUrl: 'coverDataUrl-1',
-        sourceUrl: 'sourceUrl-1',
-      }),
-      downloadTaskFactory.createFromJson({
-        id: 'id-2',
-        name: 'name-2',
-        coverDataUrl: 'coverDataUrl-2',
-        sourceUrl: 'sourceUrl-2',
-      }),
-    ]
-    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
-
-    const actions$ = of(actions.queryDownloadTasks())
-    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
-    ])
-  })
-
-  it('will retrieve download tasks again after a new download task downloaded', async () => {
-    const downloadTaskRepository: IDownloadTaskRepository = {
-      saveOrUpdate: jest.fn(),
-      getById: jest.fn(),
-      getAll: jest.fn(),
-      delete: jest.fn(),
-    }
-    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
-
-    const downloadTasks = [
-      downloadTaskFactory.createFromJson({
-        id: 'id-1',
-        name: 'name-1',
-        coverDataUrl: 'coverDataUrl-1',
-        sourceUrl: 'sourceUrl-1',
-      }),
-      downloadTaskFactory.createFromJson({
-        id: 'id-2',
-        name: 'name-2',
-        coverDataUrl: 'coverDataUrl-2',
-        sourceUrl: 'sourceUrl-2',
-      }),
-    ]
-    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
-
-    const actions$ = of(actions.comicDownloaded())
-    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
-    ])
-  })
-})
-
 describe('createDownloadTaskEpic', () => {
   it('will create download task by comic info id', async () => {
 
@@ -408,7 +333,7 @@ describe('deleteDownloadTaskEpic', () => {
   })
 })
 
-describe('handleDownloadTaskEpic', () => {
+describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
   it('will download comic after a download created', async () => {
     const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
@@ -432,7 +357,7 @@ describe('handleDownloadTaskEpic', () => {
     }
 
     const actions$ = of(actions.addNewDownloadTaskToState(downloadTask))
-    const result = await handleDownloadTaskEpic(actions$, {}, {
+    const result = await startToDownloadComicWhenNewDownloadTaskCreatedEpic(actions$, {}, {
       downloader: {
         downloadTaskRepository,
         downloadComicService
@@ -444,8 +369,61 @@ describe('handleDownloadTaskEpic', () => {
     expect(downloadComicService.asyncDownload).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
-      actions.downloadingComic(),
-      actions.comicDownloaded(),
+      actions.sendDownloadStatusChangedSignal(),
+    ])
+  })
+})
+
+describe('syncDownloadTasksToStateWhenDownloadStatusChanged', () => {
+  it('will sync download tasks from database to state', async () => {
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
+    }
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
+
+    const actions$ = of(actions.sendDownloadStatusChangedSignal())
+    const result = await syncDownloadTasksToStateWhenDownloadStatusChanged(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(result).toEqual([
+      actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize())),
+    ])
+  })
+})
+
+describe('transformDownloadTaskUpdatedEventToSignalEpic', () => {
+  it('will transform download task event to signal', async () => {
+    const eventPublisher = {
+      getEventStream: jest.fn(() => of(new DownloadTaskUpdatedEvent())),
+    }
+
+    const actions$ = of()
+    const result = await transformDownloadTaskUpdatedEventToSignalEpic(actions$, {}, {eventPublisher}).pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(result).toEqual([
+      actions.sendDownloadStatusChangedSignal(),
     ])
   })
 })
@@ -482,19 +460,3 @@ describe('updateUserProfileEpic', () => {
   })
 })
 
-describe('handleDownloadTaskUpdatedEventEpic', () => {
-  it('will handle download task updated events', async () => {
-    const eventPublisher = {
-      getEventStream: jest.fn(() => of(new DownloadTaskUpdatedEvent())),
-    }
-
-    const actions$ = of()
-    const result = await handleDownloadTaskUpdatedEventEpic(actions$, {}, {eventPublisher}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryDownloadTasks(),
-    ])
-  })
-})

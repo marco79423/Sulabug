@@ -43,6 +43,8 @@ export const ActionTypes = {
   UPDATING_COMIC_INFO_DATABASE: 'UPDATING_COMIC_INFO_DATABASE',
   COMIC_INFO_DATABASE_UPDATED: 'COMIC_INFO_DATABASE_UPDATED',
 
+  SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL: 'SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL',
+  SYNC_DOWNLOAD_TASKS_TO_STATE: 'SYNC_DOWNLOAD_TASKS_TO_STATE',
 
   CREATING_DOWNLOAD_TASK: 'CREATING_DOWNLOAD_TASK',
   DOWNLOAD_TASK_CREATED: 'DOWNLOAD_TASK_CREATED',
@@ -80,6 +82,9 @@ export const actions = {
 
   deleteDownloadTask: createAction(ActionTypes.DELETE_DOWNLOAD_TASK),
   deleteDownloadTaskFromState: createAction(ActionTypes.DELETE_DOWNLOAD_TASK_FROM_STATE),
+
+  sendDownloadStatusChangedSignal: createAction(ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL),
+  syncDownloadTasksToState: createAction(ActionTypes.SYNC_DOWNLOAD_TASKS_TO_STATE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -207,6 +212,17 @@ export const reducer = handleActions({
       },
     },
   }),
+  [ActionTypes.SYNC_DOWNLOAD_TASKS_TO_STATE]: (state, action) => ({
+    ...state,
+    downloadTask: {
+      loading: false,
+      allIds: action.payload.map(downloadTask => downloadTask.id),
+      byId: action.payload.reduce((downloadTaskMap, downloadTask) => ({
+        ...downloadTaskMap,
+        [downloadTask.id]: downloadTask,
+      }), {}),
+    },
+  }),
 
   [ActionTypes.USER_PROFILE_QUERIED]: (state, action) => ({
     ...state,
@@ -240,25 +256,6 @@ export const reducer = handleActions({
       byId: action.payload.reduce((comicInfoMap, comicInfo) => ({
         ...comicInfoMap,
         [comicInfo.id]: comicInfo,
-      }), {}),
-    },
-  }),
-  [ActionTypes.QUERYING_DOWNLOAD_TASKS]: (state) => ({
-    ...state,
-    downloadTask: {
-      loading: true,
-      allIds: [],
-      byId: {},
-    },
-  }),
-  [ActionTypes.DOWNLOAD_TASKS_QUERIED]: (state, action) => ({
-    ...state,
-    downloadTask: {
-      loading: false,
-      allIds: action.payload.map(downloadTask => downloadTask.id),
-      byId: action.payload.reduce((downloadTaskMap, downloadTask) => ({
-        ...downloadTaskMap,
-        [downloadTask.id]: downloadTask,
       }), {}),
     },
   }),

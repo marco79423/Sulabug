@@ -96,33 +96,35 @@ export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTa
   ))
 )
 
-export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
-  ofType(
-    ActionTypes.QUERY_DOWNLOAD_TASKS,
-    ActionTypes.COMIC_DOWNLOADED,
-  ),
-  flatMap(() => concat(
-    of(actions.queryingDownloadTasks()),
-    of(downloadTaskRepository.getAll()).pipe(
-      map(downloadTasks => actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize()))),
-    )
-  ))
-)
-
-export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository, downloadComicService}}) => action$.pipe(
+export const startToDownloadComicWhenNewDownloadTaskCreatedEpic = (action$, state$, {downloader: {downloadTaskRepository, downloadComicService}}) => action$.pipe(
   ofType(
     ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE,
   ),
   map(action => action.payload),
   flatMap(rawDownloadTask => concat(
-    of(actions.downloadingComic()),
     of(downloadTaskRepository.getById(rawDownloadTask.id)).pipe(
       tap(async (downloadTask) => {
         await downloadComicService.asyncDownload(downloadTask)
       }),
-      mapTo(actions.comicDownloaded())
+      mapTo(actions.sendDownloadStatusChangedSignal())
     ),
   ))
+)
+
+export const syncDownloadTasksToStateWhenDownloadStatusChanged = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
+  ofType(
+    ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL,
+  ),
+  flatMap(() => concat(
+    of(downloadTaskRepository.getAll()).pipe(
+      map(downloadTasks => actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize()))),
+    )
+  ))
+)
+
+export const transformDownloadTaskUpdatedEventToSignalEpic = (action$, state$, {eventPublisher}) => eventPublisher.getEventStream().pipe(
+  filter(event => event instanceof DownloadTaskUpdatedEvent),
+  map(() => actions.sendDownloadStatusChangedSignal()),
 )
 
 export const updateUserProfileEpic = (action$, state$, {general: {userProfileFactory, userProfileRepository}}) => action$.pipe(
@@ -140,11 +142,6 @@ export const updateUserProfileEpic = (action$, state$, {general: {userProfileFac
   ))
 )
 
-export const handleDownloadTaskUpdatedEventEpic = (action$, state$, {eventPublisher}) => eventPublisher.getEventStream().pipe(
-  filter(event => event instanceof DownloadTaskUpdatedEvent),
-  map(() => actions.queryDownloadTasks()),
-)
-
 export default combineEpics(
   // global
   sendAppStartSignalWhenAppStartsEpic,
@@ -158,11 +155,10 @@ export default combineEpics(
   // download
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
+  startToDownloadComicWhenNewDownloadTaskCreatedEpic,
+  syncDownloadTasksToStateWhenDownloadStatusChanged,
+  transformDownloadTaskUpdatedEventToSignalEpic,
 
-  queryDownloadTasksEpic,
-  handleDownloadTaskEpic,
-
+  // settings
   updateUserProfileEpic,
-
-  handleDownloadTaskUpdatedEventEpic,
 )
