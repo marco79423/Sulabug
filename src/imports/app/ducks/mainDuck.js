@@ -16,6 +16,8 @@ export const ActionTypes = {
   SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
   WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
   SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
+  SEARCH_COMIC: 'SEARCH_COMIC',
+  WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB: 'WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB',
 
 
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
@@ -49,8 +51,6 @@ export const ActionTypes = {
 
   DOWNLOADING_COMIC: 'DOWNLOADING_COMIC',
   COMIC_DOWNLOADED: 'COMIC_DOWNLOADED',
-
-  SEARCH_COMIC: 'SEARCH_COMIC',
 }
 
 export const actions = {
@@ -59,11 +59,14 @@ export const actions = {
   waitForQueryingInitDataFromDB: createAction(ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB),
   syncInitDataToState: createAction(ActionTypes.SYNC_INIT_DATA_TO_STATE),
 
+  changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
+
   sendComicInfoDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL),
   waitForComicInfoDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_INFO_DATABASE_UPDATE),
   syncComicInfosToState: createAction(ActionTypes.SYNC_COMIC_INFOS_TO_STATE),
 
-  changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
+  searchComic: createAction(ActionTypes.SEARCH_COMIC),
+  waitForResultOfSearchingComicInfosFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -94,8 +97,6 @@ export const actions = {
 
   downloadingComic: createAction(ActionTypes.DOWNLOADING_COMIC),
   comicDownloaded: createAction(ActionTypes.COMIC_DOWNLOADED),
-
-  searchComic: createAction(ActionTypes.SEARCH_COMIC),
 }
 
 export const defaultState = {

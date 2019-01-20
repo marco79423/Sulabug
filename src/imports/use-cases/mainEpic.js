@@ -50,18 +50,17 @@ export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {library: {c
   )),
 )
 
-export const queryComicInfosFromDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
+export const searchComicInfosEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
   ofType(
-    ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE,
-    ActionTypes.SEARCH_COMIC,
+    ActionTypes.SEARCH_COMIC
   ),
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
-    of(actions.queryingComicInfosFromDatabase()),
+    of(actions.waitForResultOfSearchingComicInfosFromDB()),
     from(comicInfoInfoRepository.asyncGetAllBySearchTerm(searchTerm)).pipe(
-      map(comicInfos => actions.comicInfosFromDatabaseQueried(comicInfos.map(comicInfo => comicInfo.serialize())))
+      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())))
     ),
-  ))
+  )),
 )
 
 export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
@@ -156,8 +155,8 @@ export default combineEpics(
   // library
   sendSignalWhenComicInfoDBIsEmptyEpic,
   updateComicInfoDBWhenDBIsEmptyEpic,
+  searchComicInfosEpic,
 
-  queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
 
   createDownloadTaskEpic,

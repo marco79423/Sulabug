@@ -9,8 +9,7 @@ import {
   handleDownloadTaskEpic,
   handleDownloadTaskUpdatedEventEpic,
   initializeDataFromDBWhenAppStartsEpic,
-  queryComicInfosFromDatabaseEpic,
-  queryDownloadTasksEpic,
+  queryDownloadTasksEpic, searchComicInfosEpic,
   sendAppStartSignalWhenAppStartsEpic,
   sendSignalWhenComicInfoDBIsEmptyEpic,
   updateComicInfoDBWhenDBIsEmptyEpic,
@@ -208,50 +207,8 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
   })
 })
 
-describe('queryComicInfosFromDatabaseEpic', () => {
-  it('will retrieve comic infos from database when getting query command', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfos = [
-      comicInfoFactory.createFromJson({
-        id: 'id-1',
-        name: 'name-1',
-        coverDataUrl: 'coverDataUrl-1',
-        source: 'source-1',
-        pageUrl: 'pageUrl-1',
-        catalog: 'catalog-1',
-        author: 'author-1',
-        lastUpdated: 'lastUpdated-1',
-        summary: 'summary-1',
-      }),
-      comicInfoFactory.createFromJson({
-        id: 'id-2',
-        name: 'name-2',
-        coverDataUrl: 'coverDataUrl-2',
-        source: 'source-2',
-        pageUrl: 'pageUrl-2',
-        catalog: 'catalog-2',
-        author: 'author-2',
-        lastUpdated: 'lastUpdated-2',
-        summary: 'summary-2',
-      })
-    ]
-
-    const comicInfoInfoRepository = {
-      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
-    }
-
-    const actions$ = of(actions.queryComicInfosFromDatabase())
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingComicInfosFromDatabase(),
-      actions.comicInfosFromDatabaseQueried(comicInfos.map(comicInfo => comicInfo.serialize())),
-    ])
-  })
-
-  it('will retrieve comic infos by search term from database', async () => {
+describe('searchComicInfosEpic', () => {
+  it('will search comic infos by search term from database', async () => {
     const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
       comicInfoFactory.createFromJson({
@@ -283,15 +240,15 @@ describe('queryComicInfosFromDatabaseEpic', () => {
     }
 
     const actions$ = of(actions.searchComic('search term'))
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
+    const result = await searchComicInfosEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalledWith('search term')
 
     expect(result).toEqual([
-      actions.queryingComicInfosFromDatabase(),
-      actions.comicInfosFromDatabaseQueried(comicInfos.map(comicInfo => comicInfo.serialize())),
+      actions.waitForResultOfSearchingComicInfosFromDB(),
+      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
     ])
   })
 })
