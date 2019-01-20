@@ -29,18 +29,6 @@ export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general:
   ))
 )
 
-export const queryUserProfileEpic = (action$, state$, {general: {userProfileRepository}}) => action$.pipe(
-  ofType(
-    ActionTypes.QUERY_USER_PROFILE
-  ),
-  flatMap(() => concat(
-    of(actions.queryingUserProfile()),
-    from(userProfileRepository.asyncGet()).pipe(
-      map(userProfile => actions.userProfileQueried(userProfile.serialize()))
-    ),
-  ))
-)
-
 export const queryComicInfosFromDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE,
@@ -160,7 +148,6 @@ export default combineEpics(
   sendAppStartSignalWhenAppStartsEpic,
   initializeDataFromDBWhenAppStartsEpic,
 
-  queryUserProfileEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
 

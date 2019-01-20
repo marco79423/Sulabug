@@ -10,7 +10,6 @@ import {
   handleDownloadTaskUpdatedEventEpic, initializeDataFromDBWhenAppStartsEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
-  queryUserProfileEpic,
   sendAppStartSignalWhenAppStartsEpic,
   updateComicInfoDatabaseEpic,
   updateUserProfileEpic
@@ -115,30 +114,6 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
         downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
       }),
-    ])
-  })
-})
-
-
-describe('queryUserProfileEpic', () => {
-  it('will retrieve userProfile from database', async () => {
-    const userProfile = new UserProfile(
-      'comicsFolder'
-    )
-
-    const userProfileRepository: IUserProfileRepository = {
-      asyncSaveOrUpdate: jest.fn(),
-      asyncGet: jest.fn(() => Promise.resolve(userProfile)),
-    }
-
-    const actions$ = of(actions.queryUserProfile())
-    const result = await queryUserProfileEpic(actions$, {}, {general: {userProfileRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingUserProfile(),
-      actions.userProfileQueried(userProfile.serialize()),
     ])
   })
 })
