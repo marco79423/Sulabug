@@ -134,10 +134,10 @@ export const updateUserProfileEpic = (action$, state$, {general: {userProfileFac
   map(action => action.payload),
   map(userProfileData => userProfileFactory.createFromJson(userProfileData)),
   flatMap(userProfile => concat(
-    of(actions.updatingUserProfile()),
+    of(actions.waitForUpdatingUserProfile()),
     of(userProfile).pipe(
       tap(userProfileRepository.asyncSaveOrUpdate(userProfile)),
-      mapTo(actions.userProfileUpdated(userProfile.serialize()))
+      mapTo(actions.syncUserProfileToState(userProfile.serialize()))
     ),
   ))
 )

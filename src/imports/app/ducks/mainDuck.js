@@ -13,6 +13,8 @@ export const ActionTypes = {
   WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
   SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
 
+  CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
+
   SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
   WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
   SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
@@ -25,8 +27,10 @@ export const ActionTypes = {
   ADD_NEW_DOWNLOAD_TASK_TO_STATE: 'ADD_NEW_DOWNLOAD_TASK_TO_STATE',
   DELETE_DOWNLOAD_TASK_FROM_STATE: 'DELETE_DOWNLOAD_TASK_FROM_STATE',
 
+  WAIT_FOR_UPDATING_USER_PROFILE: 'WAIT_FOR_UPDATING_USER_PROFILE',
+  SYNC_USER_PROFILE_TO_STATE: 'WAIT_FOR_UPDATING_USER_PROFILE',
 
-  CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
+
 
   QUERY_USER_PROFILE: 'QUERY_USER_PROFILE',
   QUERYING_USER_PROFILE: 'QUERYING_USER_PROFILE',
@@ -85,6 +89,9 @@ export const actions = {
 
   sendDownloadStatusChangedSignal: createAction(ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL),
   syncDownloadTasksToState: createAction(ActionTypes.SYNC_DOWNLOAD_TASKS_TO_STATE),
+
+  waitForUpdatingUserProfile: createAction(ActionTypes.WAIT_FOR_UPDATING_USER_PROFILE),
+  syncUserProfileToState: createAction(ActionTypes.SYNC_USER_PROFILE_TO_STATE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -223,12 +230,7 @@ export const reducer = handleActions({
       }), {}),
     },
   }),
-
-  [ActionTypes.USER_PROFILE_QUERIED]: (state, action) => ({
-    ...state,
-    userProfile: action.payload,
-  }),
-  [ActionTypes.USER_PROFILE_UPDATED]: (state, action) => ({
+  [ActionTypes.SYNC_USER_PROFILE_TO_STATE]: (state, action) => ({
     ...state,
     userProfile: action.payload,
   }),
