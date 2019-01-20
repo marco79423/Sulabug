@@ -11,6 +11,7 @@ import {
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
   queryUserProfileEpic,
+  sendAppStartSignalWhenAppStartsEpic,
   updateComicInfoDatabaseEpic,
   updateUserProfileEpic
 } from './mainEpic'
@@ -24,6 +25,18 @@ import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFact
 import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
 import {IUserProfileRepository} from '../domain/general/interfaces'
 
+
+describe('sendAppStartSignalWhenAppStartsEpic', () => {
+  it('will send start signal automatically in the beginning', async () => {
+    const result = await sendAppStartSignalWhenAppStartsEpic().pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(result).toEqual([
+      actions.sendAppStartSignal(),
+    ])
+  })
+})
 
 describe('initializeEpic', () => {
   it('will start actions automatically in the beginning', async () => {

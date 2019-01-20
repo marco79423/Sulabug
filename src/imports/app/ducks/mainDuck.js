@@ -8,6 +8,8 @@ export const Page = {
 }
 
 export const ActionTypes = {
+  SEND_APP_START_SIGNAL: 'SEND_APP_START_SIGNAL',
+
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
 
   QUERY_USER_PROFILE: 'QUERY_USER_PROFILE',
@@ -44,6 +46,8 @@ export const ActionTypes = {
 }
 
 export const actions = {
+  sendAppStartSignal: createAction(ActionTypes.SEND_APP_START_SIGNAL),
+
   changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
