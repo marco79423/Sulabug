@@ -291,42 +291,6 @@ describe('queryDownloadTasksEpic', () => {
     ])
   })
 
-  it('will retrieve download tasks again after a new download task created', async () => {
-    const downloadTaskRepository: IDownloadTaskRepository = {
-      saveOrUpdate: jest.fn(),
-      getById: jest.fn(),
-      getAll: jest.fn(),
-      delete: jest.fn(),
-    }
-    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
-
-    const downloadTasks = [
-      downloadTaskFactory.createFromJson({
-        id: 'id-1',
-        name: 'name-1',
-        coverDataUrl: 'coverDataUrl-1',
-        sourceUrl: 'sourceUrl-1',
-      }),
-      downloadTaskFactory.createFromJson({
-        id: 'id-2',
-        name: 'name-2',
-        coverDataUrl: 'coverDataUrl-2',
-        sourceUrl: 'sourceUrl-2',
-      }),
-    ]
-    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
-
-    const actions$ = of(actions.downloadTaskCreated())
-    const result = await queryDownloadTasksEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize())),
-    ])
-  })
-
   it('will retrieve download tasks again after a new download task downloaded', async () => {
     const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
@@ -420,7 +384,6 @@ describe('createDownloadTaskEpic', () => {
   })
 })
 
-
 describe('deleteDownloadTaskEpic', () => {
   it('will delete download task by id', async () => {
     const downloadTaskId = 'downloadTaskId'
@@ -440,12 +403,10 @@ describe('deleteDownloadTaskEpic', () => {
     expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)
 
     expect(result).toEqual([
-      actions.deletingDownloadTask(),
-      actions.downloadTaskDeleted(downloadTaskId),
+      actions.deleteDownloadTaskFromState(downloadTaskId),
     ])
   })
 })
-
 
 describe('handleDownloadTaskEpic', () => {
   it('will download comic after a download created', async () => {

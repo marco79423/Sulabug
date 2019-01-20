@@ -83,6 +83,19 @@ export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfo
   ))
 )
 
+export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
+  ofType(
+    ActionTypes.DELETE_DOWNLOAD_TASK
+  ),
+  map(action => action.payload),
+  flatMap(downloadTaskId => concat(
+    of(downloadTaskId).pipe(
+      tap(downloadTaskId => downloadTaskRepository.delete(downloadTaskId)),
+      mapTo(actions.deleteDownloadTaskFromState(downloadTaskId)),
+    ),
+  ))
+)
+
 export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_DOWNLOAD_TASKS,
@@ -93,20 +106,6 @@ export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTa
     of(downloadTaskRepository.getAll()).pipe(
       map(downloadTasks => actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize()))),
     )
-  ))
-)
-
-export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
-  ofType(
-    ActionTypes.DELETE_DOWNLOAD_TASK
-  ),
-  map(action => action.payload),
-  flatMap(downloadTaskId => concat(
-    of(actions.deletingDownloadTask()),
-    of(downloadTaskId).pipe(
-      tap(downloadTaskId => downloadTaskRepository.delete(downloadTaskId)),
-      mapTo(actions.downloadTaskDeleted(downloadTaskId)),
-    ),
   ))
 )
 
@@ -156,10 +155,11 @@ export default combineEpics(
   updateComicInfoDBWhenDBIsEmptyEpic,
   searchComicInfosEpic,
 
-  queryDownloadTasksEpic,
-
+  // download
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
+
+  queryDownloadTasksEpic,
   handleDownloadTaskEpic,
 
   updateUserProfileEpic,

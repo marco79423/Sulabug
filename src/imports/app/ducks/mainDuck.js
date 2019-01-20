@@ -23,6 +23,7 @@ export const ActionTypes = {
   CREATE_DOWNLOAD_TASK: 'CREATE_DOWNLOAD_TASK',
   WAIT_FOR_CREATING_DOWNLOAD_TASK: 'WAIT_FOR_CREATING_DOWNLOAD_TASK',
   ADD_NEW_DOWNLOAD_TASK_TO_STATE: 'ADD_NEW_DOWNLOAD_TASK_TO_STATE',
+  DELETE_DOWNLOAD_TASK_FROM_STATE: 'DELETE_DOWNLOAD_TASK_FROM_STATE',
 
 
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
@@ -73,8 +74,12 @@ export const actions = {
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
   waitForResultOfSearchingComicInfosFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB),
 
+  createDownloadTask: createAction(ActionTypes.CREATE_DOWNLOAD_TASK),
   waitForCreatingDownloadTask: createAction(ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK),
   addNewDownloadTaskToState: createAction(ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE),
+
+  deleteDownloadTask: createAction(ActionTypes.DELETE_DOWNLOAD_TASK),
+  deleteDownloadTaskFromState: createAction(ActionTypes.DELETE_DOWNLOAD_TASK_FROM_STATE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -90,14 +95,6 @@ export const actions = {
 
   updatingComicInfoDatabase: createAction(ActionTypes.UPDATING_COMIC_INFO_DATABASE),
   comicInfoDatabaseUpdated: createAction(ActionTypes.COMIC_INFO_DATABASE_UPDATED),
-
-  createDownloadTask: createAction(ActionTypes.CREATE_DOWNLOAD_TASK),
-  creatingDownloadTask: createAction(ActionTypes.CREATING_DOWNLOAD_TASK),
-  downloadTaskCreated: createAction(ActionTypes.DOWNLOAD_TASK_CREATED),
-
-  deleteDownloadTask: createAction(ActionTypes.DELETE_DOWNLOAD_TASK),
-  deletingDownloadTask: createAction(ActionTypes.DELETING_DOWNLOAD_TASK),
-  downloadTaskDeleted: createAction(ActionTypes.DOWNLOAD_TASK_DELETED),
 
   queryDownloadTasks: createAction(ActionTypes.QUERY_DOWNLOAD_TASKS),
   queryingDownloadTasks: createAction(ActionTypes.QUERYING_DOWNLOAD_TASKS),
@@ -199,6 +196,17 @@ export const reducer = handleActions({
       },
     },
   }),
+  [ActionTypes.DELETE_DOWNLOAD_TASK_FROM_STATE]: (state, action) => ({
+    ...state,
+    downloadTask: {
+      loading: false,
+      allIds: state.downloadTask.allIds.filter(downloadTaskId => downloadTaskId !== action.payload),
+      byId: {
+        ...state.downloadTask.byId,
+        [action.payload]: undefined
+      },
+    },
+  }),
 
   [ActionTypes.USER_PROFILE_QUERIED]: (state, action) => ({
     ...state,
@@ -233,17 +241,6 @@ export const reducer = handleActions({
         ...comicInfoMap,
         [comicInfo.id]: comicInfo,
       }), {}),
-    },
-  }),
-  [ActionTypes.DOWNLOAD_TASK_DELETED]: (state, action) => ({
-    ...state,
-    downloadTask: {
-      loading: false,
-      allIds: state.downloadTask.allIds.filter(downloadTaskId => downloadTaskId !== action.payload),
-      byId: {
-        ...state.downloadTask.byId,
-        [action.payload]: undefined
-      },
     },
   }),
   [ActionTypes.QUERYING_DOWNLOAD_TASKS]: (state) => ({
