@@ -2,6 +2,7 @@ import {inject, injectable} from 'inversify'
 
 import {IComicInfoDatabaseService, IComicInfoRepository, ISFComicInfoQueryAdapter} from '../interfaces'
 import libraryTypes from '../libraryTypes'
+import ComicInfo from '../entities/ComicInfo'
 
 
 @injectable()
@@ -17,10 +18,12 @@ export default class ComicInfoDatabaseService implements IComicInfoDatabaseServi
     this._comicInfoRepository = comicInfoRepository
   }
 
-  asyncUpdate = async (): Promise<void> => {
+  asyncUpdateAndReturn = async (): Promise<ComicInfo[]> => {
     const comicInfos = await this._sfComicInfoQueryAdapter.asyncQueryComicInfos()
     for (let comicInfo of comicInfos) {
       await this._comicInfoRepository.asyncSaveOrUpdate(comicInfo)
     }
+
+    return await this._comicInfoRepository.asyncGetAllBySearchTerm('')
   }
 }

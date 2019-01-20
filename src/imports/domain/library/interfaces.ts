@@ -29,5 +29,5 @@ export interface IComicInfoRepository {
 
 export interface IComicInfoDatabaseService {
 
-  asyncUpdate(): Promise<void>
+  asyncUpdateAndReturn(): Promise<ComicInfo[]>
 }

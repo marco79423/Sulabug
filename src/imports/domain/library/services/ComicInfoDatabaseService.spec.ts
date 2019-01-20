@@ -40,7 +40,7 @@ describe('ComicInfoDatabaseService', () => {
       const comicInfoInfoRepository: IComicInfoRepository = {
         asyncSaveOrUpdate: jest.fn(),
         asyncGetById: jest.fn(),
-        asyncGetAllBySearchTerm: jest.fn(),
+        asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
       const comicInfoQueryService = new ComicInfoDatabaseService(
@@ -48,8 +48,8 @@ describe('ComicInfoDatabaseService', () => {
         comicInfoInfoRepository
       )
 
-      await comicInfoQueryService.asyncUpdate()
-      expect(sfComicInfoQueryAdapter.asyncQueryComicInfos).toHaveBeenCalled()
+      const result = await comicInfoQueryService.asyncUpdateAndReturn()
+      expect(result).toBe(comicInfos)
 
       expect(comicInfoInfoRepository.asyncSaveOrUpdate).toHaveBeenCalledWith(comicInfos[0])
       expect(comicInfoInfoRepository.asyncSaveOrUpdate).toHaveBeenCalledWith(comicInfos[1])

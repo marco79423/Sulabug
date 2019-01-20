@@ -64,7 +64,7 @@ export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInf
   filter(comicInfos => comicInfos.length === 0),
   flatMap(() => concat(
     of(actions.updatingComicInfoDatabase()),
-    from(comicInfoDatabaseService.asyncUpdate()).pipe(
+    from(comicInfoDatabaseService.asyncUpdateAndReturn()).pipe(
       mapTo(actions.comicInfoDatabaseUpdated())
     ),
   )),

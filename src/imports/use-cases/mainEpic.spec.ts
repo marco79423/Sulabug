@@ -329,10 +329,10 @@ describe('updateComicInfoDatabaseEpic', () => {
     const comicInfoInfoRepository: IComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
       asyncGetById: jest.fn(),
-      asyncGetAllBySearchTerm: jest.fn(),
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve([])),
     }
     const comicInfoDatabaseService: IComicInfoDatabaseService = {
-      asyncUpdate: jest.fn(),
+      asyncUpdateAndReturn: jest.fn(() => Promise.resolve([])),
     }
 
     const actions$ = of(actions.comicInfosFromDatabaseQueried([]))
@@ -342,7 +342,7 @@ describe('updateComicInfoDatabaseEpic', () => {
       toArray(),
     ).toPromise()
 
-    expect(comicInfoDatabaseService.asyncUpdate).toBeCalled()
+    expect(comicInfoDatabaseService.asyncUpdateAndReturn).toBeCalled()
 
     expect(result).toEqual([
       actions.updatingComicInfoDatabase(),
