@@ -16,8 +16,13 @@ export const ActionTypes = {
   SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
   WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
   SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
+
   SEARCH_COMIC: 'SEARCH_COMIC',
   WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB: 'WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB',
+
+  CREATE_DOWNLOAD_TASK: 'CREATE_DOWNLOAD_TASK',
+  WAIT_FOR_CREATING_DOWNLOAD_TASK: 'WAIT_FOR_CREATING_DOWNLOAD_TASK',
+  ADD_NEW_DOWNLOAD_TASK_TO_STATE: 'ADD_NEW_DOWNLOAD_TASK_TO_STATE',
 
 
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
@@ -37,7 +42,7 @@ export const ActionTypes = {
   UPDATING_COMIC_INFO_DATABASE: 'UPDATING_COMIC_INFO_DATABASE',
   COMIC_INFO_DATABASE_UPDATED: 'COMIC_INFO_DATABASE_UPDATED',
 
-  CREATE_DOWNLOAD_TASK: 'CREATE_DOWNLOAD_TASK',
+
   CREATING_DOWNLOAD_TASK: 'CREATING_DOWNLOAD_TASK',
   DOWNLOAD_TASK_CREATED: 'DOWNLOAD_TASK_CREATED',
 
@@ -67,6 +72,9 @@ export const actions = {
 
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
   waitForResultOfSearchingComicInfosFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB),
+
+  waitForCreatingDownloadTask: createAction(ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK),
+  addNewDownloadTaskToState: createAction(ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -163,6 +171,32 @@ export const reducer = handleActions({
         ...comicInfoMap,
         [comicInfo.id]: comicInfo,
       }), {}),
+    },
+  }),
+  [ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB]: (state) => ({
+    ...state,
+    comicInfo: {
+      loading: true,
+      allIds: [],
+      byId: {},
+    },
+  }),
+  [ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK]: (state) => ({
+    ...state,
+    downloadTask: {
+      ...state.downloadTask,
+      loading: true,
+    },
+  }),
+  [ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE]: (state, action) => ({
+    ...state,
+    downloadTask: {
+      loading: false,
+      allIds: [...state.downloadTask.allIds, action.payload.id],
+      byId: {
+        ...state.downloadTask.byId,
+        [action.payload]: action.payload
+      },
     },
   }),
 

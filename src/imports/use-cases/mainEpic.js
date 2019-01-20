@@ -63,27 +63,13 @@ export const searchComicInfosEpic = (action$, state$, {library: {comicInfoInfoRe
   )),
 )
 
-export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
-  ofType(
-    ActionTypes.QUERY_DOWNLOAD_TASKS,
-    ActionTypes.DOWNLOAD_TASK_CREATED,
-    ActionTypes.COMIC_DOWNLOADED,
-  ),
-  flatMap(() => concat(
-    of(actions.queryingDownloadTasks()),
-    of(downloadTaskRepository.getAll()).pipe(
-      map(downloadTasks => actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize()))),
-    )
-  ))
-)
-
 export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfoRepository}, downloader: {downloadTaskFactory, downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.CREATE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
   flatMap(comicInfoId => concat(
-    of(actions.creatingDownloadTask()),
+    of(actions.waitForCreatingDownloadTask()),
     from(comicInfoInfoRepository.asyncGetById(comicInfoId)).pipe(
       map(comicInfo => downloadTaskFactory.createFromJson({
         id: comicInfo.identity,
@@ -92,8 +78,21 @@ export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfo
         sourceUrl: comicInfo.pageUrl,
       })),
       tap(downloadTask => downloadTaskRepository.saveOrUpdate(downloadTask)),
-      map(downloadTask => actions.downloadTaskCreated(downloadTask.serialize())),
+      map(downloadTask => actions.addNewDownloadTaskToState(downloadTask.serialize())),
     ),
+  ))
+)
+
+export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
+  ofType(
+    ActionTypes.QUERY_DOWNLOAD_TASKS,
+    ActionTypes.COMIC_DOWNLOADED,
+  ),
+  flatMap(() => concat(
+    of(actions.queryingDownloadTasks()),
+    of(downloadTaskRepository.getAll()).pipe(
+      map(downloadTasks => actions.downloadTasksQueried(downloadTasks.map(downloadTask => downloadTask.serialize()))),
+    )
   ))
 )
 
@@ -113,7 +112,7 @@ export const deleteDownloadTaskEpic = (action$, state$, {downloader: {downloadTa
 
 export const handleDownloadTaskEpic = (action$, state$, {downloader: {downloadTaskRepository, downloadComicService}}) => action$.pipe(
   ofType(
-    ActionTypes.DOWNLOAD_TASK_CREATED,
+    ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE,
   ),
   map(action => action.payload),
   flatMap(rawDownloadTask => concat(

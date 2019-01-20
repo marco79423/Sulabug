@@ -365,7 +365,7 @@ describe('queryDownloadTasksEpic', () => {
 })
 
 describe('createDownloadTaskEpic', () => {
-  it('will create download task by id', async () => {
+  it('will create download task by comic info id', async () => {
 
     const comicInfoFactory = new ComicInfoFactory()
     const comicInfo = comicInfoFactory.createFromJson({
@@ -414,8 +414,8 @@ describe('createDownloadTaskEpic', () => {
     expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
-      actions.creatingDownloadTask(),
-      actions.downloadTaskCreated(downloadTask.serialize()),
+      actions.waitForCreatingDownloadTask(),
+      actions.addNewDownloadTaskToState(downloadTask.serialize()),
     ])
   })
 })
@@ -470,7 +470,7 @@ describe('handleDownloadTaskEpic', () => {
       asyncDownload: jest.fn(),
     }
 
-    const actions$ = of(actions.downloadTaskCreated(downloadTask))
+    const actions$ = of(actions.addNewDownloadTaskToState(downloadTask))
     const result = await handleDownloadTaskEpic(actions$, {}, {
       downloader: {
         downloadTaskRepository,
