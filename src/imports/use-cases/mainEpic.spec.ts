@@ -454,6 +454,7 @@ describe('updateUserProfileEpic', () => {
     expect(userProfileRepository.asyncSaveOrUpdate).toBeCalledWith(userProfileFactory.createFromJson(userProfileData))
 
     expect(result).toEqual([
+      actions.waitForUpdatingUserProfile(),
       actions.syncUserProfileToState(userProfileData),
     ])
   })

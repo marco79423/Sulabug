@@ -8,112 +8,81 @@ export const Page = {
 }
 
 export const ActionTypes = {
+  // app starts
   SEND_APP_START_SIGNAL: 'SEND_APP_START_SIGNAL',
 
+  // init data
   WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
   SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
 
+  // change page
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
 
+  // auto update comic info database
   SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
   WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
   SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
 
+  // search comic
   SEARCH_COMIC: 'SEARCH_COMIC',
   WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB: 'WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB',
 
+  // create download task
   CREATE_DOWNLOAD_TASK: 'CREATE_DOWNLOAD_TASK',
   WAIT_FOR_CREATING_DOWNLOAD_TASK: 'WAIT_FOR_CREATING_DOWNLOAD_TASK',
   ADD_NEW_DOWNLOAD_TASK_TO_STATE: 'ADD_NEW_DOWNLOAD_TASK_TO_STATE',
+
+  // delete download task
+  DELETE_DOWNLOAD_TASK: 'DELETE_DOWNLOAD_TASK',
   DELETE_DOWNLOAD_TASK_FROM_STATE: 'DELETE_DOWNLOAD_TASK_FROM_STATE',
 
-  WAIT_FOR_UPDATING_USER_PROFILE: 'WAIT_FOR_UPDATING_USER_PROFILE',
-  SYNC_USER_PROFILE_TO_STATE: 'WAIT_FOR_UPDATING_USER_PROFILE',
-
-
-
-  QUERY_USER_PROFILE: 'QUERY_USER_PROFILE',
-  QUERYING_USER_PROFILE: 'QUERYING_USER_PROFILE',
-  USER_PROFILE_QUERIED: 'USER_PROFILE_QUERIED',
-
-  UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
-  UPDATING_USER_PROFILE: 'UPDATING_USER_PROFILE',
-  USER_PROFILE_UPDATED: 'USER_PROFILE_UPDATED',
-
-  QUERY_COMIC_INFOS_FROM_DATABASE: 'QUERY_COMIC_INFOS_FROM_DATABASE',
-  QUERYING_COMIC_INFOS_FROM_DATABASE: 'QUERYING_COMIC_INFOS_FROM_DATABASE',
-  COMIC_INFOS_FROM_DATABASE_QUERIED: 'COMIC_INFOS_FROM_DATABASE_QUERIED',
-
-  UPDATING_COMIC_INFO_DATABASE: 'UPDATING_COMIC_INFO_DATABASE',
-  COMIC_INFO_DATABASE_UPDATED: 'COMIC_INFO_DATABASE_UPDATED',
-
+  // update download status
   SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL: 'SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL',
   SYNC_DOWNLOAD_TASKS_TO_STATE: 'SYNC_DOWNLOAD_TASKS_TO_STATE',
 
-  CREATING_DOWNLOAD_TASK: 'CREATING_DOWNLOAD_TASK',
-  DOWNLOAD_TASK_CREATED: 'DOWNLOAD_TASK_CREATED',
-
-  DELETE_DOWNLOAD_TASK: 'DELETE_DOWNLOAD_TASK',
-  DELETING_DOWNLOAD_TASK: 'DELETING_DOWNLOAD_TASK',
-  DOWNLOAD_TASK_DELETED: 'DOWNLOAD_TASK_DELETED',
-
-  QUERY_DOWNLOAD_TASKS: 'QUERY_DOWNLOAD_TASKS',
-  QUERYING_DOWNLOAD_TASKS: 'QUERYING_DOWNLOAD_TASKS',
-  DOWNLOAD_TASKS_QUERIED: 'DOWNLOAD_TASKS_QUERIED',
-
-  DOWNLOADING_COMIC: 'DOWNLOADING_COMIC',
-  COMIC_DOWNLOADED: 'COMIC_DOWNLOADED',
+  // update profile
+  UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
+  WAIT_FOR_UPDATING_USER_PROFILE: 'WAIT_FOR_UPDATING_USER_PROFILE',
+  SYNC_USER_PROFILE_TO_STATE: 'WAIT_FOR_UPDATING_USER_PROFILE',
 }
 
 export const actions = {
+  // app starts
   sendAppStartSignal: createAction(ActionTypes.SEND_APP_START_SIGNAL),
 
+  // init data
   waitForQueryingInitDataFromDB: createAction(ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB),
   syncInitDataToState: createAction(ActionTypes.SYNC_INIT_DATA_TO_STATE),
 
+  // change page
   changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
 
+  // auto update comic info database
   sendComicInfoDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL),
   waitForComicInfoDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_INFO_DATABASE_UPDATE),
   syncComicInfosToState: createAction(ActionTypes.SYNC_COMIC_INFOS_TO_STATE),
 
+  // search comic
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
   waitForResultOfSearchingComicInfosFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB),
 
+  // create download task
   createDownloadTask: createAction(ActionTypes.CREATE_DOWNLOAD_TASK),
   waitForCreatingDownloadTask: createAction(ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK),
   addNewDownloadTaskToState: createAction(ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE),
 
+  // delete download task
   deleteDownloadTask: createAction(ActionTypes.DELETE_DOWNLOAD_TASK),
   deleteDownloadTaskFromState: createAction(ActionTypes.DELETE_DOWNLOAD_TASK_FROM_STATE),
 
+  // update download status
   sendDownloadStatusChangedSignal: createAction(ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL),
   syncDownloadTasksToState: createAction(ActionTypes.SYNC_DOWNLOAD_TASKS_TO_STATE),
 
+  // update profile
+  updateUserProfile: createAction(ActionTypes.UPDATE_USER_PROFILE),
   waitForUpdatingUserProfile: createAction(ActionTypes.WAIT_FOR_UPDATING_USER_PROFILE),
   syncUserProfileToState: createAction(ActionTypes.SYNC_USER_PROFILE_TO_STATE),
-
-  queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
-  queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
-  userProfileQueried: createAction(ActionTypes.USER_PROFILE_QUERIED),
-
-  updateUserProfile: createAction(ActionTypes.UPDATE_USER_PROFILE),
-  updatingUserProfile: createAction(ActionTypes.UPDATING_USER_PROFILE),
-  userProfileUpdated: createAction(ActionTypes.USER_PROFILE_UPDATED),
-
-  queryComicInfosFromDatabase: createAction(ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE),
-  queryingComicInfosFromDatabase: createAction(ActionTypes.QUERYING_COMIC_INFOS_FROM_DATABASE),
-  comicInfosFromDatabaseQueried: createAction(ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED),
-
-  updatingComicInfoDatabase: createAction(ActionTypes.UPDATING_COMIC_INFO_DATABASE),
-  comicInfoDatabaseUpdated: createAction(ActionTypes.COMIC_INFO_DATABASE_UPDATED),
-
-  queryDownloadTasks: createAction(ActionTypes.QUERY_DOWNLOAD_TASKS),
-  queryingDownloadTasks: createAction(ActionTypes.QUERYING_DOWNLOAD_TASKS),
-  downloadTasksQueried: createAction(ActionTypes.DOWNLOAD_TASKS_QUERIED),
-
-  downloadingComic: createAction(ActionTypes.DOWNLOADING_COMIC),
-  comicDownloaded: createAction(ActionTypes.COMIC_DOWNLOADED),
 }
 
 export const defaultState = {
