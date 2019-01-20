@@ -8,10 +8,25 @@ export const sendAppStartSignalWhenAppStartsEpic = () => of(
   actions.sendAppStartSignal()
 )
 
-export const initializeEpic = () => of(
-  actions.queryUserProfile(),
-  actions.queryComicInfosFromDatabase(),
-  actions.queryDownloadTasks(),
+export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general: {userProfileRepository}, library: {comicInfoInfoRepository}, downloader: {downloadTaskRepository}}) => action$.pipe(
+  ofType(
+    ActionTypes.SEND_APP_START_SIGNAL
+  ),
+  flatMap(() => concat(
+    of(actions.waitForQueryingInitDataFromDB()),
+    from(Promise.all([
+        userProfileRepository.asyncGet(),
+        comicInfoInfoRepository.asyncGetAllBySearchTerm(),
+        downloadTaskRepository.getAll()
+      ]).then(([userProfile, comicInfos, downloadTasks]) => ({
+        userProfile: userProfile.serialize(),
+        comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
+        downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
+      }))
+    ).pipe(
+      map(initData => actions.syncInitDataToState(initData))
+    ),
+  ))
 )
 
 export const queryUserProfileEpic = (action$, state$, {general: {userProfileRepository}}) => action$.pipe(
@@ -141,9 +156,10 @@ export const handleDownloadTaskUpdatedEventEpic = (action$, state$, {eventPublis
 )
 
 export default combineEpics(
+  // global
   sendAppStartSignalWhenAppStartsEpic,
+  initializeDataFromDBWhenAppStartsEpic,
 
-  initializeEpic,
   queryUserProfileEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,

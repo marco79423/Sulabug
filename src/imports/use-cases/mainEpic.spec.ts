@@ -7,7 +7,7 @@ import {
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
   handleDownloadTaskEpic,
-  handleDownloadTaskUpdatedEventEpic,
+  handleDownloadTaskUpdatedEventEpic, initializeDataFromDBWhenAppStartsEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
   queryUserProfileEpic,
@@ -38,25 +38,87 @@ describe('sendAppStartSignalWhenAppStartsEpic', () => {
   })
 })
 
-describe('initializeEpic', () => {
-  it('will start actions automatically in the beginning', async () => {
-    const result = await initializeEpic().pipe(
+describe('initializeDataFromDBWhenAppStartsEpic', () => {
+  it('will query init data from database and then sync to state in the beginning', async () => {
+    const userProfile = new UserProfile(
+      'comicsFolder'
+    )
+
+    const userProfileRepository: IUserProfileRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGet: jest.fn(() => Promise.resolve(userProfile)),
+    }
+
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfos = [
+      comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdated: 'lastUpdated-1',
+        summary: 'summary-1',
+      }),
+      comicInfoFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        source: 'source-2',
+        pageUrl: 'pageUrl-2',
+        catalog: 'catalog-2',
+        author: 'author-2',
+        lastUpdated: 'lastUpdated-2',
+        summary: 'summary-2',
+      })
+    ]
+
+    const comicInfoInfoRepository = {
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
+    }
+
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
+    }
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
+
+    const actions$ = of(actions.sendAppStartSignal())
+    const result = await initializeDataFromDBWhenAppStartsEpic(actions$, {}, {general: {userProfileRepository}, library: {comicInfoInfoRepository}, downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryUserProfile(),
-      actions.queryComicInfosFromDatabase(),
-      actions.queryDownloadTasks(),
+      actions.waitForQueryingInitDataFromDB(),
+      actions.syncInitDataToState({
+        userProfile: userProfile.serialize(),
+        comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
+        downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
+      }),
     ])
   })
 })
 
-export const initializeEpic = () => of(
-  actions.queryUserProfile(),
-  actions.queryComicInfosFromDatabase(),
-  actions.queryDownloadTasks(),
-)
 
 describe('queryUserProfileEpic', () => {
   it('will retrieve userProfile from database', async () => {

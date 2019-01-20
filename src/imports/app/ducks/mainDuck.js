@@ -9,6 +9,8 @@ export const Page = {
 
 export const ActionTypes = {
   SEND_APP_START_SIGNAL: 'SEND_APP_START_SIGNAL',
+  WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
+  SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
 
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
 
@@ -48,6 +50,9 @@ export const ActionTypes = {
 export const actions = {
   sendAppStartSignal: createAction(ActionTypes.SEND_APP_START_SIGNAL),
 
+  waitForQueryingInitDataFromDB: createAction(ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB),
+  syncInitDataToState: createAction(ActionTypes.SYNC_INIT_DATA_TO_STATE),
+
   changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
@@ -85,25 +90,55 @@ export const actions = {
 
 export const defaultState = {
   currentPage: Page.BROWSE_PAGE,
-
+  userProfile: {
+    downloadFolderPath: '',
+  },
   comicInfo: {
     loading: false,
     allIds: [],
     byId: {},
   },
-
   downloadTask: {
     loading: false,
     allIds: [],
     byId: {},
   },
-
-  userProfile: {
-    downloadFolderPath: '',
-  },
 }
 
 export const reducer = handleActions({
+  [ActionTypes.WAIT_FOR_INIT_DATA]: (state) => ({
+    ...state,
+    comicInfo: {
+      loading: true,
+      allIds: [],
+      byId: {},
+    },
+    downloadTask: {
+      loading: true,
+      allIds: [],
+      byId: {},
+    },
+  }),
+  [ActionTypes.SYNC_INIT_DATA_TO_STATE]: (state, {payload: {userProfile, comicInfos, downloadTasks}}) => ({
+    ...state,
+    userProfile,
+    comicInfo: {
+      loading: false,
+      allIds: comicInfos.map(comicInfo => comicInfo.id),
+      byId: comicInfos.reduce((comicInfoMap, comicInfo) => ({
+        ...comicInfoMap,
+        [comicInfo.id]: comicInfo,
+      }), {}),
+    },
+    downloadTask: {
+      loading: false,
+      allIds: downloadTasks.map(downloadTask => downloadTask.id),
+      byId: downloadTasks.reduce((downloadTaskMap, downloadTask) => ({
+        ...downloadTaskMap,
+        [downloadTask.id]: downloadTask,
+      }), {}),
+    },
+  }),
   [ActionTypes.CHANGE_CURRENT_PAGE]: (state, action) => ({
     ...state,
     currentPage: action.payload,
