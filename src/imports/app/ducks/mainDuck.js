@@ -9,8 +9,14 @@ export const Page = {
 
 export const ActionTypes = {
   SEND_APP_START_SIGNAL: 'SEND_APP_START_SIGNAL',
+
   WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
   SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
+
+  SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
+  WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
+  SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
+
 
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
 
@@ -52,6 +58,10 @@ export const actions = {
 
   waitForQueryingInitDataFromDB: createAction(ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB),
   syncInitDataToState: createAction(ActionTypes.SYNC_INIT_DATA_TO_STATE),
+
+  sendComicInfoDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL),
+  waitForComicInfoDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_INFO_DATABASE_UPDATE),
+  syncComicInfosToState: createAction(ActionTypes.SYNC_COMIC_INFOS_TO_STATE),
 
   changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
 
@@ -106,7 +116,7 @@ export const defaultState = {
 }
 
 export const reducer = handleActions({
-  [ActionTypes.WAIT_FOR_INIT_DATA]: (state) => ({
+  [ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB]: (state) => ({
     ...state,
     comicInfo: {
       loading: true,
@@ -143,6 +153,18 @@ export const reducer = handleActions({
     ...state,
     currentPage: action.payload,
   }),
+  [ActionTypes.SYNC_COMIC_INFOS_TO_STATE]: (state, action) => ({
+    ...state,
+    comicInfo: {
+      loading: false,
+      allIds: action.payload.map(comicInfo => comicInfo.id),
+      byId: action.payload.reduce((comicInfoMap, comicInfo) => ({
+        ...comicInfoMap,
+        [comicInfo.id]: comicInfo,
+      }), {}),
+    },
+  }),
+
   [ActionTypes.USER_PROFILE_QUERIED]: (state, action) => ({
     ...state,
     userProfile: action.payload,

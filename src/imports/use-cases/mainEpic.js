@@ -29,10 +29,30 @@ export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general:
   ))
 )
 
+export const sendSignalWhenComicInfoDBIsEmptyEpic = (action$) => action$.pipe(
+  ofType(
+    ActionTypes.SYNC_INIT_DATA_TO_STATE
+  ),
+  map(action => action.payload.comicInfos),
+  filter(comicInfos => comicInfos.length === 0),
+  mapTo(actions.sendComicInfoDatabaseEmptySignal())
+)
+
+export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {library: {comicInfoDatabaseService}}) => action$.pipe(
+  ofType(
+    ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL
+  ),
+  flatMap(() => concat(
+    of(actions.waitForComicInfoDatabaseUpdate()),
+    from(comicInfoDatabaseService.asyncUpdateAndReturn()).pipe(
+      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())))
+    ),
+  )),
+)
+
 export const queryComicInfosFromDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
   ofType(
     ActionTypes.QUERY_COMIC_INFOS_FROM_DATABASE,
-    ActionTypes.COMIC_INFO_DATABASE_UPDATED,
     ActionTypes.SEARCH_COMIC,
   ),
   map(action => action ? action.payload : ''),
@@ -57,21 +77,6 @@ export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTa
     )
   ))
 )
-
-export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository, comicInfoDatabaseService}}) => action$.pipe(
-  ofType(
-    ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED
-  ),
-  map(action => action.payload),
-  filter(comicInfos => comicInfos.length === 0),
-  flatMap(() => concat(
-    of(actions.updatingComicInfoDatabase()),
-    from(comicInfoDatabaseService.asyncUpdateAndReturn()).pipe(
-      mapTo(actions.comicInfoDatabaseUpdated())
-    ),
-  )),
-)
-
 
 export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfoRepository}, downloader: {downloadTaskFactory, downloadTaskRepository}}) => action$.pipe(
   ofType(
@@ -148,10 +153,13 @@ export default combineEpics(
   sendAppStartSignalWhenAppStartsEpic,
   initializeDataFromDBWhenAppStartsEpic,
 
+  // library
+  sendSignalWhenComicInfoDBIsEmptyEpic,
+  updateComicInfoDBWhenDBIsEmptyEpic,
+
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
 
-  updateComicInfoDatabaseEpic,
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
   handleDownloadTaskEpic,
