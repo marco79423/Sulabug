@@ -9,8 +9,6 @@ export const Page = {
 
 export const ActionTypes = {
   CHANGE_CURRENT_PAGE: 'CHANGE_CURRENT_PAGE',
-  CHANGING_CURRENT_PAGE: 'CHANGING_CURRENT_PAGE',
-  CURRENT_PAGE_CHANGED: 'CURRENT_PAGE_CHANGED',
 
   QUERY_USER_PROFILE: 'QUERY_USER_PROFILE',
   QUERYING_USER_PROFILE: 'QUERYING_USER_PROFILE',
@@ -47,8 +45,6 @@ export const ActionTypes = {
 
 export const actions = {
   changeCurrentPage: createAction(ActionTypes.CHANGE_CURRENT_PAGE),
-  changingCurrentPage: createAction(ActionTypes.CHANGING_CURRENT_PAGE),
-  currentPageChanged: createAction(ActionTypes.CURRENT_PAGE_CHANGED),
 
   queryUserProfile: createAction(ActionTypes.QUERY_USER_PROFILE),
   queryingUserProfile: createAction(ActionTypes.QUERYING_USER_PROFILE),
@@ -104,7 +100,7 @@ export const defaultState = {
 }
 
 export const reducer = handleActions({
-  [ActionTypes.CURRENT_PAGE_CHANGED]: (state, action) => ({
+  [ActionTypes.CHANGE_CURRENT_PAGE]: (state, action) => ({
     ...state,
     currentPage: action.payload,
   }),

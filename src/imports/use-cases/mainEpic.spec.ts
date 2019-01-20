@@ -4,7 +4,6 @@ import {of} from 'rxjs'
 
 import {actions} from '../app/ducks/mainDuck'
 import {
-  changeCurrentPageEpic,
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
   handleDownloadTaskEpic,
@@ -310,26 +309,12 @@ describe('queryDownloadTasksEpic', () => {
   })
 })
 
-
-describe('changeCurrentPageEpic', () => {
-  it('will change page by actions', async () => {
-    const actions$ = of(actions.changeCurrentPage('a'))
-    const result = await changeCurrentPageEpic(actions$).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.currentPageChanged('a'),
-    ])
-  })
-})
-
 describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network automatically when the result of querying comic infos is empty', async () => {
     const comicInfoInfoRepository: IComicInfoRepository = {
       asyncSaveOrUpdate: jest.fn(),
       asyncGetById: jest.fn(),
-      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve([])),
+      asyncGetAllBySearchTerm: jest.fn(() => []),
     }
     const comicInfoDatabaseService: IComicInfoDatabaseService = {
       asyncUpdateAndReturn: jest.fn(() => Promise.resolve([])),

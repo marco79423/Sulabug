@@ -51,11 +51,6 @@ export const queryDownloadTasksEpic = (action$, state$, {downloader: {downloadTa
   ))
 )
 
-export const changeCurrentPageEpic = action$ => action$.pipe(
-  ofType(ActionTypes.CHANGE_CURRENT_PAGE),
-  map(action => actions.currentPageChanged(action.payload)),
-)
-
 export const updateComicInfoDatabaseEpic = (action$, state$, {library: {comicInfoInfoRepository, comicInfoDatabaseService}}) => action$.pipe(
   ofType(
     ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED
@@ -146,8 +141,6 @@ export default combineEpics(
   queryUserProfileEpic,
   queryComicInfosFromDatabaseEpic,
   queryDownloadTasksEpic,
-
-  changeCurrentPageEpic,
 
   updateComicInfoDatabaseEpic,
   createDownloadTaskEpic,
