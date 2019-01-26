@@ -11,19 +11,21 @@ import downloaderTypes from '../domain/downloader/downloaderTypes'
 export default function configureStore() {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
-      // general
-      queryConfigUseCase: injector.get(generalTypes.QueryConfigUseCase),
-      updateConfigUseCase: injector.get(generalTypes.UpdateConfigUseCase),
-      // library
-      queryComicInfoByIdentityFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfoByIdentityFromDatabaseUseCase),
-      queryComicInfosFromDatabaseUseCase: injector.get(libraryTypes.QueryComicInfosFromDatabaseUseCase),
-      updateComicInfoDatabaseUseCase: injector.get(libraryTypes.UpdateComicInfoDatabaseUseCase),
-      // downloader
+      general: {
+        userProfileFactory: injector.get(generalTypes.UserProfileFactory),
+        userProfileRepository: injector.get(generalTypes.UserProfileRepository),
+      },
+      library: {
+        comicInfoFactory: injector.get(libraryTypes.ComicInfoFactory),
+        comicInfoInfoRepository: injector.get(libraryTypes.ComicInfoInfoRepository),
+        comicInfoDatabaseService: injector.get(libraryTypes.ComicInfoDatabaseService),
+      },
+      downloader: {
+        downloadTaskFactory: injector.get(downloaderTypes.DownloadTaskFactory),
+        downloadTaskRepository: injector.get(downloaderTypes.DownloadTaskRepository),
+        downloadComicService: injector.get(downloaderTypes.DownloadComicService),
+      },
       eventPublisher: injector.get(downloaderTypes.EventPublisher),
-      createDownloadTaskUseCase: injector.get(downloaderTypes.CreateDownloadTaskUseCase),
-      deleteDownloadTaskUseCase: injector.get(downloaderTypes.DeleteDownloadTaskUseCase),
-      downloadComicUseCase: injector.get(downloaderTypes.DownloadComicUseCase),
-      queryDownloadTasksUseCase: injector.get(downloaderTypes.QueryDownloadTasksUseCase),
     }
   })
 

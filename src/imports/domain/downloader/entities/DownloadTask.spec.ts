@@ -1,5 +1,5 @@
 import DownloadTask, {DownloadStatus} from './DownloadTask'
-import {DownloadTaskRepository} from '../interfaces/repositories'
+import {IDownloadTaskRepository} from '../interfaces'
 
 describe('DownloadTask', () => {
   describe('serialize', () => {
@@ -11,7 +11,7 @@ describe('DownloadTask', () => {
         sourceUrl: 'sourceUrl',
       }
 
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),
@@ -36,7 +36,7 @@ describe('DownloadTask', () => {
 
   describe('finish', () => {
     it('will change status to FINISH and set progress to 100', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),
@@ -62,7 +62,7 @@ describe('DownloadTask', () => {
 
   describe('addProgress', () => {
     it('will add progress', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),
@@ -84,7 +84,7 @@ describe('DownloadTask', () => {
     })
 
     it('will change status to DOWNLOADING if the status of download task is not DOWNLOADING', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),
@@ -105,7 +105,7 @@ describe('DownloadTask', () => {
     })
 
     it('will change status to FINISH if the progress is 100', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),
@@ -126,7 +126,7 @@ describe('DownloadTask', () => {
     })
 
     it('will still 100 if the sum of argument and progress is great than 100', () => {
-      const downloadTaskRepository: DownloadTaskRepository = {
+      const downloadTaskRepository: IDownloadTaskRepository = {
         saveOrUpdate: jest.fn(),
         getById: jest.fn(),
         getAll: jest.fn(),

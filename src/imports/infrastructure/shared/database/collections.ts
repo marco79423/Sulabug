@@ -1,8 +1,8 @@
-export const ConfigCollection = {
-  name: 'config',
+export const UserProfileCollection = {
+  name: 'user_profile',
   schema: {
-    title: 'config schema',
-    description: 'describes configuration',
+    title: 'user profile schema',
+    description: 'describes user profile',
     version: 0,
     type: 'object',
     properties: {
@@ -69,6 +69,6 @@ export const ComicInfoCollection = {
 }
 
 export default [
-  ConfigCollection,
+  UserProfileCollection,
   ComicInfoCollection,
 ]

@@ -1,8 +1,5 @@
 export default {
-  ConfigFactory: Symbol('Domain/General/ConfigFactory'),
+  UserProfileFactory: Symbol('Domain/General/UserProfileFactory'),
 
-  ConfigRepository: Symbol('Domain/General/ConfigRepository'),
-
-  QueryConfigUseCase: Symbol('Domain/General/QueryConfigUseCase'),
-  UpdateConfigUseCase: Symbol('Domain/General/UpdateConfigUseCase'),
+  UserProfileRepository: Symbol('Domain/General/UserProfileRepository'),
 }

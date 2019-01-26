@@ -2,318 +2,460 @@ import 'reflect-metadata'
 
 import {of} from 'rxjs'
 
-import {Request, Response} from '../../domain/base-types'
 import {actions} from '../ducks/mainDuck'
 import {
-  changeCurrentPageEpic,
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
-  handleDownloadTaskEpic,
-  handleDownloadTaskUpdatedEventEpic,
-  queryComicInfosFromDatabaseEpic,
-  queryConfigEpic,
-  queryDownloadTasksEpic,
-  updateComicInfoDatabaseEpic,
-  updateConfigEpic
+  initializeDataFromDBWhenAppStartsEpic,
+  searchComicInfosEpic,
+  sendAppStartSignalWhenAppStartsEpic,
+  sendSignalWhenComicInfoDBIsEmptyEpic,
+  startToDownloadComicWhenNewDownloadTaskCreatedEpic,
+  syncDownloadTasksToStateWhenDownloadStatusChanged, transformDownloadTaskUpdatedEventToSignalEpic,
+  updateComicInfoDBWhenDBIsEmptyEpic,
+  updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
 import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import UserProfile from '../../domain/general/entities/UserProfile'
+import UserProfileFactory from '../../domain/general/factories/UserProfileFactory'
+import {IComicInfoDatabaseService, IComicInfoRepository} from '../../domain/library/interfaces'
+import ComicInfoFactory from '../../domain/library/factories/ComicInfoFactory'
+import DownloadTaskFactory from '../../domain/downloader/factories/DownloadTaskFactory'
+import {IDownloadComicService, IDownloadTaskRepository} from '../../domain/downloader/interfaces'
+import {IUserProfileRepository} from '../../domain/general/interfaces'
 
 
-describe('initializeEpic', () => {
-  it('will start actions automatically in the beginning', async () => {
-    const result = await initializeEpic().pipe(
+describe('sendAppStartSignalWhenAppStartsEpic', () => {
+  it('will send start signal automatically in the beginning', async () => {
+    const result = await sendAppStartSignalWhenAppStartsEpic().pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryConfig(),
-      actions.queryComicInfosFromDatabase(),
-      actions.queryDownloadTasks(),
+      actions.sendAppStartSignal(),
     ])
   })
 })
 
-export const initializeEpic = () => of(
-  actions.queryConfig(),
-  actions.queryComicInfosFromDatabase(),
-  actions.queryDownloadTasks(),
-)
+describe('initializeDataFromDBWhenAppStartsEpic', () => {
+  it('will query init data from database and then sync to state in the beginning', async () => {
+    const userProfile = new UserProfile(
+      'comicsFolder'
+    )
 
-describe('queryConfigEpic', () => {
-  it('will retrieve config from database', async () => {
-    const config = {}
-
-    const queryConfigUseCase = {
-      execute: jest.fn(() => of(new Response(config))),
+    const userProfileRepository: IUserProfileRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGet: jest.fn(() => Promise.resolve(userProfile)),
     }
 
-    const actions$ = of(actions.queryConfig())
-    const result = await queryConfigEpic(actions$, {}, {queryConfigUseCase}).pipe(
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfos = [
+      comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdated: 'lastUpdated-1',
+        summary: 'summary-1',
+      }),
+      comicInfoFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        source: 'source-2',
+        pageUrl: 'pageUrl-2',
+        catalog: 'catalog-2',
+        author: 'author-2',
+        lastUpdated: 'lastUpdated-2',
+        summary: 'summary-2',
+      })
+    ]
+
+    const comicInfoInfoRepository = {
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
+    }
+
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
+    }
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
+
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
+
+    const actions$ = of(actions.sendAppStartSignal())
+    const result = await initializeDataFromDBWhenAppStartsEpic(actions$, {}, {
+      general: {userProfileRepository},
+      library: {comicInfoInfoRepository},
+      downloader: {downloadTaskRepository}
+    }).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryingConfig(),
-      actions.configQueried(config),
+      actions.waitForQueryingInitDataFromDB(),
+      actions.syncInitDataToState({
+        userProfile: userProfile.serialize(),
+        comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
+        downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
+      }),
     ])
   })
 })
 
-describe('queryComicInfosFromDatabaseEpic', () => {
-  it('will retrieve comic infos from database when getting query command', async () => {
-    const comicInfos = []
 
-    const queryComicInfosFromDatabaseUseCase = {
-      execute: jest.fn(() => of(new Response(comicInfos))),
-    }
+describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
+  it('will do nothing when db is not empty', async () => {
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfo = comicInfoFactory.createFromJson({
+      id: 'id',
+      name: 'name',
+      coverDataUrl: 'coverDataUrl',
+      source: 'source',
+      pageUrl: 'pageUrl',
+      catalog: 'catalog',
+      author: 'author',
+      lastUpdated: 'lastUpdated',
+      summary: 'summary',
+    })
 
-    const actions$ = of(actions.queryComicInfosFromDatabase())
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {queryComicInfosFromDatabaseUseCase}).pipe(
+    const actions$ = of(actions.syncInitDataToState({
+      userProfile: {},
+      comicInfos: [comicInfo.serialize()],
+      downloadTasks: []
+    }))
+    const result = await sendSignalWhenComicInfoDBIsEmptyEpic(actions$).pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(result).toEqual([])
+  })
+
+  it('will send signal when db is empty', async () => {
+    const actions$ = of(actions.syncInitDataToState({userProfile: {}, comicInfos: [], downloadTasks: []}))
+    const result = await sendSignalWhenComicInfoDBIsEmptyEpic(actions$).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryingComicInfosFromDatabase(),
-      actions.comicInfosFromDatabaseQueried(comicInfos),
+      actions.sendComicInfoDatabaseEmptySignal()
     ])
   })
+})
 
-  it('will retrieve comic infos from database when database updated', async () => {
-    const comicInfos = []
+describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
+  it('will update database from network and sync to state when db is empty', async () => {
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfos = [
+      comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdated: 'lastUpdated-1',
+        summary: 'summary-1',
+      }),
+      comicInfoFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        source: 'source-2',
+        pageUrl: 'pageUrl-2',
+        catalog: 'catalog-2',
+        author: 'author-2',
+        lastUpdated: 'lastUpdated-2',
+        summary: 'summary-2',
+      })
+    ]
 
-    const queryComicInfosFromDatabaseUseCase = {
-      execute: jest.fn(() => of(new Response(comicInfos))),
+    const comicInfoDatabaseService: IComicInfoDatabaseService = {
+      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comicInfos)),
     }
 
-    const actions$ = of(actions.comicInfoDatabaseUpdated())
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {queryComicInfosFromDatabaseUseCase}).pipe(
+    const actions$ = of(actions.sendComicInfoDatabaseEmptySignal())
+    const result = await updateComicInfoDBWhenDBIsEmptyEpic(actions$, {}, {library: {comicInfoDatabaseService}}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryingComicInfosFromDatabase(),
-      actions.comicInfosFromDatabaseQueried(comicInfos),
+      actions.waitForComicInfoDatabaseUpdate(),
+      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
     ])
   })
+})
 
-  it('will retrieve comic infos by search term from database', async () => {
-    const comicInfos = {}
+describe('searchComicInfosEpic', () => {
+  it('will search comic infos by search term from database', async () => {
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfos = [
+      comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdated: 'lastUpdated-1',
+        summary: 'summary-1',
+      }),
+      comicInfoFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        source: 'source-2',
+        pageUrl: 'pageUrl-2',
+        catalog: 'catalog-2',
+        author: 'author-2',
+        lastUpdated: 'lastUpdated-2',
+        summary: 'summary-2',
+      })
+    ]
 
-    const queryComicInfosFromDatabaseUseCase = {
-      execute: jest.fn(() => of(new Response(comicInfos))),
+    const comicInfoInfoRepository = {
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
     }
 
     const actions$ = of(actions.searchComic('search term'))
-    const result = await queryComicInfosFromDatabaseEpic(actions$, {}, {queryComicInfosFromDatabaseUseCase}).pipe(
+    const result = await searchComicInfosEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(queryComicInfosFromDatabaseUseCase.execute).toBeCalledWith(new Request('search term'))
+    expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalledWith('search term')
 
     expect(result).toEqual([
-      actions.queryingComicInfosFromDatabase(),
-      actions.comicInfosFromDatabaseQueried(comicInfos),
-    ])
-  })
-})
-
-
-describe('queryDownloadTasksEpic', () => {
-  it('will retrieve download tasks from database', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
-    }
-
-    const actions$ = of(actions.queryDownloadTasks())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
-    ])
-  })
-
-  it('will retrieve download tasks again after a new download task created', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
-    }
-
-    const actions$ = of(actions.downloadTaskCreated())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
-    ])
-  })
-
-  it('will retrieve download tasks again after a new download task downloaded', async () => {
-    const downloadTasks = {}
-
-    const queryDownloadTasksUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTasks))),
-    }
-
-    const actions$ = of(actions.comicDownloaded())
-    const result = await queryDownloadTasksEpic(actions$, {}, {queryDownloadTasksUseCase}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.queryingDownloadTasks(),
-      actions.downloadTasksQueried(downloadTasks),
-    ])
-  })
-})
-
-
-describe('changeCurrentPageEpic', () => {
-  it('will change page by actions', async () => {
-    const actions$ = of(actions.changeCurrentPage('a'))
-    const result = await changeCurrentPageEpic(actions$).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.currentPageChanged('a'),
-    ])
-  })
-})
-
-describe('updateComicInfoDatabaseEpic', () => {
-  it('will update database from network automatically when the result of querying comic infos is empty', async () => {
-    const updateComicInfoDatabaseUseCase = {
-      execute: jest.fn(() => of(new Response())),
-    }
-
-    const actions$ = of(actions.comicInfosFromDatabaseQueried([]))
-    const result = await updateComicInfoDatabaseEpic(actions$, {}, {updateComicInfoDatabaseUseCase}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(updateComicInfoDatabaseUseCase.execute).toBeCalled()
-
-    expect(result).toEqual([
-      actions.updatingComicInfoDatabase(),
-      actions.comicInfoDatabaseUpdated(),
+      actions.waitForResultOfSearchingComicInfosFromDB(),
+      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
     ])
   })
 })
 
 describe('createDownloadTaskEpic', () => {
-  it('will create download task by id', async () => {
-    const downloadTask = {}
+  it('will create download task by comic info id', async () => {
 
-    const createDownloadTaskUseCase = {
-      execute: jest.fn(() => of(new Response(downloadTask))),
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfo = comicInfoFactory.createFromJson({
+      id: 'id',
+      name: 'name',
+      coverDataUrl: 'coverDataUrl',
+      source: 'source',
+      pageUrl: 'pageUrl',
+      catalog: 'catalog',
+      author: 'author',
+      lastUpdated: 'lastUpdated',
+      summary: 'summary',
+    })
+
+    const comicInfoInfoRepository: IComicInfoRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
+      asyncGetAllBySearchTerm: jest.fn(),
     }
 
-    const actions$ = of(actions.createDownloadTask('comicInfoId'))
-    const result = await createDownloadTaskEpic(actions$, {}, {createDownloadTaskUseCase}).pipe(
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
+    }
+
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
+
+    const downloadTask = downloadTaskFactory.createFromJson({
+      id: comicInfo.identity,
+      name: comicInfo.name,
+      coverDataUrl: comicInfo.coverDataUrl,
+      sourceUrl: comicInfo.pageUrl,
+    })
+
+    const actions$ = of(actions.createDownloadTask(comicInfo.identity))
+    const result = await createDownloadTaskEpic(actions$, {}, {
+      library: {comicInfoInfoRepository},
+      downloader: {downloadTaskFactory, downloadTaskRepository}
+    }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(createDownloadTaskUseCase.execute).toBeCalledWith(new Request('comicInfoId'))
+    expect(comicInfoInfoRepository.asyncGetById).toBeCalledWith(comicInfo.identity)
+    expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
-      actions.creatingDownloadTask(),
-      actions.downloadTaskCreated(downloadTask),
+      actions.waitForCreatingDownloadTask(),
+      actions.addNewDownloadTaskToState(downloadTask.serialize()),
     ])
   })
 })
-
 
 describe('deleteDownloadTaskEpic', () => {
   it('will delete download task by id', async () => {
     const downloadTaskId = 'downloadTaskId'
 
-    const deleteDownloadTaskUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
 
     const actions$ = of(actions.deleteDownloadTask(downloadTaskId))
-    const result = await deleteDownloadTaskEpic(actions$, {}, {deleteDownloadTaskUseCase}).pipe(
+    const result = await deleteDownloadTaskEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(deleteDownloadTaskUseCase.execute).toBeCalledWith(new Request(downloadTaskId))
+    expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)
 
     expect(result).toEqual([
-      actions.deletingDownloadTask(),
-      actions.downloadTaskDeleted(downloadTaskId),
+      actions.deleteDownloadTaskFromState(downloadTaskId),
     ])
   })
 })
 
-
-describe('handleDownloadTaskEpic', () => {
-  it('will handle delete download tasks after a download created', async () => {
-    const downloadTask = {
-      id: 'downloadTaskId'
+describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
+  it('will download comic after a download created', async () => {
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
 
-    const downloadComicUseCase = {
-      execute: jest.fn(() => of(new Response())),
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
+
+    const downloadTask = downloadTaskFactory.createFromJson({
+      id: 'id',
+      name: 'name',
+      coverDataUrl: 'coverDataUrl',
+      sourceUrl: 'sourceUrl',
+    })
+    downloadTaskRepository.getById = jest.fn(() => downloadTask)
+
+    const downloadComicService: IDownloadComicService = {
+      asyncDownload: jest.fn(),
     }
 
-    const actions$ = of(actions.downloadTaskCreated(downloadTask))
-    const result = await handleDownloadTaskEpic(actions$, {}, {downloadComicUseCase}).pipe(
+    const actions$ = of(actions.addNewDownloadTaskToState(downloadTask))
+    const result = await startToDownloadComicWhenNewDownloadTaskCreatedEpic(actions$, {}, {
+      downloader: {
+        downloadTaskRepository,
+        downloadComicService
+      }
+    }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(downloadComicUseCase.execute).toBeCalledWith(new Request(downloadTask.id))
+    expect(downloadComicService.asyncDownload).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
-      actions.downloadingComic(),
-      actions.comicDownloaded(),
+      actions.sendDownloadStatusChangedSignal(),
     ])
   })
 })
 
-describe('updateConfigEpic', () => {
-  it('will update configuration from database', async () => {
-    const config = {}
-
-    const updateConfigUseCase = {
-      execute: jest.fn(() => of(new Response())),
+describe('syncDownloadTasksToStateWhenDownloadStatusChanged', () => {
+  it('will sync download tasks from database to state', async () => {
+    const downloadTaskRepository: IDownloadTaskRepository = {
+      saveOrUpdate: jest.fn(),
+      getById: jest.fn(),
+      getAll: jest.fn(),
+      delete: jest.fn(),
     }
+    const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
-    const actions$ = of(actions.updateConfig(config))
-    const result = await updateConfigEpic(actions$, {}, {updateConfigUseCase}).pipe(
+    const downloadTasks = [
+      downloadTaskFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        sourceUrl: 'sourceUrl-1',
+      }),
+      downloadTaskFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        sourceUrl: 'sourceUrl-2',
+      }),
+    ]
+    downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
+
+    const actions$ = of(actions.sendDownloadStatusChangedSignal())
+    const result = await syncDownloadTasksToStateWhenDownloadStatusChanged(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(updateConfigUseCase.execute).toBeCalledWith(new Request(config))
-
     expect(result).toEqual([
-      actions.updatingConfig(),
-      actions.configUpdated(config),
+      actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize())),
     ])
   })
 })
 
-describe('handleDownloadTaskUpdatedEventEpic', () => {
-  it('will handle download task updated events', async () => {
+describe('transformDownloadTaskUpdatedEventToSignalEpic', () => {
+  it('will transform download task event to signal', async () => {
     const eventPublisher = {
       getEventStream: jest.fn(() => of(new DownloadTaskUpdatedEvent())),
     }
 
     const actions$ = of()
-    const result = await handleDownloadTaskUpdatedEventEpic(actions$, {}, {eventPublisher}).pipe(
+    const result = await transformDownloadTaskUpdatedEventToSignalEpic(actions$, {}, {eventPublisher}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.queryDownloadTasks(),
+      actions.sendDownloadStatusChangedSignal(),
+    ])
+  })
+})
+
+describe('updateUserProfileEpic', () => {
+  it('will update user profile from database', async () => {
+    const userProfileData = {
+      downloadFolderPath: 'downloadFolderPath',
+    }
+
+    const userProfileFactory = new UserProfileFactory()
+
+    const userProfileRepository: IUserProfileRepository = {
+      asyncSaveOrUpdate: jest.fn(),
+      asyncGet: jest.fn(),
+    }
+
+    const actions$ = of(actions.updateUserProfile(userProfileData))
+    const result = await updateUserProfileEpic(actions$, {}, {
+      general: {
+        userProfileFactory,
+        userProfileRepository
+      }
+    }).pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(userProfileRepository.asyncSaveOrUpdate).toBeCalledWith(userProfileFactory.createFromJson(userProfileData))
+
+    expect(result).toEqual([
+      actions.waitForUpdatingUserProfile(),
+      actions.syncUserProfileToState(userProfileData),
     ])
   })
 })

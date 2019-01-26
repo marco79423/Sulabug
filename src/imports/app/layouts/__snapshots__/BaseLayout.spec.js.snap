@@ -16,6 +16,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
+        onContextMenu={[Function]}
         onFocus={[Function]}
         onKeyDown={[Function]}
         onKeyUp={[Function]}
@@ -48,7 +49,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           </svg>
         </span>
         <span
-          className="MuiTouchRipple-root-204"
+          className="MuiTouchRipple-root-207"
         />
       </button>
       <div
@@ -77,6 +78,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
+            onContextMenu={[Function]}
             onFocus={[Function]}
             onKeyDown={[Function]}
             onKeyUp={[Function]}
@@ -95,7 +97,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
               搜尋
             </span>
             <span
-              className="MuiTouchRipple-root-204"
+              className="MuiTouchRipple-root-207"
             />
           </button>
         </div>
@@ -116,6 +118,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           disabled={false}
           onBlur={[Function]}
           onClick={[Function]}
+          onContextMenu={[Function]}
           onFocus={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -148,7 +151,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
             </svg>
           </span>
           <span
-            className="MuiTouchRipple-root-204"
+            className="MuiTouchRipple-root-207"
           />
         </button>
       </div>
@@ -156,12 +159,13 @@ exports[`BaseLayout will render layout correctly 1`] = `
         className="MuiDivider-root-143"
       />
       <ul
-        className="MuiList-root-147 MuiList-padding-148"
+        className="MuiList-root-148 MuiList-padding-149"
       >
         <div
-          className="MuiButtonBase-root-59 MuiListItem-root-151 MuiListItem-default-154 MuiListItem-gutters-158 MuiListItem-button-159"
+          className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
           onBlur={[Function]}
           onClick={[Function]}
+          onContextMenu={[Function]}
           onFocus={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -175,7 +179,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           tabIndex="0"
         >
           <div
-            className="MuiListItemIcon-root-162"
+            className="MuiListItemIcon-root-164"
           >
             <svg
               aria-hidden="true"
@@ -194,22 +198,23 @@ exports[`BaseLayout will render layout correctly 1`] = `
             </svg>
           </div>
           <div
-            className="MuiListItemText-root-163"
+            className="MuiListItemText-root-165"
           >
             <span
-              className="MuiTypography-root-169 MuiTypography-subheading-176 MuiListItemText-primary-166"
+              className="MuiTypography-root-171 MuiTypography-subheading-178 MuiListItemText-primary-168"
             >
               瀏覽漫畫
             </span>
           </div>
           <span
-            className="MuiTouchRipple-root-204"
+            className="MuiTouchRipple-root-207"
           />
         </div>
         <div
-          className="MuiButtonBase-root-59 MuiListItem-root-151 MuiListItem-default-154 MuiListItem-gutters-158 MuiListItem-button-159"
+          className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
           onBlur={[Function]}
           onClick={[Function]}
+          onContextMenu={[Function]}
           onFocus={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -223,7 +228,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           tabIndex="0"
         >
           <div
-            className="MuiListItemIcon-root-162"
+            className="MuiListItemIcon-root-164"
           >
             <svg
               aria-hidden="true"
@@ -242,16 +247,16 @@ exports[`BaseLayout will render layout correctly 1`] = `
             </svg>
           </div>
           <div
-            className="MuiListItemText-root-163"
+            className="MuiListItemText-root-165"
           >
             <span
-              className="MuiTypography-root-169 MuiTypography-subheading-176 MuiListItemText-primary-166"
+              className="MuiTypography-root-171 MuiTypography-subheading-178 MuiListItemText-primary-168"
             >
               我的下載
             </span>
           </div>
           <span
-            className="MuiTouchRipple-root-204"
+            className="MuiTouchRipple-root-207"
           />
         </div>
       </ul>
@@ -259,12 +264,13 @@ exports[`BaseLayout will render layout correctly 1`] = `
         className="MuiDivider-root-143"
       />
       <ul
-        className="MuiList-root-147 MuiList-padding-148"
+        className="MuiList-root-148 MuiList-padding-149"
       >
         <div
-          className="MuiButtonBase-root-59 MuiListItem-root-151 MuiListItem-default-154 MuiListItem-gutters-158 MuiListItem-button-159"
+          className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
           onBlur={[Function]}
           onClick={[Function]}
+          onContextMenu={[Function]}
           onFocus={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -278,7 +284,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           tabIndex="0"
         >
           <div
-            className="MuiListItemIcon-root-162"
+            className="MuiListItemIcon-root-164"
           >
             <svg
               aria-hidden="true"
@@ -299,16 +305,16 @@ exports[`BaseLayout will render layout correctly 1`] = `
             </svg>
           </div>
           <div
-            className="MuiListItemText-root-163"
+            className="MuiListItemText-root-165"
           >
             <span
-              className="MuiTypography-root-169 MuiTypography-subheading-176 MuiListItemText-primary-166"
+              className="MuiTypography-root-171 MuiTypography-subheading-178 MuiListItemText-primary-168"
             >
               個人設定
             </span>
           </div>
           <span
-            className="MuiTouchRipple-root-204"
+            className="MuiTouchRipple-root-207"
           />
         </div>
       </ul>

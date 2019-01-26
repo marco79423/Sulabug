@@ -43,10 +43,10 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
-    "electron": "3.0.10",
-    "electron-builder": "20.36.2",
+    "electron": "4.0.1",
+    "electron-builder": "20.38.4",
     "electron-devtools-installer": "^2.2.4",
-    "electron-webpack": "^2.6.1",
+    "electron-webpack": "^2.6.2",
     "electron-webpack-ts": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
     "inversify-logger-middleware": "^3.1.0",
@@ -54,7 +54,7 @@
     "react-test-renderer": "^16.6.3",
     "ts-jest": "^23.10.5",
     "typescript": "^3.1.6",
-    "webpack": "^4.26.0"
+    "webpack": "4.28.4"
   },
   "electronWebpack": {
     "main": {

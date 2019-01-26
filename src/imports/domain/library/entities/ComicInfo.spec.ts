@@ -1,4 +1,4 @@
-import ComicInfoFactoryImpl from '../factories/ComicInfoFactoryImpl'
+import ComicInfoFactory from '../factories/ComicInfoFactory'
 
 describe('ComicInfo', () => {
 
@@ -16,7 +16,7 @@ describe('ComicInfo', () => {
         summary: 'summary',
       }
 
-      const comicInfoFactory = new ComicInfoFactoryImpl()
+      const comicInfoFactory = new ComicInfoFactory()
       const comicInfo = comicInfoFactory.createFromJson(jsonData)
       expect(comicInfo.serialize()).toEqual(jsonData)
     })

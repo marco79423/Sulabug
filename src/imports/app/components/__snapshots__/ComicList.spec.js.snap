@@ -8,15 +8,15 @@ exports[`ComicList will render comic list correctly 1`] = `
 
 exports[`ComicList will render comic list correctly in loading state 1`] = `
 <div
-  className="MuiLinearProgress-root-6 MuiLinearProgress-colorSecondary-8 MuiLinearProgress-query-10"
+  className="MuiLinearProgress-root-6 MuiLinearProgress-colorSecondary-8 MuiLinearProgress-query-12"
   role="progressbar"
 >
   <div
-    className="MuiLinearProgress-bar-14 MuiLinearProgress-barColorSecondary-16 MuiLinearProgress-bar1Indeterminate-17"
+    className="MuiLinearProgress-bar-16 MuiLinearProgress-barColorSecondary-18 MuiLinearProgress-bar1Indeterminate-19"
     style={Object {}}
   />
   <div
-    className="MuiLinearProgress-bar-14 MuiLinearProgress-barColorSecondary-16 MuiLinearProgress-bar2Indeterminate-20"
+    className="MuiLinearProgress-bar-16 MuiLinearProgress-barColorSecondary-18 MuiLinearProgress-bar2Indeterminate-22"
     style={Object {}}
   />
 </div>

@@ -23,15 +23,15 @@ exports[`DownloadTaskList will render download task list correctly 1`] = `
 
 exports[`DownloadTaskList will render download task list correctly in loading state 1`] = `
 <div
-  className="MuiLinearProgress-root-68 MuiLinearProgress-colorSecondary-70 MuiLinearProgress-query-72"
+  className="MuiLinearProgress-root-69 MuiLinearProgress-colorSecondary-71 MuiLinearProgress-query-75"
   role="progressbar"
 >
   <div
-    className="MuiLinearProgress-bar-76 MuiLinearProgress-barColorSecondary-78 MuiLinearProgress-bar1Indeterminate-79"
+    className="MuiLinearProgress-bar-79 MuiLinearProgress-barColorSecondary-81 MuiLinearProgress-bar1Indeterminate-82"
     style={Object {}}
   />
   <div
-    className="MuiLinearProgress-bar-76 MuiLinearProgress-barColorSecondary-78 MuiLinearProgress-bar2Indeterminate-82"
+    className="MuiLinearProgress-bar-79 MuiLinearProgress-barColorSecondary-81 MuiLinearProgress-bar2Indeterminate-85"
     style={Object {}}
   />
 </div>

@@ -25,23 +25,23 @@ const styles = (theme) => createStyles({
 
 export class Settings extends React.Component {
   updateComicsFolder = () => {
-    const {config, updateConfig} = this.props
+    const {userProfile, updateUserProfile} = this.props
     const filePaths = remote.dialog.showOpenDialog({
       title: '指定漫畫資料夾',
-      defaultPath: config.downloadFolderPath,
+      defaultPath: userProfile.downloadFolderPath,
       buttonLabel: '確定',
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
     })
     if (filePaths.length > 0) {
-      updateConfig({
-        ...config,
+      updateUserProfile({
+        ...userProfile,
         downloadFolderPath: filePaths[0],
       })
     }
   }
 
   render() {
-    const {classes, config} = this.props
+    const {classes, userProfile} = this.props
     return (
       <div className={classes.root}>
         <List>
@@ -53,7 +53,7 @@ export class Settings extends React.Component {
             </ListItemAvatar>
             <ListItemText
               primary="漫畫下載目錄"
-              secondary={config.downloadFolderPath}
+              secondary={userProfile.downloadFolderPath}
             />
             <ListItemSecondaryAction>
               <IconButton onClick={this.updateComicsFolder}>

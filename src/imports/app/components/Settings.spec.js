@@ -9,9 +9,9 @@ describe('Settings', () => {
   it('will render settings correctly', async () => {
     const component = renderer.create(
       <Settings
-        updateConfig={() => {
+        updateUserProfile={() => {
         }}
-        config={{
+        userProfile={{
           downloadFolderPath: 'downloadFolderPath',
         }}
       />
