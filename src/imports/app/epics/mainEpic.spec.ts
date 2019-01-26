@@ -2,7 +2,7 @@ import 'reflect-metadata'
 
 import {of} from 'rxjs'
 
-import {actions} from '../app/ducks/mainDuck'
+import {actions} from '../ducks/mainDuck'
 import {
   createDownloadTaskEpic,
   deleteDownloadTaskEpic,
@@ -16,14 +16,14 @@ import {
   updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
-import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
-import UserProfile from '../domain/general/entities/UserProfile'
-import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import {IComicInfoDatabaseService, IComicInfoRepository} from '../domain/library/interfaces'
-import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
-import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
-import {IDownloadComicService, IDownloadTaskRepository} from '../domain/downloader/interfaces'
-import {IUserProfileRepository} from '../domain/general/interfaces'
+import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
+import UserProfile from '../../domain/general/entities/UserProfile'
+import UserProfileFactory from '../../domain/general/factories/UserProfileFactory'
+import {IComicInfoDatabaseService, IComicInfoRepository} from '../../domain/library/interfaces'
+import ComicInfoFactory from '../../domain/library/factories/ComicInfoFactory'
+import DownloadTaskFactory from '../../domain/downloader/factories/DownloadTaskFactory'
+import {IDownloadComicService, IDownloadTaskRepository} from '../../domain/downloader/interfaces'
+import {IUserProfileRepository} from '../../domain/general/interfaces'
 
 
 describe('sendAppStartSignalWhenAppStartsEpic', () => {

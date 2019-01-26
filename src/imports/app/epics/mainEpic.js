@@ -1,8 +1,8 @@
 import {concat, from, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
 import {filter, flatMap, map, mapTo, tap} from 'rxjs/operators'
-import {actions, ActionTypes} from '../app/ducks/mainDuck'
-import DownloadTaskUpdatedEvent from '../domain/downloader/event/DownloadTaskUpdatedEvent'
+import {actions, ActionTypes} from '../ducks/mainDuck'
+import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
 
 export const sendAppStartSignalWhenAppStartsEpic = () => of(
   actions.sendAppStartSignal()

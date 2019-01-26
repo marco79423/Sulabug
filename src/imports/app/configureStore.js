@@ -2,7 +2,7 @@ import {applyMiddleware, compose, createStore} from 'redux'
 import {createEpicMiddleware} from 'redux-observable'
 
 import {actions, defaultState, reducer} from './ducks/mainDuck'
-import mainEpic from '../use-cases/mainEpic'
+import mainEpic from './epics/mainEpic'
 import injector from './injector'
 import generalTypes from '../domain/general/generalTypes'
 import libraryTypes from '../domain/library/libraryTypes'
