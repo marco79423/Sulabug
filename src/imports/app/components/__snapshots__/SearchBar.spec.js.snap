@@ -24,6 +24,7 @@ exports[`SearchBar will render search bar correctly 1`] = `
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
+    onContextMenu={[Function]}
     onFocus={[Function]}
     onKeyDown={[Function]}
     onKeyUp={[Function]}

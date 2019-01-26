@@ -2,21 +2,21 @@
 
 exports[`DownloadTaskListItem will render download task correctly 1`] = `
 <li
-  className="MuiListItem-root-3 MuiListItem-default-6 MuiListItem-dense-7 MuiListItem-gutters-10 DownloadTaskListItem-root-1"
+  className="MuiListItem-root-3 MuiListItem-default-6 MuiListItem-dense-7 MuiListItem-gutters-11 DownloadTaskListItem-root-1"
   disabled={false}
 >
   <div
-    className="MuiAvatar-root-16 MuiAvatar-colorDefault-17"
+    className="MuiAvatar-root-18 MuiAvatar-colorDefault-19"
   >
     <img
       src="coverDataUrl"
     />
   </div>
   <div
-    className="MuiListItemText-root-19"
+    className="MuiListItemText-root-21"
   >
     <span
-      className="MuiTypography-root-25 MuiTypography-subheading-32 MuiListItemText-primary-22"
+      className="MuiTypography-root-27 MuiTypography-subheading-34 MuiListItemText-primary-24"
     >
       name
     </span>

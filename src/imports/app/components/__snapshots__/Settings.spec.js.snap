@@ -11,15 +11,15 @@ exports[`Settings will render settings correctly 1`] = `
       className="MuiListItem-container-8"
     >
       <div
-        className="MuiListItem-root-7 MuiListItem-default-10 MuiListItem-dense-11 MuiListItem-gutters-14 MuiListItem-secondaryAction-16"
+        className="MuiListItem-root-7 MuiListItem-default-10 MuiListItem-dense-11 MuiListItem-gutters-15 MuiListItem-secondaryAction-17"
         disabled={false}
       >
         <div
-          className="MuiAvatar-root-20 MuiAvatar-colorDefault-21"
+          className="MuiAvatar-root-22 MuiAvatar-colorDefault-23"
         >
           <svg
             aria-hidden="true"
-            className="MuiSvgIcon-root-23"
+            className="MuiSvgIcon-root-25"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"
@@ -34,28 +34,29 @@ exports[`Settings will render settings correctly 1`] = `
           </svg>
         </div>
         <div
-          className="MuiListItemText-root-32"
+          className="MuiListItemText-root-34"
         >
           <span
-            className="MuiTypography-root-38 MuiTypography-subheading-45 MuiListItemText-primary-35"
+            className="MuiTypography-root-40 MuiTypography-subheading-47 MuiListItemText-primary-37"
           >
             漫畫下載目錄
           </span>
           <p
-            className="MuiTypography-root-38 MuiTypography-body1-47 MuiTypography-colorTextSecondary-71 MuiListItemText-secondary-36"
+            className="MuiTypography-root-40 MuiTypography-body1-49 MuiTypography-colorTextSecondary-73 MuiListItemText-secondary-38"
           >
             downloadFolderPath
           </p>
         </div>
       </div>
       <div
-        className="MuiListItemSecondaryAction-root-73"
+        className="MuiListItemSecondaryAction-root-76"
       >
         <button
-          className="MuiButtonBase-root-80 MuiIconButton-root-74"
+          className="MuiButtonBase-root-83 MuiIconButton-root-77"
           disabled={false}
           onBlur={[Function]}
           onClick={[Function]}
+          onContextMenu={[Function]}
           onFocus={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -69,11 +70,11 @@ exports[`Settings will render settings correctly 1`] = `
           type="button"
         >
           <span
-            className="MuiIconButton-label-79"
+            className="MuiIconButton-label-82"
           >
             <svg
               aria-hidden="true"
-              className="MuiSvgIcon-root-23"
+              className="MuiSvgIcon-root-25"
               focusable="false"
               role="presentation"
               viewBox="0 0 24 24"
@@ -88,7 +89,7 @@ exports[`Settings will render settings correctly 1`] = `
             </svg>
           </span>
           <span
-            className="MuiTouchRipple-root-83"
+            className="MuiTouchRipple-root-86"
           />
         </button>
       </div>
