@@ -59,7 +59,8 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         pageUrl: 'pageUrl-1',
         catalog: 'catalog-1',
         author: 'author-1',
-        lastUpdated: 'lastUpdated-1',
+        lastUpdatedChapter: 'lastUpdatedChapter-1',
+        lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
       }),
       comicInfoFactory.createFromJson({
@@ -70,7 +71,8 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         pageUrl: 'pageUrl-2',
         catalog: 'catalog-2',
         author: 'author-2',
-        lastUpdated: 'lastUpdated-2',
+        lastUpdatedChapter: 'lastUpdatedChapter-2',
+        lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
       })
     ]
@@ -135,7 +137,8 @@ describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
       pageUrl: 'pageUrl',
       catalog: 'catalog',
       author: 'author',
-      lastUpdated: 'lastUpdated',
+      lastUpdatedChapter: 'lastUpdatedChapter',
+      lastUpdatedTime: '2019-01-16T00:00:00.000Z',
       summary: 'summary',
     })
 
@@ -175,7 +178,8 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
         pageUrl: 'pageUrl-1',
         catalog: 'catalog-1',
         author: 'author-1',
-        lastUpdated: 'lastUpdated-1',
+        lastUpdatedChapter: 'lastUpdatedChapter-1',
+        lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
       }),
       comicInfoFactory.createFromJson({
@@ -186,7 +190,8 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
         pageUrl: 'pageUrl-2',
         catalog: 'catalog-2',
         author: 'author-2',
-        lastUpdated: 'lastUpdated-2',
+        lastUpdatedChapter: 'lastUpdatedChapter-2',
+        lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
       })
     ]
@@ -219,7 +224,8 @@ describe('searchComicInfosEpic', () => {
         pageUrl: 'pageUrl-1',
         catalog: 'catalog-1',
         author: 'author-1',
-        lastUpdated: 'lastUpdated-1',
+        lastUpdatedChapter: 'lastUpdatedChapter-1',
+        lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
       }),
       comicInfoFactory.createFromJson({
@@ -230,7 +236,8 @@ describe('searchComicInfosEpic', () => {
         pageUrl: 'pageUrl-2',
         catalog: 'catalog-2',
         author: 'author-2',
-        lastUpdated: 'lastUpdated-2',
+        lastUpdatedChapter: 'lastUpdatedChapter-2',
+        lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
       })
     ]
@@ -265,7 +272,8 @@ describe('createDownloadTaskEpic', () => {
       pageUrl: 'pageUrl',
       catalog: 'catalog',
       author: 'author',
-      lastUpdated: 'lastUpdated',
+      lastUpdatedChapter: 'lastUpdatedChapter',
+      lastUpdatedTime: '2019-01-16T00:00:00.000Z',
       summary: 'summary',
     })
 

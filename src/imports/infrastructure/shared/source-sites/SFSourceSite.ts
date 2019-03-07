@@ -21,7 +21,8 @@ export default class SFSourceSite implements ISFSourceSite {
     pageUrl: string,
     catalog: string,
     author: string,
-    lastUpdated: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: Date,
     summary: string,
   }[]> {
     const comicListPageUrls = await this._asyncGetAllComicListPageUrls()
@@ -32,7 +33,8 @@ export default class SFSourceSite implements ISFSourceSite {
       pageUrl: string,
       catalog: string,
       author: string,
-      lastUpdated: string,
+      lastUpdatedChapter: string,
+      lastUpdatedTime: Date,
       summary: string,
     }[] = []
     for (const comicListPageUrl of comicListPageUrls) {
@@ -116,7 +118,8 @@ export default class SFSourceSite implements ISFSourceSite {
       pageUrl: string,
       catalog: string,
       author: string,
-      lastUpdated: string,
+      lastUpdatedChapter: string,
+      lastUpdatedTime: Date,
       summary: string,
     }[] = []
     
@@ -127,15 +130,17 @@ export default class SFSourceSite implements ISFSourceSite {
       const author = $('li:nth-child(2) :nth-child(3)', element).text()
       const catalog = $('li:nth-child(2) :nth-child(6)', element).text()
 
-      // https://stackoverflow.com/questions/6925088/get-the-text-after-span-element-using-jquery
-      const lastUpdated = $('li:nth-child(2)', element).contents()
-        .filter((i, el) => {
-          return el.type == 'text'
-        })
-        .eq(3)
-        .text()
-        .split('/')[1]
-        .trim()
+
+      const text = await this._netHandler.asyncGetText(pageUrl)
+      const parser = new DOMParser()
+      const dom = parser.parseFromString(text, "text/html")
+
+      // @ts-ignore
+      const lastUpdatedChapter = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(13)').textContent as string
+
+      // @ts-ignore
+      const dateString = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(16)').nextSibling.textContent.trim()
+      const lastUpdatedTime = new Date(dateString)
 
       const summary = $('li:nth-child(2)', element).contents()
         .filter((i, el) => el.type == 'text')
@@ -152,7 +157,8 @@ export default class SFSourceSite implements ISFSourceSite {
         pageUrl,
         catalog,
         author,
-        lastUpdated,
+        lastUpdatedChapter,
+        lastUpdatedTime,
         summary,
       })
     }

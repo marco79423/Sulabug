@@ -15,7 +15,8 @@ export default class ComicInfoFactory implements IComicInfoFactory {
     pageUrl: string,
     catalog: string,
     author: string,
-    lastUpdated: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: string,
     summary: string,
   }): ComicInfo {
     return new ComicInfo(
@@ -26,7 +27,8 @@ export default class ComicInfoFactory implements IComicInfoFactory {
       json.pageUrl,
       json.catalog,
       json.author,
-      json.lastUpdated,
+      json.lastUpdatedChapter,
+      new Date(json.lastUpdatedTime),
       json.summary,
     )
   }

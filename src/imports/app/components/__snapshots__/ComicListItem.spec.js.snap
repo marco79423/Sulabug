@@ -31,7 +31,11 @@ exports[`ComicListItem will render comic item correctly 1`] = `
         <h6
           className="MuiTypography-root-54 MuiTypography-subtitle2-73 MuiTypography-colorTextSecondary-87 ComicListItem-metadata-4"
         >
-          lastUpdated
+          最新: 
+          lastUpdatedChapter
+           (
+          2019/01/16
+          )
         </h6>
       </div>
       <div

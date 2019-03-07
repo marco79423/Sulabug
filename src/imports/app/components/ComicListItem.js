@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {createStyles, withStyles} from '@material-ui/core/styles'
+import dateformat from 'dateformat'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -79,7 +80,7 @@ export class ComicListItem extends React.Component {
             <CardContent className={classes.content}>
               <Typography className={classes.title} noWrap={true} variant="h2">{comic.name}</Typography>
               <Typography className={classes.metadata} variant="subtitle2" color="textSecondary">
-                {comic.lastUpdated}
+                最新: {comic.lastUpdatedChapter} ({dateformat(comic.lastUpdatedTime, 'yyyy/mm/dd')})
               </Typography>
             </CardContent>
             <CardActions className={classes.actions}>

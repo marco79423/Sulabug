@@ -7,7 +7,8 @@ export default class ComicInfo extends Entity {
   readonly pageUrl: string
   readonly catalog: string
   readonly author: string
-  readonly lastUpdated: string
+  readonly lastUpdatedChapter: string
+  readonly lastUpdatedTime: Date
   readonly summary: string
 
   constructor(
@@ -18,7 +19,8 @@ export default class ComicInfo extends Entity {
     pageUrl: string,
     catalog: string,
     author: string,
-    lastUpdated: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: Date,
     summary: string,
   ) {
     super(identity)
@@ -28,7 +30,8 @@ export default class ComicInfo extends Entity {
     this.pageUrl = pageUrl
     this.catalog = catalog
     this.author = author
-    this.lastUpdated = lastUpdated
+    this.lastUpdatedChapter = lastUpdatedChapter
+    this.lastUpdatedTime = lastUpdatedTime
     this.summary = summary
   }
 
@@ -41,7 +44,8 @@ export default class ComicInfo extends Entity {
       pageUrl: this.pageUrl,
       catalog: this.catalog,
       author: this.author,
-      lastUpdated: this.lastUpdated,
+      lastUpdatedChapter: this.lastUpdatedChapter,
+      lastUpdatedTime: this.lastUpdatedTime.toISOString(),
       summary: this.summary,
     }
   }

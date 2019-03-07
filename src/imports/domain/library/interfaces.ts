@@ -13,7 +13,8 @@ export interface IComicInfoFactory {
     pageUrl: string,
     catalog: string,
     author: string,
-    lastUpdated: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: string,
     summary: string,
   }): ComicInfo
 }

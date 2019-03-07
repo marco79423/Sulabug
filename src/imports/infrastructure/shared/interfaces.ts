@@ -15,7 +15,8 @@ export interface ISFSourceSite {
     pageUrl: string,
     catalog: string,
     author: string,
-    lastUpdated: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: Date,
     summary: string,
   }[]>
 

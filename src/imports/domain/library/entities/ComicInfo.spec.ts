@@ -12,7 +12,8 @@ describe('ComicInfo', () => {
         pageUrl: 'pageUrl',
         catalog: 'catalog',
         author: 'author',
-        lastUpdated: 'lastUpdated',
+        lastUpdatedChapter: 'lastUpdatedChapter',
+        lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
       }
 
