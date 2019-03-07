@@ -17,7 +17,8 @@ describe('ComicInfoDatabaseService', () => {
           pageUrl: 'pageUrl-1',
           catalog: 'catalog-1',
           author: 'author-1',
-          lastUpdated: 'lastUpdated-1',
+          lastUpdatedChapter: 'lastUpdatedChapter-1',
+          lastUpdatedTime: '2019-01-16T00:00:00.000Z',
           summary: 'summary-1',
         }),
         comicInfoFactory.createFromJson({
@@ -28,7 +29,8 @@ describe('ComicInfoDatabaseService', () => {
           pageUrl: 'pageUrl-2',
           catalog: 'catalog-2',
           author: 'author-2',
-          lastUpdated: 'lastUpdated-2',
+          lastUpdatedChapter: 'lastUpdatedChapter-1',
+          lastUpdatedTime: '2019-01-17T00:00:00.000Z',
           summary: 'summary-2',
         })
       ]

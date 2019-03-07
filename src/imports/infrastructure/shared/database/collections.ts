@@ -48,7 +48,10 @@ export const ComicInfoCollection = {
       author: {
         type: 'string',
       },
-      lastUpdated: {
+      lastUpdatedChapter: {
+        type: 'string',
+      },
+      lastUpdatedTime: {
         type: 'string',
       },
       summary: {
@@ -62,7 +65,8 @@ export const ComicInfoCollection = {
       'pageUrl',
       'catalog',
       'author',
-      'lastUpdated',
+      'lastUpdatedChapter',
+      'lastUpdatedTime',
       'summary',
     ]
   }

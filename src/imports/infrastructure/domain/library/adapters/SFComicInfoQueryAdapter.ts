@@ -30,7 +30,8 @@ export default class SFComicInfoQueryAdapter implements ISFComicInfoQueryAdapter
       pageUrl: rawComicInfo.pageUrl,
       catalog: rawComicInfo.catalog,
       author: rawComicInfo.author,
-      lastUpdated: rawComicInfo.lastUpdated,
+      lastUpdatedChapter: rawComicInfo.lastUpdatedChapter,
+      lastUpdatedTime: rawComicInfo.lastUpdatedTime.toISOString(),
       summary: rawComicInfo.summary,
     }))
   }
