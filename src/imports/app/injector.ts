@@ -1,6 +1,13 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
-import {INetAdapter, INetService, IUserProfileFactory, IUserProfileRepository} from '../domain/general/interfaces'
+import {
+  IFileAdapter,
+  IFileService,
+  INetAdapter,
+  INetService,
+  IUserProfileFactory,
+  IUserProfileRepository
+} from '../domain/general/interfaces'
 import {
   IDownloadComicService,
   IDownloadTaskFactory,
@@ -27,15 +34,16 @@ import EventPublisher from '../domain/downloader/event/EventPublisher'
 import SFComicInfoQueryAdapter from '../infrastructure/domain/library/adapters/SFComicInfoQueryAdapter'
 import DownloadTaskRepository from '../infrastructure/domain/downloader/repositories/DownloadTaskRepository'
 import infraTypes from '../infrastructure/infraTypes'
-import {IDBHandler, IFileHandler} from '../infrastructure/vendor/interfaces'
+import {IDBHandler} from '../infrastructure/vendor/interfaces'
 import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import FileHandler from '../infrastructure/vendor/handlers/FileHandler'
+import FileAdapter from '../infrastructure/domain/general/adapters/FileAdapter'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import DownloadComicService from '../domain/downloader/services/DownloadComicService'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import libraryTypes from '../domain/library/libraryTypes'
 import ComicInfoDatabaseService from '../domain/library/services/ComicInfoDatabaseService'
 import NetService from '../domain/general/services/NetService'
+import FileService from '../domain/general/services/FileService'
 
 
 // domain
@@ -43,8 +51,10 @@ const injector = new Container()
 
 // domain - general
 injector.bind<IUserProfileFactory>(generalTypes.UserProfileFactory).to(UserProfileFactory).inSingletonScope()
+injector.bind<IFileService>(generalTypes.FileService).to(FileService).inSingletonScope()
 injector.bind<INetService>(generalTypes.NetService).to(NetService).inSingletonScope()
 injector.bind<IUserProfileRepository>(generalTypes.UserProfileRepository).to(UserProfileRepository).inSingletonScope()
+injector.bind<IFileAdapter>(generalTypes.FileAdapter).to(FileAdapter).inSingletonScope()
 injector.bind<INetAdapter>(generalTypes.NetAdapter).to(NetAdapter).inSingletonScope()
 
 // domain - library
@@ -62,7 +72,6 @@ injector.bind<IDownloadComicService>(downloaderTypes.DownloadComicService).to(Do
 
 // infrastructure
 injector.bind<IDBHandler>(infraTypes.DBHandler).to(DBHandler).inSingletonScope()
-injector.bind<IFileHandler>(infraTypes.FileHandler).to(FileHandler).inSingletonScope()
 injector.bind<IDatabase>(infraTypes.Database).to(Database).inSingletonScope()
 injector.bind<ISFSourceSite>(infraTypes.SFSourceSite).to(SFSourceSite).inSingletonScope()
 

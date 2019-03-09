@@ -6,6 +6,17 @@ export interface IUserProfileFactory {
   }): UserProfile
 }
 
+export interface IFileService {
+
+  asyncEnsureDir(targetDirPath: string): Promise<void>
+
+  asyncReadJson(targetPath: string, defaultJson: any): Promise<any>
+
+  asyncWriteJson(targetPath: string, data: any): Promise<void>
+
+  asyncPathExists(targetPath: string): Promise<boolean>
+}
+
 export interface INetService {
 
   asyncGetText(targetUrl: string): Promise<string>
@@ -20,6 +31,17 @@ export interface IUserProfileRepository {
   asyncSaveOrUpdate(userProfile: UserProfile): Promise<void>
 
   asyncGet(): Promise<UserProfile>
+}
+
+export interface IFileAdapter {
+
+  asyncEnsureDir(targetDirPath: string): Promise<void>
+
+  asyncReadJson(targetPath: string, defaultJson: any): Promise<any>
+
+  asyncWriteJson(targetPath: string, data: any): Promise<void>
+
+  asyncPathExists(targetPath: string): Promise<boolean>
 }
 
 export interface INetAdapter {

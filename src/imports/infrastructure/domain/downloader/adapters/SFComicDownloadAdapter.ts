@@ -6,26 +6,25 @@ import infraTypes from '../../../infraTypes'
 import {ISFComicDownloadAdapter} from '../../../../domain/downloader/interfaces'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
 import {ISFSourceSite} from '../../../shared/interfaces'
-import {IFileHandler} from '../../../vendor/interfaces'
-import {INetService, IUserProfileRepository} from '../../../../domain/general/interfaces'
+import {IFileService, INetService, IUserProfileRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()
 export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   private readonly _userProfileRepository: IUserProfileRepository
   private readonly _sfSourceSite: ISFSourceSite
-  private readonly _fileHandler: IFileHandler
+  private readonly _fileService: IFileService
   private readonly _netService: INetService
 
   public constructor(
     @inject(generalTypes.UserProfileRepository) userProfileRepository: IUserProfileRepository,
     @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
-    @inject(infraTypes.FileHandler) fileHandler: IFileHandler,
+    @inject(generalTypes.FileService) fileService: IFileService,
     @inject(generalTypes.NetService) netService: INetService,
   ) {
     this._userProfileRepository = userProfileRepository
     this._sfSourceSite = sfSourceSite
-    this._fileHandler = fileHandler
+    this._fileService = fileService
     this._netService = netService
   }
 
@@ -47,7 +46,7 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   }
 
   private async _asyncDownloadChapter(pageUrl: string, targetDir: string): Promise<void> {
-    await this._fileHandler.asyncEnsureDir(targetDir)
+    await this._fileService.asyncEnsureDir(targetDir)
     const images = await this._sfSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
