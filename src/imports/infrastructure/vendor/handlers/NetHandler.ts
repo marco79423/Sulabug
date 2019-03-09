@@ -4,12 +4,20 @@ import fetch from 'node-fetch'
 
 import {INetHandler} from '../interfaces'
 
+const sleep = m => new Promise(r => setTimeout(r, m))
+
 @injectable()
 export default class NetHandler implements INetHandler {
 
   async asyncGetText(targetUrl: string): Promise<string> {
-    const response = await fetch(targetUrl)
-    return await response.text()
+    try {
+      const response = await fetch(targetUrl)
+      return await response.text()
+    } catch (e) {
+      console.log('error: ', e)
+      await sleep(5000)
+      return await this.asyncGetText(targetUrl)
+    }
   }
 
   async asyncDownload(targetUrl: string, targetPath: string): Promise<void> {
