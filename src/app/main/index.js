@@ -19,6 +19,7 @@ function createMainWindow() {
 
     webPreferences: {
       webSecurity: false, // for same-origin policy
+      nodeIntegration: true,
     }
   })
 
