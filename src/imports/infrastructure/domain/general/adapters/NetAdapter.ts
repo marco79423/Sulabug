@@ -1,13 +1,12 @@
 import {injectable} from 'inversify'
 import * as fs from 'fs-extra'
 import fetch from 'node-fetch'
-
-import {INetHandler} from '../interfaces'
+import {INetAdapter} from '../../../../domain/general/interfaces'
 
 const sleep = m => new Promise(r => setTimeout(r, m))
 
 @injectable()
-export default class NetHandler implements INetHandler {
+export default class NetAdapter implements INetAdapter {
 
   async asyncGetText(targetUrl: string): Promise<string> {
     try {

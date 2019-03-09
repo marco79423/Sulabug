@@ -6,8 +6,8 @@ import infraTypes from '../../../infraTypes'
 import {ISFComicDownloadAdapter} from '../../../../domain/downloader/interfaces'
 import DownloadTask from '../../../../domain/downloader/entities/DownloadTask'
 import {ISFSourceSite} from '../../../shared/interfaces'
-import {IFileHandler, INetHandler} from '../../../vendor/interfaces'
-import {IUserProfileRepository} from '../../../../domain/general/interfaces'
+import {IFileHandler} from '../../../vendor/interfaces'
+import {INetService, IUserProfileRepository} from '../../../../domain/general/interfaces'
 
 
 @injectable()
@@ -15,18 +15,18 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   private readonly _userProfileRepository: IUserProfileRepository
   private readonly _sfSourceSite: ISFSourceSite
   private readonly _fileHandler: IFileHandler
-  private readonly _netHandler: INetHandler
+  private readonly _netService: INetService
 
   public constructor(
     @inject(generalTypes.UserProfileRepository) userProfileRepository: IUserProfileRepository,
     @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
     @inject(infraTypes.FileHandler) fileHandler: IFileHandler,
-    @inject(infraTypes.NetHandler) netHandler: INetHandler,
+    @inject(generalTypes.NetService) netService: INetService,
   ) {
     this._userProfileRepository = userProfileRepository
     this._sfSourceSite = sfSourceSite
     this._fileHandler = fileHandler
-    this._netHandler = netHandler
+    this._netService = netService
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
@@ -51,7 +51,7 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
     const images = await this._sfSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
-      await this._netHandler.asyncDownload(image.imageUrl, imagePath)
+      await this._netService.asyncDownload(image.imageUrl, imagePath)
     }
   }
 

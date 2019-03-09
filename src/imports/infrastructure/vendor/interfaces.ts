@@ -19,12 +19,3 @@ export interface IFileHandler {
 
   asyncPathExists(targetPath: string): Promise<boolean>
 }
-
-export interface INetHandler {
-
-  asyncGetText(targetUrl: string): Promise<string>
-
-  asyncDownload(targetUrl: string, targetPath: string): Promise<void>
-
-  asyncGetBinaryBase64(targetUrl: string): Promise<string>
-}

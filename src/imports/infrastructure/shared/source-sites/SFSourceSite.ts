@@ -1,17 +1,17 @@
 import {inject, injectable} from 'inversify'
 
 import {ISFSourceSite} from '../interfaces'
-import {INetHandler} from '../../vendor/interfaces'
-import infraTypes from '../../infraTypes'
+import generalTypes from '../../../domain/general/generalTypes'
+import {INetService} from '../../../domain/general/interfaces'
 
 @injectable()
 export default class SFSourceSite implements ISFSourceSite {
-  private readonly _netHandler: INetHandler
+  private readonly _netService: INetService
 
   public constructor(
-    @inject(infraTypes.NetHandler) netHandler: INetHandler,
+    @inject(generalTypes.NetService) netService: INetService,
   ) {
-    this._netHandler = netHandler
+    this._netService = netService
   }
 
   async asyncQueryComicInfos(): Promise<{
@@ -47,7 +47,7 @@ export default class SFSourceSite implements ISFSourceSite {
     name: string,
     pageUrl: string,
   }[]> {
-    const text = await this._netHandler.asyncGetText(pageUrl)
+    const text = await this._netService.asyncGetText(pageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
 
@@ -70,12 +70,12 @@ export default class SFSourceSite implements ISFSourceSite {
     imageUrl: string,
   }[]> {
     const parser = new DOMParser()
-    const dom = parser.parseFromString(await this._netHandler.asyncGetText(pageUrl), 'text/html')
+    const dom = parser.parseFromString(await this._netService.asyncGetText(pageUrl), 'text/html')
 
     // @ts-ignore
     const url = dom.querySelector('head > script:nth-child(7)').src
 
-    const text = await this._netHandler.asyncGetText(url)
+    const text = await this._netService.asyncGetText(url)
 
     // @ts-ignore
     const host = /hosts = \["([^"]+)"/g.exec(text)[1]
@@ -97,7 +97,7 @@ export default class SFSourceSite implements ISFSourceSite {
     const url = `https://manhua.sfacg.com/catalog/default.aspx`
 
     const parser = new DOMParser()
-    const dom = parser.parseFromString(await this._netHandler.asyncGetText(url), 'text/html')
+    const dom = parser.parseFromString(await this._netService.asyncGetText(url), 'text/html')
 
     // @ts-ignore
     const lastPageIndex = +dom.querySelector('.pagebarNext').previousSibling.innerText + 1
@@ -105,9 +105,6 @@ export default class SFSourceSite implements ISFSourceSite {
     const comicListPageUrls: string[] = []
     for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
       comicListPageUrls.push(`https://manhua.sfacg.com/catalog/default.aspx?PageIndex=${pageIndex}`)
-
-      // TODO: test
-      break
     }
 
     return comicListPageUrls
@@ -124,7 +121,7 @@ export default class SFSourceSite implements ISFSourceSite {
       lastUpdatedTime: Date,
       summary: string,
     }[] = []
-    const text = await this._netHandler.asyncGetText(comicListPageUrl)
+    const text = await this._netService.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
     const nodes = dom.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
@@ -135,7 +132,7 @@ export default class SFSourceSite implements ISFSourceSite {
       // @ts-ignore
       const pageUrl = node.href
 
-      const text = await this._netHandler.asyncGetText(pageUrl)
+      const text = await this._netService.asyncGetText(pageUrl)
       const parser = new DOMParser()
       const dom = parser.parseFromString(text, 'text/html')
 
@@ -159,7 +156,7 @@ export default class SFSourceSite implements ISFSourceSite {
       const summary = dom.querySelector('ul.synopsises_font>li:nth-child(2)>br').nextSibling.textContent.trim()
 
       const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
-      const coverBase64Content = await this._netHandler.asyncGetBinaryBase64(coverImageUrl)
+      const coverBase64Content = await this._netService.asyncGetBinaryBase64(coverImageUrl)
 
       console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary)
       comicInfos.push({
