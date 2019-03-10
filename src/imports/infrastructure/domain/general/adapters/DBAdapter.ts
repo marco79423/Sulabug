@@ -1,12 +1,12 @@
 import {injectable} from 'inversify'
 import * as RxDB from 'rxdb'
 
-import {IDBHandler} from '../interfaces'
+import {IDBAdapter} from '../../../../domain/general/interfaces'
 
 RxDB.plugin(require('pouchdb-adapter-idb'))
 
 @injectable()
-export default class DBHandler implements IDBHandler {
+export default class DBAdapter implements IDBAdapter {
 
   private _database
 

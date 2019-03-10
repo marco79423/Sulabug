@@ -37,6 +37,12 @@ exports[`ComicListItem will render comic item correctly 1`] = `
           2019/01/16
           )
         </h6>
+        <h6
+          className="MuiTypography-root-54 MuiTypography-subtitle2-73"
+        >
+          summary
+          ...
+        </h6>
       </div>
       <div
         className="MuiCardActions-root-90 ComicListItem-actions-9"

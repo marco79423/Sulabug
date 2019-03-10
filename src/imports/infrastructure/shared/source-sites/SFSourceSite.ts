@@ -1,18 +1,17 @@
 import {inject, injectable} from 'inversify'
-import * as cheerio from 'cheerio'
 
 import {ISFSourceSite} from '../interfaces'
-import {INetHandler} from '../../vendor/interfaces'
-import infraTypes from '../../infraTypes'
+import generalTypes from '../../../domain/general/generalTypes'
+import {INetService} from '../../../domain/general/interfaces'
 
 @injectable()
 export default class SFSourceSite implements ISFSourceSite {
-  private readonly _netHandler: INetHandler
+  private readonly _netService: INetService
 
   public constructor(
-    @inject(infraTypes.NetHandler) netHandler: INetHandler,
+    @inject(generalTypes.NetService) netService: INetService,
   ) {
-    this._netHandler = netHandler
+    this._netService = netService
   }
 
   async asyncQueryComicInfos(): Promise<{
@@ -48,14 +47,21 @@ export default class SFSourceSite implements ISFSourceSite {
     name: string,
     pageUrl: string,
   }[]> {
-    const $ = await this._asyncGetSelector(pageUrl)
+    const text = await this._netService.asyncGetText(pageUrl)
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(text, 'text/html')
+
     const chapters: { name: string, pageUrl: string }[] = []
-    $('.comic_Serial_list a').each((index, element) => {
+    const nodes = dom.querySelectorAll('.comic_Serial_list > a')
+    for (const node of nodes) {
       chapters.push({
-        name: $(element).text(),
-        pageUrl: 'https://manhua.sfacg.com' + $(element).attr('href'),
+        // @ts-ignore
+        name: node.innerText,
+        // @ts-ignore
+        pageUrl: 'https://manhua.sfacg.com' + node.pathname,
       })
-    })
+    }
+
     return chapters
   }
 
@@ -63,14 +69,13 @@ export default class SFSourceSite implements ISFSourceSite {
     name: string,
     imageUrl: string,
   }[]> {
-    const $ = await this._asyncGetSelector(pageUrl)
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(await this._netService.asyncGetText(pageUrl), 'text/html')
 
-    const url = 'https:' + $('head script')
-      .filter((index, element) => $(element).attr('src').includes('//comic.sfacg.com/Utility/'))
-      .first()
-      .attr('src')
+    // @ts-ignore
+    const url = dom.querySelector('head > script:nth-child(7)').src
 
-    const text = await this._netHandler.asyncGetText(url)
+    const text = await this._netService.asyncGetText(url)
 
     // @ts-ignore
     const host = /hosts = \["([^"]+)"/g.exec(text)[1]
@@ -88,16 +93,14 @@ export default class SFSourceSite implements ISFSourceSite {
     return images
   }
 
-  private async _asyncGetSelector(targetUrl: string) {
-    const text = await this._netHandler.asyncGetText(targetUrl)
-    return cheerio.load(text)
-  }
-
   private _asyncGetAllComicListPageUrls = async () => {
     const url = `https://manhua.sfacg.com/catalog/default.aspx`
 
-    const $ = await this._asyncGetSelector(url)
-    const lastPageIndex = +$('a', $('.pagebarNext').prev()).text() + 1
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(await this._netService.asyncGetText(url), 'text/html')
+
+    // @ts-ignore
+    const lastPageIndex = +dom.querySelector('.pagebarNext').previousSibling.innerText + 1
 
     const comicListPageUrls: string[] = []
     for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
@@ -108,10 +111,6 @@ export default class SFSourceSite implements ISFSourceSite {
   }
 
   private _asyncQueryComicInfosFromComicListPage = async (comicListPageUrl) => {
-    const $ = await this._asyncGetSelector(comicListPageUrl)
-
-    const elements = $('.Comic_Pic_List').map((index, element) => element).get()
-
     const comicInfos: {
       name: string,
       coverDataUrl: string,
@@ -122,18 +121,29 @@ export default class SFSourceSite implements ISFSourceSite {
       lastUpdatedTime: Date,
       summary: string,
     }[] = []
-    
-    for (const element of elements) {
-      const coverImageUrl = 'https:' + $('li:nth-child(1) a img', element).attr('src')
-      const name = $('li:nth-child(2) strong a', element).text()
-      const pageUrl = 'https:' + $('li:nth-child(2) strong a', element).attr('href')
-      const author = $('li:nth-child(2) :nth-child(3)', element).text()
-      const catalog = $('li:nth-child(2) :nth-child(6)', element).text()
+    const text = await this._netService.asyncGetText(comicListPageUrl)
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(text, 'text/html')
+    const nodes = dom.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
+    for (const node of nodes) {
+      // @ts-ignore
+      const name = node.text
 
+      // @ts-ignore
+      const pageUrl = node.href
 
-      const text = await this._netHandler.asyncGetText(pageUrl)
+      const text = await this._netService.asyncGetText(pageUrl)
       const parser = new DOMParser()
-      const dom = parser.parseFromString(text, "text/html")
+      const dom = parser.parseFromString(text, 'text/html')
+
+      // @ts-ignore
+      const coverImageUrl = dom.querySelector('body > div:nth-child(6) > div.plate_top > ul.synopsises_font > li.cover > img').src
+
+      // @ts-ignore
+      const catalog = dom.querySelector('ul.synopsises_font>li:nth-child(2)>a:nth-child(10)').textContent as string
+
+      // @ts-ignore
+      const author = dom.querySelector('ul.synopsises_font>li:nth-child(2)>a:nth-child(8)').textContent as string
 
       // @ts-ignore
       const lastUpdatedChapter = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(13)').textContent as string
@@ -142,15 +152,13 @@ export default class SFSourceSite implements ISFSourceSite {
       const dateString = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(16)').nextSibling.textContent.trim()
       const lastUpdatedTime = new Date(dateString)
 
-      const summary = $('li:nth-child(2)', element).contents()
-        .filter((i, el) => el.type == 'text')
-        .last()
-        .text()
-        .trim()
+      // @ts-ignore
+      const summary = dom.querySelector('ul.synopsises_font>li:nth-child(2)>br').nextSibling.textContent.trim()
 
       const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
-      const coverBase64Content = await this._netHandler.asyncGetBinaryBase64(coverImageUrl)
+      const coverBase64Content = await this._netService.asyncGetBinaryBase64(coverImageUrl)
 
+      console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary)
       comicInfos.push({
         name,
         coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,

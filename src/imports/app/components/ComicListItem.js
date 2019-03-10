@@ -82,6 +82,7 @@ export class ComicListItem extends React.Component {
               <Typography className={classes.metadata} variant="subtitle2" color="textSecondary">
                 最新: {comic.lastUpdatedChapter} ({dateformat(comic.lastUpdatedTime, 'yyyy/mm/dd')})
               </Typography>
+              <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
               <Button size="small" onClick={this.createDownloadTask}><SaveIcon className={classes.saveIcon}/><Typography variant="button">下載</Typography></Button>

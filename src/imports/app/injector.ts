@@ -1,6 +1,14 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
-import {IUserProfileFactory, IUserProfileRepository} from '../domain/general/interfaces'
+import {
+  IDBAdapter, IDBService,
+  IFileAdapter,
+  IFileService,
+  INetAdapter,
+  INetService,
+  IUserProfileFactory,
+  IUserProfileRepository
+} from '../domain/general/interfaces'
 import {
   IDownloadComicService,
   IDownloadTaskFactory,
@@ -10,31 +18,33 @@ import {
 import UserProfileRepository from '../infrastructure/domain/general/repositories/UserProfileRepository'
 import SFSourceSite from '../infrastructure/shared/source-sites/SFSourceSite'
 import downloaderTypes from '../domain/downloader/downloaderTypes'
-import DBHandler from '../infrastructure/vendor/handlers/DBHandler'
+import DBAdapter from '../infrastructure/domain/general/adapters/DBAdapter'
 import SFComicDownloadAdapter from '../infrastructure/domain/downloader/adapters/SFComicDownloadAdapter'
 import Database from '../infrastructure/shared/database/Database'
 import generalTypes from '../domain/general/generalTypes'
 import {
-  IComicInfoFactory,
   IComicInfoDatabaseService,
+  IComicInfoFactory,
   IComicInfoRepository,
   ISFComicInfoQueryAdapter
 } from '../domain/library/interfaces'
 import ComicInfoRepository from '../infrastructure/domain/library/repositories/ComicInfoRepository'
-import NetHandler from '../infrastructure/vendor/handlers/NetHandler'
+import NetAdapter from '../infrastructure/domain/general/adapters/NetAdapter'
 import IDatabase, {ISFSourceSite} from '../infrastructure/shared/interfaces'
 import EventPublisher from '../domain/downloader/event/EventPublisher'
 import SFComicInfoQueryAdapter from '../infrastructure/domain/library/adapters/SFComicInfoQueryAdapter'
 import DownloadTaskRepository from '../infrastructure/domain/downloader/repositories/DownloadTaskRepository'
 import infraTypes from '../infrastructure/infraTypes'
-import {IDBHandler, IFileHandler, INetHandler} from '../infrastructure/vendor/interfaces'
 import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import FileHandler from '../infrastructure/vendor/handlers/FileHandler'
+import FileAdapter from '../infrastructure/domain/general/adapters/FileAdapter'
 import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
 import DownloadComicService from '../domain/downloader/services/DownloadComicService'
 import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
 import libraryTypes from '../domain/library/libraryTypes'
 import ComicInfoDatabaseService from '../domain/library/services/ComicInfoDatabaseService'
+import NetService from '../domain/general/services/NetService'
+import FileService from '../domain/general/services/FileService'
+import DBService from '../domain/general/services/DBService'
 
 
 // domain
@@ -42,7 +52,13 @@ const injector = new Container()
 
 // domain - general
 injector.bind<IUserProfileFactory>(generalTypes.UserProfileFactory).to(UserProfileFactory).inSingletonScope()
+injector.bind<IDBService>(generalTypes.DBService).to(DBService).inSingletonScope()
+injector.bind<IFileService>(generalTypes.FileService).to(FileService).inSingletonScope()
+injector.bind<INetService>(generalTypes.NetService).to(NetService).inSingletonScope()
 injector.bind<IUserProfileRepository>(generalTypes.UserProfileRepository).to(UserProfileRepository).inSingletonScope()
+injector.bind<IDBAdapter>(generalTypes.DBAdapter).to(DBAdapter).inSingletonScope()
+injector.bind<IFileAdapter>(generalTypes.FileAdapter).to(FileAdapter).inSingletonScope()
+injector.bind<INetAdapter>(generalTypes.NetAdapter).to(NetAdapter).inSingletonScope()
 
 // domain - library
 injector.bind<ISFComicInfoQueryAdapter>(libraryTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()
@@ -58,9 +74,6 @@ injector.bind<IDownloadTaskRepository>(downloaderTypes.DownloadTaskRepository).t
 injector.bind<IDownloadComicService>(downloaderTypes.DownloadComicService).to(DownloadComicService).inSingletonScope()
 
 // infrastructure
-injector.bind<IDBHandler>(infraTypes.DBHandler).to(DBHandler).inSingletonScope()
-injector.bind<IFileHandler>(infraTypes.FileHandler).to(FileHandler).inSingletonScope()
-injector.bind<INetHandler>(infraTypes.NetHandler).to(NetHandler).inSingletonScope()
 injector.bind<IDatabase>(infraTypes.Database).to(Database).inSingletonScope()
 injector.bind<ISFSourceSite>(infraTypes.SFSourceSite).to(SFSourceSite).inSingletonScope()
 
