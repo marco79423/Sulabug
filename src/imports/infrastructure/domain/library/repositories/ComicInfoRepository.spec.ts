@@ -21,6 +21,7 @@ describe('ComicInfoRepository', () => {
         lastUpdatedChapter: 'lastUpdatedChapter',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
+        chapters: [],
       })
 
       const database: IDatabase = {
@@ -55,6 +56,7 @@ describe('ComicInfoRepository', () => {
         lastUpdatedChapter: 'lastUpdatedChapter',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
+        chapters: [],
       })
 
       const database: IDatabase = {
@@ -115,6 +117,7 @@ describe('ComicInfoRepository', () => {
         lastUpdatedChapter: 'lastUpdatedChapter',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
+        chapters: [],
       })
 
       const database: IDatabase = {

@@ -18,15 +18,15 @@ export default class DownloadTaskFactory implements IDownloadTaskFactory {
 
   createFromJson(json: {
     id: string,
+    comicInfoId: string,
     name: string,
     coverDataUrl: string,
-    sourceUrl: string,
   }): DownloadTask {
     return new DownloadTask(
       json.id,
+      json.comicInfoId,
       json.name,
       json.coverDataUrl,
-      json.sourceUrl,
       this._downloadTaskRepository,
     )
   }

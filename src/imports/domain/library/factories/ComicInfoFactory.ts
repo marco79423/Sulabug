@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import {injectable} from 'inversify'
 import {IComicInfoFactory} from '../interfaces'
 import ComicInfo from '../entities/ComicInfo'
+import Chapter from '../entities/Chapter'
 
 @injectable()
 export default class ComicInfoFactory implements IComicInfoFactory {
@@ -18,6 +19,12 @@ export default class ComicInfoFactory implements IComicInfoFactory {
     lastUpdatedChapter: string,
     lastUpdatedTime: string,
     summary: string,
+    chapters: {
+      id: string
+      order: number
+      name: string
+      sourcePageUrl: string
+    }[],
   }): ComicInfo {
     return new ComicInfo(
       json.id,
@@ -30,6 +37,12 @@ export default class ComicInfoFactory implements IComicInfoFactory {
       json.lastUpdatedChapter,
       new Date(json.lastUpdatedTime),
       json.summary,
+      json.chapters.map(rawChapter => new Chapter(
+        rawChapter.id,
+        rawChapter.order,
+        rawChapter.name,
+        rawChapter.sourcePageUrl,
+      )),
     )
   }
 }

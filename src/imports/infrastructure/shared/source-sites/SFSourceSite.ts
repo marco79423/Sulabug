@@ -23,6 +23,12 @@ export default class SFSourceSite implements ISFSourceSite {
     lastUpdatedChapter: string,
     lastUpdatedTime: Date,
     summary: string,
+    chapters: {
+      id: string
+      order: number
+      name: string
+      sourcePageUrl: string
+    }[],
   }[]> {
     const comicListPageUrls = await this._asyncGetAllComicListPageUrls()
 
@@ -35,6 +41,12 @@ export default class SFSourceSite implements ISFSourceSite {
       lastUpdatedChapter: string,
       lastUpdatedTime: Date,
       summary: string,
+      chapters: {
+        id: string
+        order: number
+        name: string
+        sourcePageUrl: string
+      }[],
     }[] = []
     for (const comicListPageUrl of comicListPageUrls) {
       const comicInfos = await this._asyncQueryComicInfosFromComicListPage(comicListPageUrl)
@@ -105,6 +117,9 @@ export default class SFSourceSite implements ISFSourceSite {
     const comicListPageUrls: string[] = []
     for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
       comicListPageUrls.push(`https://manhua.sfacg.com/catalog/default.aspx?PageIndex=${pageIndex}`)
+
+      // TODO: test
+      break
     }
 
     return comicListPageUrls
@@ -120,6 +135,12 @@ export default class SFSourceSite implements ISFSourceSite {
       lastUpdatedChapter: string,
       lastUpdatedTime: Date,
       summary: string,
+      chapters: {
+        id: string
+        order: number
+        name: string
+        sourcePageUrl: string
+      }[],
     }[] = []
     const text = await this._netService.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
@@ -158,7 +179,26 @@ export default class SFSourceSite implements ISFSourceSite {
       const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
       const coverBase64Content = await this._netService.asyncGetBinaryBase64(coverImageUrl)
 
-      console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary)
+      const chapters: {
+        id: string
+        order: number
+        name: string
+        sourcePageUrl: string
+      }[] = []
+      const nodes = dom.querySelectorAll('.comic_Serial_list > a')
+      for (const [index, node] of nodes.entries()) {
+        chapters.push({
+          // @ts-ignore
+          id: `${name}-${node.innerText}`,
+          order: nodes.length - index - 1,
+          // @ts-ignore
+          name: node.innerText,
+          // @ts-ignore
+          sourcePageUrl: 'https://manhua.sfacg.com' + node.pathname,
+        })
+      }
+
+      console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary, chapters)
       comicInfos.push({
         name,
         coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,
@@ -168,6 +208,7 @@ export default class SFSourceSite implements ISFSourceSite {
         lastUpdatedChapter,
         lastUpdatedTime,
         summary,
+        chapters,
       })
     }
 

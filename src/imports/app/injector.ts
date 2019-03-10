@@ -25,7 +25,7 @@ import generalTypes from '../domain/general/generalTypes'
 import {
   IComicInfoDatabaseService,
   IComicInfoFactory,
-  IComicInfoRepository,
+  IComicInfoRepository, IContentItemFactory,
   ISFComicInfoQueryAdapter
 } from '../domain/library/interfaces'
 import ComicInfoRepository from '../infrastructure/domain/library/repositories/ComicInfoRepository'

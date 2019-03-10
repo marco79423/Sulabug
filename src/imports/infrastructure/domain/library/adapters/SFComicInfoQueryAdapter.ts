@@ -2,9 +2,8 @@ import {inject, injectable} from 'inversify'
 
 import libraryTypes from '../../../../domain/library/libraryTypes'
 import infraTypes from '../../../infraTypes'
-import {ISFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
+import {IComicInfoFactory, ISFComicInfoQueryAdapter} from '../../../../domain/library/interfaces'
 import ComicInfo from '../../../../domain/library/entities/ComicInfo'
-import {IComicInfoFactory} from '../../../../domain/library/interfaces'
 import {ISFSourceSite} from '../../../shared/interfaces'
 
 @injectable()
@@ -33,6 +32,7 @@ export default class SFComicInfoQueryAdapter implements ISFComicInfoQueryAdapter
       lastUpdatedChapter: rawComicInfo.lastUpdatedChapter,
       lastUpdatedTime: rawComicInfo.lastUpdatedTime.toISOString(),
       summary: rawComicInfo.summary,
+      chapters: rawComicInfo.chapters,
     }))
   }
 }

@@ -15,6 +15,14 @@ describe('ComicInfo', () => {
         lastUpdatedChapter: 'lastUpdatedChapter',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
+        chapters: [
+          {
+            id: 'id',
+            order: 0,
+            name: 'name',
+            sourcePageUrl: 'sourcePageUrl',
+          }
+        ]
       }
 
       const comicInfoFactory = new ComicInfoFactory()

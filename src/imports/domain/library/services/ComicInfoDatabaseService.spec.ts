@@ -20,6 +20,7 @@ describe('ComicInfoDatabaseService', () => {
           lastUpdatedChapter: 'lastUpdatedChapter-1',
           lastUpdatedTime: '2019-01-16T00:00:00.000Z',
           summary: 'summary-1',
+          chapters: [],
         }),
         comicInfoFactory.createFromJson({
           id: 'id-2',
@@ -32,6 +33,7 @@ describe('ComicInfoDatabaseService', () => {
           lastUpdatedChapter: 'lastUpdatedChapter-1',
           lastUpdatedTime: '2019-01-17T00:00:00.000Z',
           summary: 'summary-2',
+          chapters: [],
         })
       ]
 
