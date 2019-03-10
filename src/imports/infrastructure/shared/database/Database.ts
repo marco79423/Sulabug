@@ -1,9 +1,8 @@
 import {inject, injectable} from 'inversify'
-
-import {IDBHandler} from '../../vendor/interfaces'
-import infraTypes from '../../infraTypes'
 import collections from './collections'
 import IDatabase from '../interfaces'
+import {IDBService} from '../../../domain/general/interfaces'
+import generalTypes from '../../../domain/general/generalTypes'
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -12,13 +11,13 @@ function sleep(ms) {
 @injectable()
 export default class Database implements IDatabase {
 
-  private readonly _dbHandler: IDBHandler
+  private readonly _dbService: IDBService
   private _created: boolean
 
   public constructor(
-    @inject(infraTypes.DBHandler) dbHandler: IDBHandler,
+    @inject(generalTypes.DBService) dbService: IDBService,
   ) {
-    this._dbHandler = dbHandler
+    this._dbService = dbService
     this._created = false
 
     // noinspection JSIgnoredPromiseFromCall
@@ -27,17 +26,17 @@ export default class Database implements IDatabase {
 
   asyncSaveOrUpdate = async (collectionName: string, item): Promise<void> => {
     await this._waitForInitialized()
-    await this._dbHandler.asyncSaveOrUpdate(collectionName, item)
+    await this._dbService.asyncSaveOrUpdate(collectionName, item)
   }
 
   asyncFind = async (collectionName: string, filter?): Promise<any> => {
     await this._waitForInitialized()
-    return await this._dbHandler.asyncFind(collectionName, filter)
+    return await this._dbService.asyncFind(collectionName, filter)
   }
 
   asyncFindOne = async (collectionName: string, filter?): Promise<any> => {
     await this._waitForInitialized()
-    return await this._dbHandler.asyncFindOne(collectionName, filter)
+    return await this._dbService.asyncFindOne(collectionName, filter)
   }
 
   private _waitForInitialized = async () => {
@@ -47,7 +46,7 @@ export default class Database implements IDatabase {
   }
 
   private _initialize = async () => {
-    await this._dbHandler.asyncCreate('sulabug', collections)
+    await this._dbService.asyncCreate('sulabug', collections)
     this._created = true
   }
 }
