@@ -1,8 +1,8 @@
 import {inject, injectable} from 'inversify'
 import collections from './collections'
 import IDatabase from '../interfaces'
-import {IDBService} from '../../../domain/general/interfaces'
-import generalTypes from '../../../domain/general/generalTypes'
+import {IDBService} from '../../../domain/interfaces'
+import types from '../../../domain/types'
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -15,7 +15,7 @@ export default class Database implements IDatabase {
   private _created: boolean
 
   public constructor(
-    @inject(generalTypes.DBService) dbService: IDBService,
+    @inject(types.DBService) dbService: IDBService,
   ) {
     this._dbService = dbService
     this._created = false

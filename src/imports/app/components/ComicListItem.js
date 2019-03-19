@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
-import SaveIcon from '@material-ui/icons/Save'
+import CollectionsIcon from '@material-ui/icons/Collections'
 import ListItem from '@material-ui/core/ListItem/ListItem'
 
 
@@ -54,16 +54,16 @@ const styles = (theme) => createStyles({
     display: 'flex',
     justifyContent: 'flex-end',
   },
-  saveIcon: {
+  collectionsIcon: {
     marginRight: theme.spacing.unit,
   },
 })
 
 export class ComicListItem extends React.Component {
 
-  createDownloadTask = () => {
+  addComicToCollection = () => {
     const {comic} = this.props
-    this.props.createDownloadTask(comic.id)
+    this.props.addComicToCollection(comic.id)
   }
 
   render() {
@@ -85,7 +85,7 @@ export class ComicListItem extends React.Component {
               <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
-              <Button size="small" onClick={this.createDownloadTask}><SaveIcon className={classes.saveIcon}/><Typography variant="button">下載</Typography></Button>
+              <Button size="small" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/><Typography variant="button">收藏</Typography></Button>
             </CardActions>
           </div>
         </Card>

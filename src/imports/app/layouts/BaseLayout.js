@@ -16,6 +16,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MoveToInboxIcon from '@material-ui/icons/MoveToInbox'
 import ExploreIcon from '@material-ui/icons/Explore'
 import SettingsIcon from '@material-ui/icons/Settings'
+import CollectionsIcon from '@material-ui/icons/Collections'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import 'typeface-roboto/index.css'
@@ -165,11 +166,17 @@ class BaseLayout extends React.Component {
                 </ListItemIcon>
                 <ListItemText primary="瀏覽漫畫"/>
               </ListItem>
+              <ListItem button onClick={() => this.props.changeCurrentPage(Page.COLLECTION_PAGE)}>
+                <ListItemIcon>
+                  <CollectionsIcon/>
+                </ListItemIcon>
+                <ListItemText primary="我的收藏"/>
+              </ListItem>
               <ListItem button onClick={() => this.props.changeCurrentPage(Page.DOWNLOAD_PAGE)}>
                 <ListItemIcon>
                   <MoveToInboxIcon/>
                 </ListItemIcon>
-                <ListItemText primary="我的下載"/>
+                <ListItemText primary="下載狀態"/>
               </ListItem>
             </List>
             <Divider/>

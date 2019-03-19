@@ -1,10 +1,7 @@
 import * as React from 'react'
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import ClearIcon from '@material-ui/icons/Clear'
-import IconButton from '@material-ui/core/IconButton'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
@@ -49,15 +46,6 @@ export class DownloadTaskListItem extends React.Component {
           primary={downloadTask.name}
           secondary={this.renderProgress()}
         />
-        {
-          downloadTask.status === 'FINISHED' ? (
-            <ListItemSecondaryAction>
-              <IconButton onClick={this.deleteDownloadTask}>
-                <ClearIcon/>
-              </IconButton>
-            </ListItemSecondaryAction>
-          ) : null
-        }
       </ListItem>
     )
   }

@@ -1,78 +1,79 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
+  IComicFactory, IComicRepository,
+  IComicInfoDatabaseService,
+  IComicInfoFactory,
+  IComicInfoRepository,
   IDBAdapter,
   IDBService,
+  IDownloadComicService,
+  IDownloadTaskFactory,
+  IDownloadTaskRepository,
   IFileAdapter,
   IFileService,
   INetAdapter,
   INetService,
+  ISFComicDownloadAdapter,
+  ISFComicInfoQueryAdapter,
   IUserProfileFactory,
   IUserProfileRepository
-} from '../domain/general/interfaces'
-import {
-  IDownloadComicService,
-  IDownloadTaskFactory,
-  IDownloadTaskRepository,
-  ISFComicDownloadAdapter
-} from '../domain/downloader/interfaces'
-import UserProfileRepository from '../infrastructure/domain/general/repositories/UserProfileRepository'
+} from '../domain/interfaces'
+import UserProfileRepository from '../infrastructure/domain/repositories/UserProfileRepository'
 import SFSourceSite from '../infrastructure/shared/source-sites/SFSourceSite'
-import downloaderTypes from '../domain/downloader/downloaderTypes'
-import DBAdapter from '../infrastructure/domain/general/adapters/DBAdapter'
-import SFComicDownloadAdapter from '../infrastructure/domain/downloader/adapters/SFComicDownloadAdapter'
+import types from '../domain/types'
+import DBAdapter from '../infrastructure/domain/adapters/DBAdapter'
+import SFComicDownloadAdapter from '../infrastructure/domain/adapters/SFComicDownloadAdapter'
 import Database from '../infrastructure/shared/database/Database'
-import generalTypes from '../domain/general/generalTypes'
-import {
-  IComicInfoDatabaseService,
-  IComicInfoFactory,
-  IComicInfoRepository,
-  ISFComicInfoQueryAdapter
-} from '../domain/library/interfaces'
-import ComicInfoRepository from '../infrastructure/domain/library/repositories/ComicInfoRepository'
-import NetAdapter from '../infrastructure/domain/general/adapters/NetAdapter'
+import ComicInfoRepository from '../infrastructure/domain/repositories/ComicInfoRepository'
+import NetAdapter from '../infrastructure/domain/adapters/NetAdapter'
 import IDatabase, {ISFSourceSite} from '../infrastructure/shared/interfaces'
-import EventPublisher from '../domain/downloader/event/EventPublisher'
-import SFComicInfoQueryAdapter from '../infrastructure/domain/library/adapters/SFComicInfoQueryAdapter'
-import DownloadTaskRepository from '../infrastructure/domain/downloader/repositories/DownloadTaskRepository'
+import EventPublisher from '../domain/event/EventPublisher'
+import SFComicInfoQueryAdapter from '../infrastructure/domain/adapters/SFComicInfoQueryAdapter'
+import DownloadTaskRepository from '../infrastructure/domain/repositories/DownloadTaskRepository'
 import infraTypes from '../infrastructure/infraTypes'
-import UserProfileFactory from '../domain/general/factories/UserProfileFactory'
-import FileAdapter from '../infrastructure/domain/general/adapters/FileAdapter'
-import DownloadTaskFactory from '../domain/downloader/factories/DownloadTaskFactory'
-import DownloadComicService from '../domain/downloader/services/DownloadComicService'
-import ComicInfoFactory from '../domain/library/factories/ComicInfoFactory'
-import libraryTypes from '../domain/library/libraryTypes'
-import ComicInfoDatabaseService from '../domain/library/services/ComicInfoDatabaseService'
-import NetService from '../domain/general/services/NetService'
-import FileService from '../domain/general/services/FileService'
-import DBService from '../domain/general/services/DBService'
+import UserProfileFactory from '../domain/factories/UserProfileFactory'
+import FileAdapter from '../infrastructure/domain/adapters/FileAdapter'
+import DownloadTaskFactory from '../domain/factories/DownloadTaskFactory'
+import DownloadComicService from '../domain/services/DownloadComicService'
+import ComicInfoFactory from '../domain/factories/ComicInfoFactory'
+import ComicInfoDatabaseService from '../domain/services/ComicInfoDatabaseService'
+import NetService from '../domain/services/NetService'
+import FileService from '../domain/services/FileService'
+import DBService from '../domain/services/DBService'
+import ComicFactory from '../domain/factories/ComicFactory'
+import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
 
 
 // domain
 const injector = new Container()
 
 // domain - general
-injector.bind<IUserProfileFactory>(generalTypes.UserProfileFactory).to(UserProfileFactory).inSingletonScope()
-injector.bind<IDBService>(generalTypes.DBService).to(DBService).inSingletonScope()
-injector.bind<IFileService>(generalTypes.FileService).to(FileService).inSingletonScope()
-injector.bind<INetService>(generalTypes.NetService).to(NetService).inSingletonScope()
-injector.bind<IUserProfileRepository>(generalTypes.UserProfileRepository).to(UserProfileRepository).inSingletonScope()
-injector.bind<IDBAdapter>(generalTypes.DBAdapter).to(DBAdapter).inSingletonScope()
-injector.bind<IFileAdapter>(generalTypes.FileAdapter).to(FileAdapter).inSingletonScope()
-injector.bind<INetAdapter>(generalTypes.NetAdapter).to(NetAdapter).inSingletonScope()
+injector.bind<IUserProfileFactory>(types.UserProfileFactory).to(UserProfileFactory).inSingletonScope()
+injector.bind<IDBService>(types.DBService).to(DBService).inSingletonScope()
+injector.bind<IFileService>(types.FileService).to(FileService).inSingletonScope()
+injector.bind<INetService>(types.NetService).to(NetService).inSingletonScope()
+injector.bind<IUserProfileRepository>(types.UserProfileRepository).to(UserProfileRepository).inSingletonScope()
+injector.bind<IDBAdapter>(types.DBAdapter).to(DBAdapter).inSingletonScope()
+injector.bind<IFileAdapter>(types.FileAdapter).to(FileAdapter).inSingletonScope()
+injector.bind<INetAdapter>(types.NetAdapter).to(NetAdapter).inSingletonScope()
 
 // domain - library
-injector.bind<ISFComicInfoQueryAdapter>(libraryTypes.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()
-injector.bind<IComicInfoFactory>(libraryTypes.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
-injector.bind<IComicInfoRepository>(libraryTypes.ComicInfoInfoRepository).to(ComicInfoRepository).inSingletonScope()
-injector.bind<IComicInfoDatabaseService>(libraryTypes.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
+injector.bind<ISFComicInfoQueryAdapter>(types.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()
+injector.bind<IComicInfoFactory>(types.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
+injector.bind<IComicInfoRepository>(types.ComicInfoRepository).to(ComicInfoRepository).inSingletonScope()
+injector.bind<IComicInfoDatabaseService>(types.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
+
+// domain - collection
+injector.bind<IComicFactory>(types.ComicFactory).to(ComicFactory).inSingletonScope()
+injector.bind<IComicRepository>(types.ComicRepository).to(ComicRepository).inSingletonScope()
 
 // domain - downloader
-injector.bind<EventPublisher>(downloaderTypes.EventPublisher).to(EventPublisher).inSingletonScope()
-injector.bind<ISFComicDownloadAdapter>(downloaderTypes.SFComicDownloadAdapter).to(SFComicDownloadAdapter).inSingletonScope()
-injector.bind<IDownloadTaskFactory>(downloaderTypes.DownloadTaskFactory).to(DownloadTaskFactory).inSingletonScope()
-injector.bind<IDownloadTaskRepository>(downloaderTypes.DownloadTaskRepository).to(DownloadTaskRepository).inSingletonScope()
-injector.bind<IDownloadComicService>(downloaderTypes.DownloadComicService).to(DownloadComicService).inSingletonScope()
+injector.bind<EventPublisher>(types.EventPublisher).to(EventPublisher).inSingletonScope()
+injector.bind<ISFComicDownloadAdapter>(types.SFComicDownloadAdapter).to(SFComicDownloadAdapter).inSingletonScope()
+injector.bind<IDownloadTaskFactory>(types.DownloadTaskFactory).to(DownloadTaskFactory).inSingletonScope()
+injector.bind<IDownloadTaskRepository>(types.DownloadTaskRepository).to(DownloadTaskRepository).inSingletonScope()
+injector.bind<IDownloadComicService>(types.DownloadComicService).to(DownloadComicService).inSingletonScope()
 
 // infrastructure
 injector.bind<IDatabase>(infraTypes.Database).to(Database).inSingletonScope()
