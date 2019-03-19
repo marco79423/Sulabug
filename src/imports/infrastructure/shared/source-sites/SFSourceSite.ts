@@ -117,9 +117,6 @@ export default class SFSourceSite implements ISFSourceSite {
     const comicListPageUrls: string[] = []
     for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
       comicListPageUrls.push(`https://manhua.sfacg.com/catalog/default.aspx?PageIndex=${pageIndex}`)
-
-      // TODO: test
-      break
     }
 
     return comicListPageUrls
