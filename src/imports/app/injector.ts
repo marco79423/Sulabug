@@ -1,7 +1,8 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
-  IDBAdapter, IDBService,
+  IDBAdapter,
+  IDBService,
   IFileAdapter,
   IFileService,
   INetAdapter,
@@ -25,7 +26,7 @@ import generalTypes from '../domain/general/generalTypes'
 import {
   IComicInfoDatabaseService,
   IComicInfoFactory,
-  IComicInfoRepository, IContentItemFactory,
+  IComicInfoRepository,
   ISFComicInfoQueryAdapter
 } from '../domain/library/interfaces'
 import ComicInfoRepository from '../infrastructure/domain/library/repositories/ComicInfoRepository'
