@@ -52,12 +52,18 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   }
 
   private async _asyncDownloadChapter(pageUrl: string, targetDir: string): Promise<void> {
+    if (await this._fileService.asyncPathExists(targetDir + '/.done')) {
+      return
+    }
+
     await this._fileService.asyncEnsureDir(targetDir)
     const images = await this._sfSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
       await this._netService.asyncDownload(image.imageUrl, imagePath)
     }
+
+    await this._fileService.asyncWriteJson(targetDir + '/.done', null)
   }
 
   private async _asyncGetDownloadFolderPath() {
