@@ -8,19 +8,27 @@ stages:
   - preparing
   - testing
   - building
+  - deploying
 
 install-npm-modules:
   stage: preparing
   script:
     - yarn
 
-run-tests-with-coverage:
+run-testcases-with-coverage:
   stage: testing
   script:
     - yarn test:coverage
 
-build-windows-distributions:
+build-project-code:
   stage: building
+  script:
+    - yarn compile
+
+deploy-windows-distributions:
+  stage: deploying
+  only:
+    - tags
   script:
     - yarn dist:win
   artifacts:

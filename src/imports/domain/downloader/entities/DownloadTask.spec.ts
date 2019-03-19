@@ -6,9 +6,9 @@ describe('DownloadTask', () => {
     it('will serialize the DownloadTask instance to json data', () => {
       const jsonData = {
         id: 'id',
+        comicInfoId: 'comicInfoId',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
-        sourceUrl: 'sourceUrl',
       }
 
       const downloadTaskRepository: IDownloadTaskRepository = {
@@ -20,9 +20,9 @@ describe('DownloadTask', () => {
 
       const downloadTask = new DownloadTask(
         jsonData.id,
+        jsonData.comicInfoId,
         jsonData.name,
         jsonData.coverDataUrl,
-        jsonData.sourceUrl,
         downloadTaskRepository,
       )
 

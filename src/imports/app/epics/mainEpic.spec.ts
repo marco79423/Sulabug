@@ -62,6 +62,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-1',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
+        chapters: [],
       }),
       comicInfoFactory.createFromJson({
         id: 'id-2',
@@ -74,6 +75,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-2',
         lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
+        chapters: [],
       })
     ]
 
@@ -92,15 +94,15 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
         id: 'id-1',
+        comicInfoId: 'comicInfoId-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
-        sourceUrl: 'sourceUrl-1',
       }),
       downloadTaskFactory.createFromJson({
         id: 'id-2',
+        comicInfoId: 'comicInfoId-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
-        sourceUrl: 'sourceUrl-2',
       }),
     ]
     downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
@@ -140,6 +142,7 @@ describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
       lastUpdatedChapter: 'lastUpdatedChapter',
       lastUpdatedTime: '2019-01-16T00:00:00.000Z',
       summary: 'summary',
+      chapters: [],
     })
 
     const actions$ = of(actions.syncInitDataToState({
@@ -181,6 +184,7 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-1',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
+        chapters: [],
       }),
       comicInfoFactory.createFromJson({
         id: 'id-2',
@@ -193,6 +197,7 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-2',
         lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
+        chapters: [],
       })
     ]
 
@@ -227,6 +232,7 @@ describe('searchComicInfosEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-1',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary-1',
+        chapters: [],
       }),
       comicInfoFactory.createFromJson({
         id: 'id-2',
@@ -239,6 +245,7 @@ describe('searchComicInfosEpic', () => {
         lastUpdatedChapter: 'lastUpdatedChapter-2',
         lastUpdatedTime: '2019-01-17T00:00:00.000Z',
         summary: 'summary-2',
+        chapters: [],
       })
     ]
 
@@ -275,6 +282,7 @@ describe('createDownloadTaskEpic', () => {
       lastUpdatedChapter: 'lastUpdatedChapter',
       lastUpdatedTime: '2019-01-16T00:00:00.000Z',
       summary: 'summary',
+      chapters: [],
     })
 
     const comicInfoInfoRepository: IComicInfoRepository = {
@@ -294,9 +302,9 @@ describe('createDownloadTaskEpic', () => {
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: comicInfo.identity,
+      comicInfoId: comicInfo.identity,
       name: comicInfo.name,
       coverDataUrl: comicInfo.coverDataUrl,
-      sourceUrl: comicInfo.pageUrl,
     })
 
     const actions$ = of(actions.createDownloadTask(comicInfo.identity))
@@ -354,9 +362,9 @@ describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: 'id',
+      comicInfoId: 'comicInfoId',
       name: 'name',
       coverDataUrl: 'coverDataUrl',
-      sourceUrl: 'sourceUrl',
     })
     downloadTaskRepository.getById = jest.fn(() => downloadTask)
 
@@ -395,15 +403,15 @@ describe('syncDownloadTasksToStateWhenDownloadStatusChanged', () => {
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
         id: 'id-1',
+        comicInfoId: 'comicInfoId-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
-        sourceUrl: 'sourceUrl-1',
       }),
       downloadTaskFactory.createFromJson({
         id: 'id-2',
+        comicInfoId: 'comicInfoId-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
-        sourceUrl: 'sourceUrl-2',
       }),
     ]
     downloadTaskRepository.getAll = jest.fn(() => downloadTasks)

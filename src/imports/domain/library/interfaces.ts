@@ -16,6 +16,12 @@ export interface IComicInfoFactory {
     lastUpdatedChapter: string,
     lastUpdatedTime: string,
     summary: string,
+    chapters: {
+      id: string
+      order: number
+      name: string
+      sourcePageUrl: string
+    }[],
   }): ComicInfo
 }
 

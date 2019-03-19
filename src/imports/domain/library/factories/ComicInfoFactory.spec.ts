@@ -14,6 +14,14 @@ describe('ComicInfoFactory', () => {
         lastUpdatedChapter: 'lastUpdatedChapter',
         lastUpdatedTime: '2019-01-16T00:00:00.000Z',
         summary: 'summary',
+        chapters: [
+          {
+            id: 'id',
+            order: 0,
+            name: 'name',
+            sourcePageUrl: 'sourcePageUrl',
+          }
+        ],
       }
 
       const factory = new ComicInfoFactory()
@@ -28,6 +36,11 @@ describe('ComicInfoFactory', () => {
       expect(comicInfo.lastUpdatedChapter).toBe(jsonData.lastUpdatedChapter)
       expect(comicInfo.lastUpdatedTime.toISOString()).toBe(jsonData.lastUpdatedTime)
       expect(comicInfo.summary).toBe(jsonData.summary)
+
+      expect(comicInfo.chapters[0].identity).toEqual(jsonData.chapters[0].id)
+      expect(comicInfo.chapters[0].order).toEqual(jsonData.chapters[0].order)
+      expect(comicInfo.chapters[0].name).toEqual(jsonData.chapters[0].name)
+      expect(comicInfo.chapters[0].sourcePageUrl).toEqual(jsonData.chapters[0].sourcePageUrl)
     })
   })
 })

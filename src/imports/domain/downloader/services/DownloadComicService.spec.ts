@@ -17,9 +17,9 @@ describe('DownloadComicService', () => {
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: 'id',
+      comicInfoId: 'comicInfoId',
       name: 'name',
       coverDataUrl: 'coverDataUrl',
-      sourceUrl: 'sourceUrl',
     })
 
     const sfComicDownloadAdapter: ISFComicDownloadAdapter = {

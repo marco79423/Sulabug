@@ -18,6 +18,12 @@ export interface ISFSourceSite {
     lastUpdatedChapter: string,
     lastUpdatedTime: Date,
     summary: string,
+    chapters: {
+      id: string
+      order: number
+      name: string
+      sourcePageUrl: string
+    }[]
   }[]>
 
   asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{

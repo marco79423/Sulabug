@@ -73,9 +73,9 @@ export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfo
     from(comicInfoInfoRepository.asyncGetById(comicInfoId)).pipe(
       map(comicInfo => downloadTaskFactory.createFromJson({
         id: comicInfo.identity,
+        comicInfoId: comicInfo.identity,
         name: comicInfo.name,
         coverDataUrl: comicInfo.coverDataUrl,
-        sourceUrl: comicInfo.pageUrl,
       })),
       tap(downloadTask => downloadTaskRepository.saveOrUpdate(downloadTask)),
       map(downloadTask => actions.addNewDownloadTaskToState(downloadTask.serialize())),

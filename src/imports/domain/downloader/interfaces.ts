@@ -7,6 +7,7 @@ export interface ISFComicDownloadAdapter {
 export interface IDownloadTaskFactory {
   createFromJson(json: {
     id: string,
+    comicInfoId: string,
     name: string,
     coverDataUrl: string
   }): DownloadTask

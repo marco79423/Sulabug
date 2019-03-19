@@ -1,7 +1,8 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
-  IDBAdapter, IDBService,
+  IDBAdapter,
+  IDBService,
   IFileAdapter,
   IFileService,
   INetAdapter,

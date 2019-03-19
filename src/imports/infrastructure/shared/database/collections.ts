@@ -57,6 +57,34 @@ export const ComicInfoCollection = {
       summary: {
         type: 'string',
       },
+      chapters: {
+        type: "array",
+        uniqueItems: true,
+        items: {
+          type: "object",
+          properties: {
+            id: {
+              type: 'string',
+            },
+            order: {
+              type: 'number',
+              min: 0,
+            },
+            name: {
+              type: 'string',
+            },
+            sourcePageUrl: {
+              type: 'string',
+            },
+          }
+        },
+        required: [
+          'id',
+          'order',
+          'name',
+          'sourcePageUrl',
+        ]
+      }
     },
     required: [
       'name',
@@ -68,6 +96,7 @@ export const ComicInfoCollection = {
       'lastUpdatedChapter',
       'lastUpdatedTime',
       'summary',
+      'chapters',
     ]
   }
 }

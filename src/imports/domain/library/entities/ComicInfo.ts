@@ -1,4 +1,5 @@
 import {Entity} from '../../base-types'
+import Chapter from './Chapter'
 
 export default class ComicInfo extends Entity {
   readonly name: string
@@ -10,6 +11,7 @@ export default class ComicInfo extends Entity {
   readonly lastUpdatedChapter: string
   readonly lastUpdatedTime: Date
   readonly summary: string
+  readonly chapters: Chapter[]
 
   constructor(
     identity: string,
@@ -22,6 +24,7 @@ export default class ComicInfo extends Entity {
     lastUpdatedChapter: string,
     lastUpdatedTime: Date,
     summary: string,
+    chapters: Chapter[],
   ) {
     super(identity)
     this.name = name
@@ -33,6 +36,7 @@ export default class ComicInfo extends Entity {
     this.lastUpdatedChapter = lastUpdatedChapter
     this.lastUpdatedTime = lastUpdatedTime
     this.summary = summary
+    this.chapters = chapters
   }
 
   serialize() {
@@ -47,6 +51,7 @@ export default class ComicInfo extends Entity {
       lastUpdatedChapter: this.lastUpdatedChapter,
       lastUpdatedTime: this.lastUpdatedTime.toISOString(),
       summary: this.summary,
+      chapters: this.chapters.map(chapter => chapter.serialize()),
     }
   }
 }
