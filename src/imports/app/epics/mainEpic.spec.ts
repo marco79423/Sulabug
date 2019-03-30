@@ -5,25 +5,30 @@ import {of} from 'rxjs'
 import {actions} from '../ducks/mainDuck'
 import {
   createDownloadTaskEpic,
-  deleteDownloadTaskEpic,
   initializeDataFromDBWhenAppStartsEpic,
   searchComicInfosEpic,
   sendAppStartSignalWhenAppStartsEpic,
   sendSignalWhenComicInfoDBIsEmptyEpic,
   startToDownloadComicWhenNewDownloadTaskCreatedEpic,
-  syncDownloadTasksToStateWhenDownloadStatusChanged, transformDownloadTaskUpdatedEventToSignalEpic,
+  syncDownloadTasksToStateWhenDownloadStatusChanged,
+  transformDownloadTaskUpdatedEventToSignalEpic,
   updateComicInfoDBWhenDBIsEmptyEpic,
   updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
-import DownloadTaskUpdatedEvent from '../../domain/downloader/event/DownloadTaskUpdatedEvent'
-import UserProfile from '../../domain/general/entities/UserProfile'
-import UserProfileFactory from '../../domain/general/factories/UserProfileFactory'
-import {IComicInfoDatabaseService, IComicInfoRepository} from '../../domain/library/interfaces'
-import ComicInfoFactory from '../../domain/library/factories/ComicInfoFactory'
-import DownloadTaskFactory from '../../domain/downloader/factories/DownloadTaskFactory'
-import {IDownloadComicService, IDownloadTaskRepository} from '../../domain/downloader/interfaces'
-import {IUserProfileRepository} from '../../domain/general/interfaces'
+import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
+import UserProfile from '../../domain/entities/UserProfile'
+import UserProfileFactory from '../../domain/factories/UserProfileFactory'
+import {
+  IComicInfoDatabaseService,
+  IComicInfoRepository,
+  IDownloadComicService,
+  IDownloadTaskRepository,
+  IUserProfileRepository
+} from '../../domain/interfaces'
+import ComicInfoFactory from '../../domain/factories/ComicInfoFactory'
+import DownloadTaskFactory from '../../domain/factories/DownloadTaskFactory'
+import ComicFactory from '../../domain/factories/ComicFactory'
 
 
 describe('sendAppStartSignalWhenAppStartsEpic', () => {
@@ -83,6 +88,15 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
       asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
     }
 
+    const comicFactory = new ComicFactory()
+    const comics = [
+      comicFactory.createFromJson({comicInfoIdentity: "comicInfoIdentity-1"}),
+      comicFactory.createFromJson({comicInfoIdentity: "comicInfoIdentity-2"}),
+    ]
+    const comicRepository = {
+      asyncGetAll: jest.fn(() => Promise.resolve(comics))
+    }
+
     const downloadTaskRepository: IDownloadTaskRepository = {
       saveOrUpdate: jest.fn(),
       getById: jest.fn(),
@@ -111,6 +125,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
     const result = await initializeDataFromDBWhenAppStartsEpic(actions$, {}, {
       general: {userProfileRepository},
       library: {comicInfoInfoRepository},
+      collection: {comicRepository},
       downloader: {downloadTaskRepository}
     }).pipe(
       toArray(),
@@ -121,6 +136,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
       actions.syncInitDataToState({
         userProfile: userProfile.serialize(),
         comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
+        comics: comics.map(comic => comic.serialize()),
         downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
       }),
     ])
@@ -325,30 +341,6 @@ describe('createDownloadTaskEpic', () => {
   })
 })
 
-describe('deleteDownloadTaskEpic', () => {
-  it('will delete download task by id', async () => {
-    const downloadTaskId = 'downloadTaskId'
-
-    const downloadTaskRepository: IDownloadTaskRepository = {
-      saveOrUpdate: jest.fn(),
-      getById: jest.fn(),
-      getAll: jest.fn(),
-      delete: jest.fn(),
-    }
-
-    const actions$ = of(actions.deleteDownloadTask(downloadTaskId))
-    const result = await deleteDownloadTaskEpic(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(downloadTaskRepository.delete).toBeCalledWith(downloadTaskId)
-
-    expect(result).toEqual([
-      actions.deleteDownloadTaskFromState(downloadTaskId),
-    ])
-  })
-})
-
 describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
   it('will download comic after a download created', async () => {
     const downloadTaskRepository: IDownloadTaskRepository = {
@@ -369,7 +361,7 @@ describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
     downloadTaskRepository.getById = jest.fn(() => downloadTask)
 
     const downloadComicService: IDownloadComicService = {
-      asyncDownload: jest.fn(),
+      asyncDownload: jest.fn(() => Promise.resolve()),
     }
 
     const actions$ = of(actions.addNewDownloadTaskToState(downloadTask))

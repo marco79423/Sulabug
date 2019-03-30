@@ -7,6 +7,7 @@ import BaseLayout from '../layouts/BaseLayout'
 import ComicList from '../components/ComicList'
 import DownloadTaskList from '../components/DownloadTaskList'
 import Settings from '../components/Settings'
+import CollectionList from '../components/CollectionList'
 
 export class Main extends React.Component {
 
@@ -14,6 +15,8 @@ export class Main extends React.Component {
     switch (this.props.currentPage) {
       case Page.BROWSE_PAGE:
         return this.renderBrowsePage()
+      case Page.COLLECTION_PAGE:
+        return this.renderCollectionPage()
       case Page.DOWNLOAD_PAGE:
         return this.renderDownloadPage()
       case Page.SETTINGS_PAGE:
@@ -28,9 +31,19 @@ export class Main extends React.Component {
       <ComicList
         loading={this.props.loadingComicInfos}
         comics={this.props.comicInfos}
-        createDownloadTask={this.props.createDownloadTask}
+        addComicToCollection={this.props.addComicToCollection}
       />
     )
+  }
+
+  renderCollectionPage = () => {
+    return <CollectionList
+      loading={this.props.loadingCollections || this.props.loadingComicInfos}
+      collections={this.props.collections}
+      comicInfos={this.props.comicInfos}
+
+      deleteDownloadTask={this.props.deleteDownloadTask}
+    />
   }
 
   renderDownloadPage = () => {
@@ -70,6 +83,8 @@ export default connect(
     currentPage: selectors.selectCurrentPage(state),
     loadingComicInfos: selectors.selectLoadingComicInfos(state),
     comicInfos: selectors.selectComicInfos(state),
+    loadingCollections: selectors.selectLoadingCollections(state),
+    collections: selectors.selectCollection(state),
     loadingDownloadTasks: selectors.selectLoadingDownloadTaskInfos(state),
     downloadTasks: selectors.selectDownloadTasks(state),
     userProfile: selectors.selectUserProfile(state),
@@ -77,6 +92,7 @@ export default connect(
   dispatch => bindActionCreators({
     changeCurrentPage: actions.changeCurrentPage,
     searchComic: actions.searchComic,
+    addComicToCollection: actions.addComicToCollection,
     createDownloadTask: actions.createDownloadTask,
     deleteDownloadTask: actions.deleteDownloadTask,
     updateUserProfile: actions.updateUserProfile,

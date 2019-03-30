@@ -14,13 +14,13 @@ const styles = (theme) => createStyles({
 
 export class ComicList extends React.Component {
   render() {
-    const {classes, loading, comics, createDownloadTask} = this.props
+    const {classes, loading, comics, addComicToCollection} = this.props
     if (loading) {
       return <LinearProgress color="secondary" variant="query"/>
     }
     return (
       <List className={classes.root}>
-        {comics.map((comic) => <ComicListItem key={comic.id} comic={comic} createDownloadTask={createDownloadTask}/>)}
+        {comics.map((comic) => <ComicListItem key={comic.id} comic={comic} addComicToCollection={addComicToCollection}/>)}
       </List>
     )
   }

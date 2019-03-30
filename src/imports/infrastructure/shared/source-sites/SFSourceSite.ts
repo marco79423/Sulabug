@@ -1,15 +1,15 @@
 import {inject, injectable} from 'inversify'
 
 import {ISFSourceSite} from '../interfaces'
-import generalTypes from '../../../domain/general/generalTypes'
-import {INetService} from '../../../domain/general/interfaces'
+import types from '../../../domain/types'
+import {INetService} from '../../../domain/interfaces'
 
 @injectable()
 export default class SFSourceSite implements ISFSourceSite {
   private readonly _netService: INetService
 
   public constructor(
-    @inject(generalTypes.NetService) netService: INetService,
+    @inject(types.NetService) netService: INetService,
   ) {
     this._netService = netService
   }
