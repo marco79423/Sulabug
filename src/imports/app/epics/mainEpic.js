@@ -4,10 +4,6 @@ import {filter, flatMap, map, mapTo, tap} from 'rxjs/operators'
 import {actions, ActionTypes} from '../ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
 
-export const sendAppStartSignalWhenAppStartsEpic = () => of(
-  actions.sendAppStartSignal()
-)
-
 export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general: {userProfileRepository}, library: {comicInfoInfoRepository}, collection: {comicRepository}, downloader: {downloadTaskRepository}}) => action$.pipe(
   ofType(
     ActionTypes.SEND_APP_START_SIGNAL
@@ -171,7 +167,6 @@ export const updateUserProfileEpic = (action$, state$, {general: {userProfileFac
 
 export default combineEpics(
   // global
-  sendAppStartSignalWhenAppStartsEpic,
   initializeDataFromDBWhenAppStartsEpic,
 
   // library

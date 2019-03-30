@@ -7,7 +7,6 @@ import {
   createDownloadTaskEpic,
   initializeDataFromDBWhenAppStartsEpic,
   searchComicInfosEpic,
-  sendAppStartSignalWhenAppStartsEpic,
   sendSignalWhenComicInfoDBIsEmptyEpic,
   startToDownloadComicWhenNewDownloadTaskCreatedEpic,
   syncDownloadTasksToStateWhenDownloadStatusChanged,
@@ -29,19 +28,6 @@ import {
 import ComicInfoFactory from '../../domain/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../../domain/factories/DownloadTaskFactory'
 import ComicFactory from '../../domain/factories/ComicFactory'
-
-
-describe('sendAppStartSignalWhenAppStartsEpic', () => {
-  it('will send start signal automatically in the beginning', async () => {
-    const result = await sendAppStartSignalWhenAppStartsEpic().pipe(
-      toArray(),
-    ).toPromise()
-
-    expect(result).toEqual([
-      actions.sendAppStartSignal(),
-    ])
-  })
-})
 
 describe('initializeDataFromDBWhenAppStartsEpic', () => {
   it('will query init data from database and then sync to state in the beginning', async () => {

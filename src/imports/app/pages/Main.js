@@ -66,6 +66,10 @@ export class Main extends React.Component {
     )
   }
 
+  componentDidMount() {
+    this.props.sendAppStartSignal()
+  }
+
   render() {
     return (
       <BaseLayout
@@ -90,6 +94,7 @@ export default connect(
     userProfile: selectors.selectUserProfile(state),
   }),
   dispatch => bindActionCreators({
+    sendAppStartSignal: actions.sendAppStartSignal,
     changeCurrentPage: actions.changeCurrentPage,
     searchComic: actions.searchComic,
     addComicToCollection: actions.addComicToCollection,
