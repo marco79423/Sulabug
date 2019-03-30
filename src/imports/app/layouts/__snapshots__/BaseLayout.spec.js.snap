@@ -161,8 +161,9 @@ exports[`BaseLayout will render layout correctly 1`] = `
       <ul
         className="MuiList-root-148 MuiList-padding-149"
       >
-        <div
+        <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
+          href="/"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -209,9 +210,10 @@ exports[`BaseLayout will render layout correctly 1`] = `
           <span
             className="MuiTouchRipple-root-207"
           />
-        </div>
-        <div
+        </a>
+        <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
+          href="/collection"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -258,9 +260,10 @@ exports[`BaseLayout will render layout correctly 1`] = `
           <span
             className="MuiTouchRipple-root-207"
           />
-        </div>
-        <div
+        </a>
+        <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
+          href="/download"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -307,7 +310,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           <span
             className="MuiTouchRipple-root-207"
           />
-        </div>
+        </a>
       </ul>
       <hr
         className="MuiDivider-root-143"
@@ -315,8 +318,9 @@ exports[`BaseLayout will render layout correctly 1`] = `
       <ul
         className="MuiList-root-148 MuiList-padding-149"
       >
-        <div
+        <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
+          href="/settings"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -365,7 +369,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
           <span
             className="MuiTouchRipple-root-207"
           />
-        </div>
+        </a>
       </ul>
     </div>
   </div>

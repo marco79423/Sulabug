@@ -1,5 +1,6 @@
 import * as React from 'react'
 import classNames from 'classnames'
+import {Link} from 'react-router-dom'
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
@@ -22,7 +23,6 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import 'typeface-roboto/index.css'
 
 import SearchBar from '../components/SearchBar'
-import {Page} from '../ducks/mainDuck'
 
 
 const drawerWidth = 240
@@ -160,19 +160,19 @@ class BaseLayout extends React.Component {
             </div>
             <Divider/>
             <List>
-              <ListItem button onClick={() => this.props.changeCurrentPage(Page.BROWSE_PAGE)}>
+              <ListItem button component={Link} to="/">
                 <ListItemIcon>
                   <ExploreIcon/>
                 </ListItemIcon>
                 <ListItemText primary="瀏覽漫畫"/>
               </ListItem>
-              <ListItem button onClick={() => this.props.changeCurrentPage(Page.COLLECTION_PAGE)}>
+              <ListItem button component={Link} to="/collection">
                 <ListItemIcon>
                   <CollectionsIcon/>
                 </ListItemIcon>
                 <ListItemText primary="我的收藏"/>
               </ListItem>
-              <ListItem button onClick={() => this.props.changeCurrentPage(Page.DOWNLOAD_PAGE)}>
+              <ListItem button component={Link} to="/download">
                 <ListItemIcon>
                   <MoveToInboxIcon/>
                 </ListItemIcon>
@@ -181,7 +181,7 @@ class BaseLayout extends React.Component {
             </List>
             <Divider/>
             <List>
-              <ListItem button onClick={() => this.props.changeCurrentPage(Page.SETTINGS_PAGE)}>
+              <ListItem button component={Link} to="/settings">
                 <ListItemIcon>
                   <SettingsIcon/>
                 </ListItemIcon>

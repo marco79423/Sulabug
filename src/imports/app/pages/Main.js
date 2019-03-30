@@ -1,8 +1,9 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {Route, Switch} from 'react-router'
 
-import {actions, Page, selectors} from '../ducks/mainDuck'
+import {actions, selectors} from '../ducks/mainDuck'
 import BaseLayout from '../layouts/BaseLayout'
 import ComicList from '../components/ComicList'
 import DownloadTaskList from '../components/DownloadTaskList'
@@ -10,21 +11,6 @@ import Settings from '../components/Settings'
 import CollectionList from '../components/CollectionList'
 
 export class Main extends React.Component {
-
-  renderCurrentPage = () => {
-    switch (this.props.currentPage) {
-      case Page.BROWSE_PAGE:
-        return this.renderBrowsePage()
-      case Page.COLLECTION_PAGE:
-        return this.renderCollectionPage()
-      case Page.DOWNLOAD_PAGE:
-        return this.renderDownloadPage()
-      case Page.SETTINGS_PAGE:
-        return this.renderSettingsPage()
-      default:
-        return this.renderBrowsePage()
-    }
-  }
 
   renderBrowsePage = () => {
     return (
@@ -72,11 +58,13 @@ export class Main extends React.Component {
 
   render() {
     return (
-      <BaseLayout
-        searchComic={this.props.searchComic}
-        changeCurrentPage={this.props.changeCurrentPage}
-      >
-        {this.renderCurrentPage()}
+      <BaseLayout searchComic={this.props.searchComic}>
+        <Switch>
+          <Route exact path="/" render={this.renderBrowsePage}/>
+          <Route exact path="/collection" render={this.renderCollectionPage}/>
+          <Route exact path="/download" render={this.renderDownloadPage}/>
+          <Route exact path="/settings" render={this.renderSettingsPage}/>
+        </Switch>
       </BaseLayout>
     )
   }
@@ -84,7 +72,6 @@ export class Main extends React.Component {
 
 export default connect(
   state => ({
-    currentPage: selectors.selectCurrentPage(state),
     loadingComicInfos: selectors.selectLoadingComicInfos(state),
     comicInfos: selectors.selectComicInfos(state),
     loadingCollections: selectors.selectLoadingCollections(state),
@@ -95,7 +82,6 @@ export default connect(
   }),
   dispatch => bindActionCreators({
     sendAppStartSignal: actions.sendAppStartSignal,
-    changeCurrentPage: actions.changeCurrentPage,
     searchComic: actions.searchComic,
     addComicToCollection: actions.addComicToCollection,
     createDownloadTask: actions.createDownloadTask,

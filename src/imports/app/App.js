@@ -3,6 +3,7 @@ import {Provider} from 'react-redux'
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 import teal from '@material-ui/core/colors/teal'
 import lime from '@material-ui/core/colors/lime'
+import {BrowserRouter} from 'react-router-dom'
 
 import configureStore from './configureStore'
 import Main from './pages/Main'
@@ -38,7 +39,9 @@ export default class App extends React.Component {
     return (
       <MuiThemeProvider theme={this.theme}>
         <Provider store={store}>
-          <Main/>
+          <BrowserRouter>
+            <Main/>
+          </BrowserRouter>
         </Provider>
       </MuiThemeProvider>
     )
