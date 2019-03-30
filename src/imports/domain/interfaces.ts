@@ -156,6 +156,8 @@ export interface IFileService {
   asyncWriteJson(targetPath: string, data: any): Promise<void>
 
   asyncPathExists(targetPath: string): Promise<boolean>
+
+  asyncListFolder(targetPath: string): Promise<string[]>
 }
 
 export interface INetService {

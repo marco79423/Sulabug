@@ -28,4 +28,8 @@ export default class FileService implements IFileService {
   async asyncPathExists(targetPath: string): Promise<boolean> {
     return this._fileAdapter.asyncPathExists(targetPath)
   }
+
+  async asyncListFolder(targetPath: string): Promise<string[]> {
+    return this._fileAdapter.asyncListFolder(targetPath)
+  }
 }
