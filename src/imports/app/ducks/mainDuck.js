@@ -226,33 +226,6 @@ export const reducer = handleActions({
     ...state,
     userProfile: action.payload,
   }),
-  [ActionTypes.QUERYING_COMIC_INFOS_FROM_DATABASE]: (state) => ({
-    ...state,
-    comicInfo: {
-      loading: true,
-      allIds: [],
-      byId: {},
-    },
-  }),
-  [ActionTypes.UPDATING_COMIC_INFO_DATABASE]: (state) => ({
-    ...state,
-    comicInfo: {
-      loading: true,
-      allIds: [],
-      byId: {},
-    },
-  }),
-  [ActionTypes.COMIC_INFOS_FROM_DATABASE_QUERIED]: (state, action) => ({
-    ...state,
-    comicInfo: {
-      loading: false,
-      allIds: action.payload.map(comicInfo => comicInfo.id),
-      byId: action.payload.reduce((comicInfoMap, comicInfo) => ({
-        ...comicInfoMap,
-        [comicInfo.id]: comicInfo,
-      }), {}),
-    },
-  }),
 }, defaultState)
 
 
