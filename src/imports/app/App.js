@@ -3,10 +3,14 @@ import {Provider} from 'react-redux'
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 import teal from '@material-ui/core/colors/teal'
 import lime from '@material-ui/core/colors/lime'
-import {BrowserRouter} from 'react-router-dom'
+import {HashRouter, Route, Switch} from 'react-router-dom'
 
 import configureStore from './configureStore'
-import Main from './pages/Main'
+import BrowsePage from './pages/BrowsePage'
+import CollectionPage from './pages/CollectionPage'
+import SettingsPage from './pages/SettingsPage'
+import ReadingPage from './pages/ReadingPage'
+import DownloadPage from './pages/DownloadPage'
 
 const store = configureStore()
 
@@ -39,9 +43,15 @@ export default class App extends React.Component {
     return (
       <MuiThemeProvider theme={this.theme}>
         <Provider store={store}>
-          <BrowserRouter>
-            <Main/>
-          </BrowserRouter>
+          <HashRouter>
+            <Switch>
+              <Route exact path="/" component={BrowsePage}/>
+              <Route exact path="/collection" component={CollectionPage}/>
+              <Route exact path="/download" component={DownloadPage}/>
+              <Route exact path="/settings" component={SettingsPage}/>
+              <Route exact path="/reading/:comicInfoId" component={ReadingPage}/>
+            </Switch>
+          </HashRouter>
         </Provider>
       </MuiThemeProvider>
     )

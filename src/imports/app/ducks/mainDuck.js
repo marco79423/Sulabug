@@ -24,6 +24,11 @@ export const ActionTypes = {
   SEND_COLLECTION_CHANGED_SIGNAL: 'SEND_COLLECTION_CHANGED_SIGNAL',
   SYNC_COLLECTION_TO_STATE: 'SYNC_COLLECTION_TO_STATE',
 
+  // open reading page
+  OPEN_READING_PAGE: 'OPEN_READING_PAGE',
+  LOAD_COMIC_IMAGES_FROM_COLLECTION: 'LOAD_COMIC_IMAGES_FROM_COLLECTION',
+  SYNC_COMIC_IMAGES_TO_STATE: 'SYNC_COMIC_IMAGES_TO_STATE',
+
   // create download task
   CREATE_DOWNLOAD_TASK: 'CREATE_DOWNLOAD_TASK',
   WAIT_FOR_CREATING_DOWNLOAD_TASK: 'WAIT_FOR_CREATING_DOWNLOAD_TASK',
@@ -62,6 +67,11 @@ export const actions = {
   sendCollectionChangedSignal: createAction(ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL),
   syncCollectionToState: createAction(ActionTypes.SYNC_COLLECTION_TO_STATE),
 
+  // open reading page
+  openReadingPage: createAction(ActionTypes.OPEN_READING_PAGE),
+  loadComicImagesFromCollection: createAction(ActionTypes.LOAD_COMIC_IMAGES_FROM_COLLECTION),
+  syncComicImagesToState: createAction(ActionTypes.SYNC_COMIC_IMAGES_TO_STATE),
+
   // create download task
   createDownloadTask: createAction(ActionTypes.CREATE_DOWNLOAD_TASK),
   waitForCreatingDownloadTask: createAction(ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK),
@@ -96,6 +106,7 @@ export const defaultState = {
     allIds: [],
     byId: {},
   },
+  comicImages: []
 }
 
 export const reducer = handleActions({
@@ -175,6 +186,10 @@ export const reducer = handleActions({
       byId: {},
     },
   }),
+  [ActionTypes.SYNC_COMIC_IMAGES_TO_STATE]: (state, action) => ({
+    ...state,
+    comicImages: action.payload,
+  }),
   [ActionTypes.WAIT_FOR_CREATING_DOWNLOAD_TASK]: (state) => ({
     ...state,
     downloadTask: {
@@ -210,9 +225,6 @@ export const reducer = handleActions({
   }),
 }, defaultState)
 
-
-const selectCurrentPage = state => state.currentPage
-
 const selectUserProfile = state => state.userProfile
 
 const selectLoadingComicInfos = state => state.comicInfo.loading
@@ -235,8 +247,9 @@ const selectLoadingDownloadTaskInfos = createSelector(
 
 const selectDownloadTasks = state => state.downloadTask.allIds.map(id => state.downloadTask.byId[id])
 
+const selectComicImages = state => state.comicImages
+
 export const selectors = {
-  selectCurrentPage,
   selectUserProfile,
   selectLoadingComicInfos,
   selectComicInfos,
@@ -244,4 +257,5 @@ export const selectors = {
   selectCollection,
   selectLoadingDownloadTaskInfos,
   selectDownloadTasks,
+  selectComicImages,
 }

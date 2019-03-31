@@ -54,6 +54,8 @@ export default class ComicRepository implements IComicRepository {
 
   asyncGetAll = async (): Promise<Comic[]> => {
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
+
+    await this._fileAdapter.asyncEnsureDir(downloadFolderPath)
     const possibleComicFolderPaths = await this._fileAdapter.asyncListFolder(downloadFolderPath)
 
     const comics: Comic[] = []
