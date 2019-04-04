@@ -1,12 +1,11 @@
 import {concat, from, of} from 'rxjs'
 import {combineEpics, ofType} from 'redux-observable'
-import {filter, flatMap, map, mapTo, tap} from 'rxjs/operators'
+import {filter, flatMap, map, mapTo, tap, throttleTime} from 'rxjs/operators'
+import {ipcRenderer} from 'electron'
+
 import {actions, ActionTypes} from '../ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
-
-export const sendAppStartSignalWhenAppStartsEpic = () => of(
-  actions.sendAppStartSignal()
-)
+import * as path from 'path'
 
 export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general: {userProfileRepository}, library: {comicInfoInfoRepository}, collection: {comicRepository}, downloader: {downloadTaskRepository}}) => action$.pipe(
   ofType(
@@ -96,6 +95,50 @@ export const syncCollectionToStateEpic = (action$, state$, {collection: {comicRe
   ))
 )
 
+export const openReadingPageEpic = (action$) => action$.pipe(
+  ofType(
+    ActionTypes.OPEN_READING_PAGE
+  ),
+  throttleTime(2000),
+  tap(action => {
+    ipcRenderer.send('open-reading-page', action.payload)
+  }),
+)
+
+export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService, general: {userProfileRepository}, library: {comicInfoInfoRepository}}) => action$.pipe(
+  ofType(
+    ActionTypes.LOAD_COMIC_IMAGES_FROM_COLLECTION
+  ),
+  map(action => action.payload),
+  flatMap(async comicInfoId => {
+    const comicInfo = await comicInfoInfoRepository.asyncGetById(comicInfoId)
+
+    const userProfile = await userProfileRepository.asyncGet()
+    const possibleComicFolderPaths = await fileService.asyncListFolder(userProfile.downloadFolderPath)
+    for (const possibleComicFolderPath of possibleComicFolderPaths) {
+      const comicMeta = await fileService.asyncReadJson(path.join(possibleComicFolderPath, '.comic'), null)
+      if (comicMeta !== null && comicMeta.id === comicInfoId) {
+        const comicImages = []
+        for (const chapter of comicInfo.chapters) {
+          if (await fileService.asyncPathExists(path.join(possibleComicFolderPath, chapter.name, '.done'), null)) {
+            const imagePaths = await fileService.asyncListFolder(path.join(possibleComicFolderPath, chapter.name))
+            imagePaths.sort()
+
+            comicImages.push({
+              name: chapter.name,
+              images: imagePaths
+                .filter(imagePath => imagePath.endsWith('.jpg'))
+                .map(imagePath => path.resolve(imagePath)),
+            })
+          }
+        }
+        return actions.syncComicImagesToState(comicImages)
+      }
+    }
+  })
+)
+
+
 export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {collection: {comicRepository}}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
@@ -171,7 +214,6 @@ export const updateUserProfileEpic = (action$, state$, {general: {userProfileFac
 
 export default combineEpics(
   // global
-  sendAppStartSignalWhenAppStartsEpic,
   initializeDataFromDBWhenAppStartsEpic,
 
   // library
@@ -184,6 +226,8 @@ export default combineEpics(
   addComicToCollectionEpic,
   syncCollectionToStateEpic,
   createCreateDownloadTasksWhenCollectionChangedEpic,
+  openReadingPageEpic,
+  loadComicImagesFromCollectionEpic,
 
   // download
   createDownloadTaskEpic,

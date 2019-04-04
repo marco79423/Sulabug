@@ -28,6 +28,7 @@ export default function configureStore() {
         downloadComicService: injector.get(types.DownloadComicService),
       },
       eventPublisher: injector.get(types.EventPublisher),
+      fileService: injector.get(types.FileService),
     }
   })
 

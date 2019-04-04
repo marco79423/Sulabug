@@ -13,6 +13,7 @@ const styles = (theme) => createStyles({
 
 
 export class ComicList extends React.Component {
+
   render() {
     const {classes, loading, comics, addComicToCollection} = this.props
     if (loading) {

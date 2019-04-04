@@ -1,6 +1,5 @@
 import * as React from 'react'
 import classNames from 'classnames'
-import {Link} from 'react-router-dom'
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
@@ -12,18 +11,14 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import MoveToInboxIcon from '@material-ui/icons/MoveToInbox'
-import ExploreIcon from '@material-ui/icons/Explore'
-import SettingsIcon from '@material-ui/icons/Settings'
-import CollectionsIcon from '@material-ui/icons/Collections'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import {bindActionCreators, compose} from 'redux'
+import {connect} from 'react-redux'
 
 import 'typeface-roboto/index.css'
 
-import SearchBar from '../components/SearchBar'
-
+import {actions, selectors} from '../ducks/mainDuck'
 
 const drawerWidth = 240
 
@@ -49,10 +44,6 @@ const styles = (theme) => createStyles({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
-  SearchBarWrapper: {
-    flex: 1,
-    paddingRight: theme.spacing.unit * 2,
   },
   menuButton: {
     marginLeft: 12,
@@ -108,9 +99,12 @@ const styles = (theme) => createStyles({
 })
 
 
-class BaseLayout extends React.Component {
+class ReadingPage extends React.Component {
   state = {
-    open: false,
+    open: true,
+    chapterIdx: 0,
+    comicInfoId: null,
+    comicImages: [],
   }
 
   handleDrawerOpen = () => {
@@ -119,6 +113,33 @@ class BaseLayout extends React.Component {
 
   handleDrawerClose = () => {
     this.setState({open: false})
+  }
+
+  changeChapterIdx = (chapterIdx) => {
+    this.setState({chapterIdx})
+  }
+
+  componentDidMount() {
+    require('electron').ipcRenderer.on('comic-info-id-changed', (event, comicInfoId) => {
+      this.props.history.push(`/reading/${comicInfoId}`)
+    })
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.match.params.comicInfoId !== prevState.comicInfoId) {
+      nextProps.loadComicImagesFromCollection(nextProps.match.params.comicInfoId)
+      return {
+        comicInfoId: nextProps.match.params.comicInfoId,
+      }
+    }
+
+    if (nextProps.comicImages !== prevState.comicImages) {
+      return {
+        chapterIdx: 0,
+        comicImages: nextProps.comicImages,
+      }
+    }
+    return null
   }
 
   render() {
@@ -141,9 +162,6 @@ class BaseLayout extends React.Component {
               >
                 <MenuIcon/>
               </IconButton>
-              <div className={classes.SearchBarWrapper}>
-                <SearchBar searchComic={this.props.searchComic}/>
-              </div>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -160,39 +178,21 @@ class BaseLayout extends React.Component {
             </div>
             <Divider/>
             <List>
-              <ListItem button component={Link} to="/">
-                <ListItemIcon>
-                  <ExploreIcon/>
-                </ListItemIcon>
-                <ListItemText primary="瀏覽漫畫"/>
-              </ListItem>
-              <ListItem button component={Link} to="/collection">
-                <ListItemIcon>
-                  <CollectionsIcon/>
-                </ListItemIcon>
-                <ListItemText primary="我的收藏"/>
-              </ListItem>
-              <ListItem button component={Link} to="/download">
-                <ListItemIcon>
-                  <MoveToInboxIcon/>
-                </ListItemIcon>
-                <ListItemText primary="下載狀態"/>
-              </ListItem>
-            </List>
-            <Divider/>
-            <List>
-              <ListItem button component={Link} to="/settings">
-                <ListItemIcon>
-                  <SettingsIcon/>
-                </ListItemIcon>
-                <ListItemText primary="個人設定"/>
-              </ListItem>
+              {this.state.comicImages.map((comicImage, idx) => (
+                <ListItem key={comicImage.name} button onClick={() => this.changeChapterIdx(idx)}>
+                  <ListItemText primary={comicImage.name}/>
+                </ListItem>
+              ))}
             </List>
           </Drawer>
           <div className={classes.main}>
             <div className={classes.topContentSpacer}/>
             <div className={classes.content}>
-              {this.props.children}
+              {this.state.comicImages.length > 0 && this.state.comicImages[this.state.chapterIdx].images.map((image, idx) => (
+                <div key={idx}>
+                  <img src={`file://${image}`}/>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -201,5 +201,14 @@ class BaseLayout extends React.Component {
   }
 }
 
-
-export default withStyles(styles, {withTheme: true})(BaseLayout)
+export default compose(
+  withStyles(styles, {withTheme: true}),
+  connect(
+    state => ({
+      comicImages: selectors.selectComicImages(state),
+    }),
+    dispatch => bindActionCreators({
+      loadComicImagesFromCollection: actions.loadComicImagesFromCollection,
+    }, dispatch)
+  )
+)(ReadingPage)

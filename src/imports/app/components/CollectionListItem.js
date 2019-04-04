@@ -17,6 +17,12 @@ const styles = (theme) => createStyles({
 
 export class CollectionListItem extends React.Component {
 
+  openReadingPage = () => {
+    const {collection, comicInfos} = this.props
+    const comicInfo = comicInfos.filter(comicInfo => comicInfo.id === collection.comicInfoId)[0]
+    this.props.openReadingPage(comicInfo.id)
+  }
+
   render() {
     const {classes, collection, comicInfos} = this.props
     const comicInfo = comicInfos.filter(comicInfo => comicInfo.id === collection.comicInfoId)[0]
@@ -32,7 +38,7 @@ export class CollectionListItem extends React.Component {
           primary={comicInfo.name}
         />
         <ListItemSecondaryAction>
-          <IconButton onClick={() => {}}>
+          <IconButton onClick={this.openReadingPage}>
             <OpenInNewIcon/>
           </IconButton>
         </ListItemSecondaryAction>

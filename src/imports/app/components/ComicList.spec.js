@@ -11,7 +11,7 @@ describe('ComicList', () => {
     const component = renderer.create(
       <ComicList loading={false}
                  comics={[]}
-                 createDownloadTask={() => {
+                 addComicToCollection={() => {
                  }}/>
     )
     expect(component.toJSON()).toMatchSnapshot()
@@ -21,7 +21,7 @@ describe('ComicList', () => {
     const component = renderer.create(
       <ComicList loading={true}
                  comics={[]}
-                 createDownloadTask={() => {
+                 addComicToCollection={() => {
                  }}/>
     )
     expect(component.toJSON()).toMatchSnapshot()
