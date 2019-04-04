@@ -34,6 +34,7 @@ export class Settings extends React.Component {
     })
     if (filePaths.length > 0) {
       updateUserProfile({
+        id: 'default',
         ...userProfile,
         downloadFolderPath: filePaths[0],
       })

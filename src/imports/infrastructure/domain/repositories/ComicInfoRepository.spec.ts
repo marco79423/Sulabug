@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 
 import IDatabase from '../../shared/interfaces'
-import {ComicInfoCollection} from '../../shared/database/collections'
 import ComicInfoFactory from '../../../domain/factories/ComicInfoFactory'
 import ComicInfoRepository from './ComicInfoRepository'
 
@@ -37,7 +36,7 @@ describe('ComicInfoRepository', () => {
 
       await comicInfoRepository.asyncSaveOrUpdate(comicInfo)
 
-      expect(database.asyncSaveOrUpdate).toBeCalledWith(ComicInfoCollection.name, comicInfo.serialize())
+      expect(database.asyncSaveOrUpdate).toBeCalledWith('comic_info', comicInfo.serialize())
     })
   })
 
@@ -72,7 +71,7 @@ describe('ComicInfoRepository', () => {
 
       const result = await comicInfoRepository.asyncGetById('id')
 
-      expect(database.asyncFindOne).toBeCalledWith(ComicInfoCollection.name, {
+      expect(database.asyncFindOne).toBeCalledWith('comic_info', {
         id: 'id'
       })
 
@@ -96,7 +95,7 @@ describe('ComicInfoRepository', () => {
       await expect(comicInfoRepository.asyncGetById('id'))
         .rejects.toThrow(new Error('Target comic info not found'))
 
-      expect(database.asyncFindOne).toBeCalledWith(ComicInfoCollection.name, {
+      expect(database.asyncFindOne).toBeCalledWith('comic_info', {
         id: 'id'
       })
     })
@@ -133,7 +132,7 @@ describe('ComicInfoRepository', () => {
 
       const result = await comicInfoRepository.asyncGetAllBySearchTerm('searchTerm')
 
-      expect(database.asyncFind).toBeCalledWith(ComicInfoCollection.name, {
+      expect(database.asyncFind).toBeCalledWith('comic_info', {
         name: {
           $regex: `.*searchTerm.*`,
         }

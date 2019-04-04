@@ -431,7 +431,7 @@ describe('updateUserProfileEpic', () => {
     const userProfileFactory = new UserProfileFactory()
 
     const userProfileRepository: IUserProfileRepository = {
-      asyncSaveOrUpdate: jest.fn(),
+      asyncSaveOrUpdate: jest.fn(() => Promise.resolve()),
       asyncGet: jest.fn(),
     }
 

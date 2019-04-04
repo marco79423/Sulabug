@@ -1,5 +1,4 @@
 import {inject, injectable} from 'inversify'
-import collections from './collections'
 import IDatabase from '../interfaces'
 import {IDBService} from '../../../domain/interfaces'
 import types from '../../../domain/types'
@@ -46,7 +45,10 @@ export default class Database implements IDatabase {
   }
 
   private _initialize = async () => {
-    await this._dbService.asyncCreate('sulabug', collections)
+    await this._dbService.asyncCreate('sulabug', [
+      'user_profile',
+      'comic_info',
+    ])
     this._created = true
   }
 }

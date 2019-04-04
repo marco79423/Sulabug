@@ -185,10 +185,8 @@ export const syncDownloadTasksToStateWhenDownloadStatusChanged = (action$, state
   ofType(
     ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL,
   ),
-  flatMap(() => concat(
-    of(downloadTaskRepository.getAll()).pipe(
-      map(downloadTasks => actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize()))),
-    )
+  flatMap(() => of(downloadTaskRepository.getAll()).pipe(
+    map(downloadTasks => actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize()))),
   ))
 )
 
@@ -201,15 +199,13 @@ export const updateUserProfileEpic = (action$, state$, {general: {userProfileFac
   ofType(
     ActionTypes.UPDATE_USER_PROFILE
   ),
-  map(action => action.payload),
-  map(userProfileData => userProfileFactory.createFromJson(userProfileData)),
+  map(action => userProfileFactory.createFromJson(action.payload)),
   flatMap(userProfile => concat(
     of(actions.waitForUpdatingUserProfile()),
-    of(userProfile).pipe(
-      tap(userProfileRepository.asyncSaveOrUpdate(userProfile)),
-      mapTo(actions.syncUserProfileToState(userProfile.serialize()))
+    from(userProfileRepository.asyncSaveOrUpdate(userProfile)).pipe(
+      mapTo(actions.syncUserProfileToState(userProfile.serialize())),
     ),
-  ))
+  )),
 )
 
 export default combineEpics(
