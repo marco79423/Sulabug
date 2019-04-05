@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import CollectionsIcon from '@material-ui/icons/Collections'
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import ListItem from '@material-ui/core/ListItem/ListItem'
 
 
@@ -54,12 +55,20 @@ const styles = (theme) => createStyles({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  openInBrowserIcon: {
+    marginRight: theme.spacing.unit,
+  },
   collectionsIcon: {
     marginRight: theme.spacing.unit,
   },
 })
 
 export class ComicListItem extends React.Component {
+
+  openInBrowser = () => {
+    const {comic} = this.props
+    require('electron').shell.openExternal(comic.pageUrl)
+  }
 
   addComicToCollection = () => {
     const {comic} = this.props
@@ -85,6 +94,7 @@ export class ComicListItem extends React.Component {
               <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
+              <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
               <Button size="small" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/><Typography variant="button">收藏</Typography></Button>
             </CardActions>
           </div>
