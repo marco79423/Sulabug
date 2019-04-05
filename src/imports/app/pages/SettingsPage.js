@@ -3,18 +3,15 @@ import {bindActionCreators, compose} from 'redux'
 import {connect} from 'react-redux'
 
 import {actions, selectors} from '../ducks/mainDuck'
-import BaseLayout from '../layouts/BaseLayout'
 import Settings from '../components/Settings'
 
 class SettingsPage extends React.Component {
   render() {
     return (
-      <BaseLayout searchComic={this.props.searchComic}>
-        <Settings
-          updateUserProfile={this.props.updateUserProfile}
-          userProfile={this.props.userProfile}
-        />
-      </BaseLayout>
+      <Settings
+        updateUserProfile={this.props.updateUserProfile}
+        userProfile={this.props.userProfile}
+      />
     )
   }
 }

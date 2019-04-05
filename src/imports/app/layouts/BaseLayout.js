@@ -160,19 +160,19 @@ class BaseLayout extends React.Component {
             </div>
             <Divider/>
             <List>
-              <ListItem button component={Link} to="/">
+              <ListItem button component={Link} to="/main/browse">
                 <ListItemIcon>
                   <ExploreIcon/>
                 </ListItemIcon>
                 <ListItemText primary="瀏覽漫畫"/>
               </ListItem>
-              <ListItem button component={Link} to="/collection">
+              <ListItem button component={Link} to="/main/collection">
                 <ListItemIcon>
                   <CollectionsIcon/>
                 </ListItemIcon>
                 <ListItemText primary="我的收藏"/>
               </ListItem>
-              <ListItem button component={Link} to="/download">
+              <ListItem button component={Link} to="/main/download">
                 <ListItemIcon>
                   <MoveToInboxIcon/>
                 </ListItemIcon>
@@ -181,7 +181,7 @@ class BaseLayout extends React.Component {
             </List>
             <Divider/>
             <List>
-              <ListItem button component={Link} to="/settings">
+              <ListItem button component={Link} to="/main/settings">
                 <ListItemIcon>
                   <SettingsIcon/>
                 </ListItemIcon>

@@ -77,9 +77,9 @@ function createReadingWindow(comicInfId) {
   }
 
   if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}#reading/${comicInfId}`)
+    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}#reader/comics/${comicInfId}`)
   } else {
-    window.loadURL(`${__dirname}/index.html#reading/${comicInfId}`)
+    window.loadURL(`${__dirname}/index.html#reader/comics/${comicInfId}`)
   }
 
   window.on('closed', () => {

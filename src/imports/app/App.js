@@ -4,13 +4,11 @@ import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 import teal from '@material-ui/core/colors/teal'
 import lime from '@material-ui/core/colors/lime'
 import {HashRouter, Route, Switch} from 'react-router-dom'
+import {Redirect} from 'react-router'
 
 import configureStore from './configureStore'
-import BrowsePage from './pages/BrowsePage'
-import CollectionPage from './pages/CollectionPage'
-import SettingsPage from './pages/SettingsPage'
-import ReadingPage from './pages/ReadingPage'
-import DownloadPage from './pages/DownloadPage'
+import Main from './startups/Main'
+import Reader from './startups/Reader'
 
 const store = configureStore()
 
@@ -45,11 +43,9 @@ export default class App extends React.Component {
         <Provider store={store}>
           <HashRouter>
             <Switch>
-              <Route exact path="/" component={BrowsePage}/>
-              <Route exact path="/collection" component={CollectionPage}/>
-              <Route exact path="/download" component={DownloadPage}/>
-              <Route exact path="/settings" component={SettingsPage}/>
-              <Route exact path="/reading/:comicInfoId" component={ReadingPage}/>
+              <Redirect exact from='/' to='/main/browse'/>
+              <Route path="/main" component={Main}/>
+              <Route path="/reader" component={Reader}/>
             </Switch>
           </HashRouter>
         </Provider>
