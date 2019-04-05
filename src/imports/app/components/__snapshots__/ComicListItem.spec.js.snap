@@ -2,14 +2,14 @@
 
 exports[`ComicListItem will render comic item correctly 1`] = `
 <li
-  className="MuiListItem-root-11 MuiListItem-default-14 MuiListItem-gutters-19 ComicListItem-root-1"
+  className="MuiListItem-root-12 MuiListItem-default-15 MuiListItem-gutters-20 ComicListItem-root-1"
   disabled={false}
 >
   <div
-    className="MuiPaper-root-24 MuiPaper-elevation1-27 MuiPaper-rounded-25 MuiCard-root-23 ComicListItem-card-2"
+    className="MuiPaper-root-25 MuiPaper-elevation1-28 MuiPaper-rounded-26 MuiCard-root-24 ComicListItem-card-2"
   >
     <div
-      className="MuiCardMedia-root-51 ComicListItem-cover-7"
+      className="MuiCardMedia-root-52 ComicListItem-cover-7"
       style={
         Object {
           "backgroundImage": "url(\\"coverDataUrl\\")",
@@ -21,15 +21,15 @@ exports[`ComicListItem will render comic item correctly 1`] = `
       className="ComicListItem-details-5"
     >
       <div
-        className="MuiCardContent-root-53 ComicListItem-content-6"
+        className="MuiCardContent-root-54 ComicListItem-content-6"
       >
         <h2
-          className="MuiTypography-root-54 MuiTypography-h2-67 MuiTypography-noWrap-80 ComicListItem-title-3"
+          className="MuiTypography-root-55 MuiTypography-h2-68 MuiTypography-noWrap-81 ComicListItem-title-3"
         >
           name
         </h2>
         <h6
-          className="MuiTypography-root-54 MuiTypography-subtitle2-73 MuiTypography-colorTextSecondary-87 ComicListItem-metadata-4"
+          className="MuiTypography-root-55 MuiTypography-subtitle2-74 MuiTypography-colorTextSecondary-88 ComicListItem-metadata-4"
         >
           最新: 
           lastUpdatedChapter
@@ -38,17 +38,17 @@ exports[`ComicListItem will render comic item correctly 1`] = `
           )
         </h6>
         <h6
-          className="MuiTypography-root-54 MuiTypography-subtitle2-73"
+          className="MuiTypography-root-55 MuiTypography-subtitle2-74"
         >
           summary
           ...
         </h6>
       </div>
       <div
-        className="MuiCardActions-root-90 ComicListItem-actions-9"
+        className="MuiCardActions-root-91 ComicListItem-actions-9"
       >
         <button
-          className="MuiButtonBase-root-119 MuiButton-root-93 MuiButton-text-95 MuiButton-flat-98 MuiButton-sizeSmall-116 MuiCardActions-action-92"
+          className="MuiButtonBase-root-120 MuiButton-root-94 MuiButton-text-96 MuiButton-flat-99 MuiButton-sizeSmall-117 MuiCardActions-action-93"
           disabled={false}
           onBlur={[Function]}
           onClick={[Function]}
@@ -66,11 +66,57 @@ exports[`ComicListItem will render comic item correctly 1`] = `
           type="button"
         >
           <span
-            className="MuiButton-label-94"
+            className="MuiButton-label-95"
           >
             <svg
               aria-hidden="true"
-              className="MuiSvgIcon-root-122 ComicListItem-collectionsIcon-10"
+              className="MuiSvgIcon-root-123 ComicListItem-openInBrowserIcon-10"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"
+              />
+            </svg>
+            <span
+              className="MuiTypography-root-55 MuiTypography-button-66"
+            >
+              試看
+            </span>
+          </span>
+          <span
+            className="MuiTouchRipple-root-132"
+          />
+        </button>
+        <button
+          className="MuiButtonBase-root-120 MuiButton-root-94 MuiButton-text-96 MuiButton-flat-99 MuiButton-sizeSmall-117 MuiCardActions-action-93"
+          disabled={false}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onContextMenu={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onMouseDown={[Function]}
+          onMouseLeave={[Function]}
+          onMouseUp={[Function]}
+          onTouchEnd={[Function]}
+          onTouchMove={[Function]}
+          onTouchStart={[Function]}
+          tabIndex="0"
+          type="button"
+        >
+          <span
+            className="MuiButton-label-95"
+          >
+            <svg
+              aria-hidden="true"
+              className="MuiSvgIcon-root-123 ComicListItem-collectionsIcon-11"
               focusable="false"
               role="presentation"
               viewBox="0 0 24 24"
@@ -84,13 +130,13 @@ exports[`ComicListItem will render comic item correctly 1`] = `
               />
             </svg>
             <span
-              className="MuiTypography-root-54 MuiTypography-button-65"
+              className="MuiTypography-root-55 MuiTypography-button-66"
             >
               收藏
             </span>
           </span>
           <span
-            className="MuiTouchRipple-root-131"
+            className="MuiTouchRipple-root-132"
           />
         </button>
       </div>
