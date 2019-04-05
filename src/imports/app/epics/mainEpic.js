@@ -7,7 +7,7 @@ import {actions, ActionTypes} from '../ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
 import * as path from 'path'
 
-export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {general: {userProfileRepository}, library: {comicInfoInfoRepository}, collection: {comicRepository}, downloader: {downloadTaskRepository}}) => action$.pipe(
+export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProfileRepository, comicInfoInfoRepository, comicRepository, downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_APP_START_SIGNAL
   ),
@@ -39,7 +39,7 @@ export const sendSignalWhenComicInfoDBIsEmptyEpic = (action$) => action$.pipe(
   mapTo(actions.sendComicInfoDatabaseEmptySignal())
 )
 
-export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {library: {comicInfoDatabaseService}}) => action$.pipe(
+export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {comicInfoDatabaseService}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL
   ),
@@ -51,7 +51,7 @@ export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {library: {c
   )),
 )
 
-export const searchComicInfosEpic = (action$, state$, {library: {comicInfoInfoRepository}}) => action$.pipe(
+export const searchComicInfosEpic = (action$, state$, {comicInfoInfoRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEARCH_COMIC
   ),
@@ -73,7 +73,7 @@ export const sendSignalWhenCollectionsIsNotEmptyEpic = (action$) => action$.pipe
   mapTo(actions.sendCollectionChangedSignal())
 )
 
-export const addComicToCollectionEpic = (action$, state$, {collection: {comicFactory, comicRepository}}) => action$.pipe(
+export const addComicToCollectionEpic = (action$, state$, {comicFactory, comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.ADD_COMIC_TO_COLLECTION,
   ),
@@ -86,7 +86,7 @@ export const addComicToCollectionEpic = (action$, state$, {collection: {comicFac
   ))
 )
 
-export const syncCollectionToStateEpic = (action$, state$, {collection: {comicRepository}}) => action$.pipe(
+export const syncCollectionToStateEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
@@ -105,7 +105,7 @@ export const openReadingPageEpic = (action$) => action$.pipe(
   }),
 )
 
-export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService, general: {userProfileRepository}, library: {comicInfoInfoRepository}}) => action$.pipe(
+export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService, userProfileRepository, comicInfoInfoRepository}) => action$.pipe(
   ofType(
     ActionTypes.LOAD_COMIC_IMAGES_FROM_COLLECTION
   ),
@@ -139,7 +139,7 @@ export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService,
 )
 
 
-export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {collection: {comicRepository}}) => action$.pipe(
+export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
@@ -150,7 +150,7 @@ export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, stat
   map(comicInfoId => actions.createDownloadTask(comicInfoId)),
 )
 
-export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfoRepository}, downloader: {downloadTaskFactory, downloadTaskRepository}}) => action$.pipe(
+export const createDownloadTaskEpic = (action$, state$, {comicInfoInfoRepository, downloadTaskFactory, downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.CREATE_DOWNLOAD_TASK
   ),
@@ -170,7 +170,7 @@ export const createDownloadTaskEpic = (action$, state$, {library: {comicInfoInfo
   ))
 )
 
-export const startToDownloadComicWhenNewDownloadTaskCreatedEpic = (action$, state$, {downloader: {downloadTaskRepository, downloadComicService}}) => action$.pipe(
+export const startToDownloadComicWhenNewDownloadTaskCreatedEpic = (action$, state$, {downloadTaskRepository, downloadComicService}) => action$.pipe(
   ofType(
     ActionTypes.ADD_NEW_DOWNLOAD_TASK_TO_STATE,
   ),
@@ -181,14 +181,12 @@ export const startToDownloadComicWhenNewDownloadTaskCreatedEpic = (action$, stat
   )),
 )
 
-export const syncDownloadTasksToStateWhenDownloadStatusChanged = (action$, state$, {downloader: {downloadTaskRepository}}) => action$.pipe(
+export const syncDownloadTasksToStateWhenDownloadStatusChanged = (action$, state$, {downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_DOWNLOAD_STATUS_CHANGED_SIGNAL,
   ),
-  flatMap(() => concat(
-    of(downloadTaskRepository.getAll()).pipe(
-      map(downloadTasks => actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize()))),
-    )
+  flatMap(() => of(downloadTaskRepository.getAll()).pipe(
+    map(downloadTasks => actions.syncDownloadTasksToState(downloadTasks.map(downloadTask => downloadTask.serialize()))),
   ))
 )
 
@@ -197,19 +195,17 @@ export const transformDownloadTaskUpdatedEventToSignalEpic = (action$, state$, {
   map(() => actions.sendDownloadStatusChangedSignal()),
 )
 
-export const updateUserProfileEpic = (action$, state$, {general: {userProfileFactory, userProfileRepository}}) => action$.pipe(
+export const updateUserProfileEpic = (action$, state$, {userProfileFactory, userProfileRepository}) => action$.pipe(
   ofType(
     ActionTypes.UPDATE_USER_PROFILE
   ),
-  map(action => action.payload),
-  map(userProfileData => userProfileFactory.createFromJson(userProfileData)),
+  map(action => userProfileFactory.createFromJson(action.payload)),
   flatMap(userProfile => concat(
     of(actions.waitForUpdatingUserProfile()),
-    of(userProfile).pipe(
-      tap(userProfileRepository.asyncSaveOrUpdate(userProfile)),
-      mapTo(actions.syncUserProfileToState(userProfile.serialize()))
+    from(userProfileRepository.asyncSaveOrUpdate(userProfile)).pipe(
+      mapTo(actions.syncUserProfileToState(userProfile.serialize())),
     ),
-  ))
+  )),
 )
 
 export default combineEpics(

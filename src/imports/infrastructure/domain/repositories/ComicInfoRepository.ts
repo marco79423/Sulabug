@@ -4,7 +4,6 @@ import libraryTypes from '../../../domain/types'
 import infraTypes from '../../infraTypes'
 import ComicInfo from '../../../domain/entities/ComicInfo'
 import IDatabase from '../../shared/interfaces'
-import {ComicInfoCollection} from '../../shared/database/collections'
 import {IComicInfoFactory, IComicInfoRepository} from '../../../domain/interfaces'
 
 
@@ -22,11 +21,11 @@ export default class ComicInfoRepository implements IComicInfoRepository {
   }
 
   asyncSaveOrUpdate = async (comicInfo: ComicInfo): Promise<void> => {
-    await this._database.asyncSaveOrUpdate(ComicInfoCollection.name, comicInfo.serialize())
+    await this._database.asyncSaveOrUpdate('comic_info', comicInfo.serialize())
   }
 
   asyncGetById = async (identity: string): Promise<ComicInfo> => {
-    const rawComicInfo = await this._database.asyncFindOne(ComicInfoCollection.name, {
+    const rawComicInfo = await this._database.asyncFindOne('comic_info', {
       id: identity
     })
     if (!rawComicInfo) {
@@ -36,7 +35,7 @@ export default class ComicInfoRepository implements IComicInfoRepository {
   }
 
   asyncGetAllBySearchTerm = async (searchTerm: string = ''): Promise<ComicInfo[]> => {
-    const rawComicInfos = await this._database.asyncFind(ComicInfoCollection.name, {
+    const rawComicInfos = await this._database.asyncFind('comic_info', {
       name: {
         $regex: `.*${searchTerm}.*`,
       }

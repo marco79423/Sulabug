@@ -163,7 +163,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
       >
         <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
-          href="/"
+          href="/main/browse"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -213,7 +213,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
         </a>
         <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
-          href="/collection"
+          href="/main/collection"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -263,7 +263,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
         </a>
         <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
-          href="/download"
+          href="/main/download"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}
@@ -320,7 +320,7 @@ exports[`BaseLayout will render layout correctly 1`] = `
       >
         <a
           className="MuiButtonBase-root-59 MuiListItem-root-152 MuiListItem-default-155 MuiListItem-gutters-160 MuiListItem-button-161"
-          href="/settings"
+          href="/main/settings"
           onBlur={[Function]}
           onClick={[Function]}
           onContextMenu={[Function]}

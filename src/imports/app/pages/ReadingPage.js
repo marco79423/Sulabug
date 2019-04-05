@@ -119,12 +119,6 @@ class ReadingPage extends React.Component {
     this.setState({chapterIdx})
   }
 
-  componentDidMount() {
-    require('electron').ipcRenderer.on('comic-info-id-changed', (event, comicInfoId) => {
-      this.props.history.push(`/reading/${comicInfoId}`)
-    })
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.match.params.comicInfoId !== prevState.comicInfoId) {
       nextProps.loadComicImagesFromCollection(nextProps.match.params.comicInfoId)

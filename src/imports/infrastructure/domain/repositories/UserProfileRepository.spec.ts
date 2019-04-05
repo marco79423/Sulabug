@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 import IDatabase from '../../shared/interfaces'
-import {UserProfileCollection} from '../../shared/database/collections'
 import UserProfileFactory from '../../../domain/factories/UserProfileFactory'
 import UserProfileRepository from './UserProfileRepository'
 
@@ -26,7 +25,7 @@ describe('UserProfileRepository', () => {
 
       await userProfileRepository.asyncSaveOrUpdate(userProfile)
 
-      expect(database.asyncSaveOrUpdate).toBeCalledWith(UserProfileCollection.name, {
+      expect(database.asyncSaveOrUpdate).toBeCalledWith('user_profile', {
         id: 'default',
         ...userProfile.serialize(),
       })
@@ -53,7 +52,7 @@ describe('UserProfileRepository', () => {
 
       const result = await userProfileRepository.asyncGet()
 
-      expect(database.asyncFindOne).toBeCalledWith(UserProfileCollection.name)
+      expect(database.asyncFindOne).toBeCalledWith('user_profile')
       expect(result.serialize()).toEqual(userProfile.serialize())
     })
 
@@ -73,8 +72,8 @@ describe('UserProfileRepository', () => {
 
       const result = await userProfileRepository.asyncGet()
 
-      expect(database.asyncFindOne).toBeCalledWith(UserProfileCollection.name)
-      expect(database.asyncSaveOrUpdate).toBeCalledWith(UserProfileCollection.name, {
+      expect(database.asyncFindOne).toBeCalledWith('user_profile')
+      expect(database.asyncSaveOrUpdate).toBeCalledWith('user_profile', {
         id: 'default',
         ...userProfileRepository.defaultUserProfileData,
       })

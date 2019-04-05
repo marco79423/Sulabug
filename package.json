@@ -19,7 +19,6 @@
     "fs-extra": "^7.0.1",
     "inversify": "^5.0.1",
     "node-fetch": "^2.3.0",
-    "pouchdb-adapter-idb": "^7.0.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-redux": "^5.1.1",
@@ -30,7 +29,6 @@
     "redux-observable": "^1.0.0",
     "reflect-metadata": "^0.1.12",
     "reselect": "^4.0.0",
-    "rxdb": "^8.0.4",
     "rxjs": "6",
     "source-map-support": "^0.5.9",
     "typeface-roboto": "^0.0.54"

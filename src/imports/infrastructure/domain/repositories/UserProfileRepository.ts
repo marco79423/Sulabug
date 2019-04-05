@@ -5,7 +5,6 @@ import {IUserProfileFactory} from '../../../domain/interfaces'
 import {IUserProfileRepository} from '../../../domain/interfaces'
 import infraTypes from '../../infraTypes'
 import IDatabase from '../../shared/interfaces'
-import {UserProfileCollection} from '../../shared/database/collections'
 
 @injectable()
 export default class UserProfileRepository implements IUserProfileRepository {
@@ -25,16 +24,16 @@ export default class UserProfileRepository implements IUserProfileRepository {
   }
 
   asyncSaveOrUpdate = async (userProfile: UserProfile): Promise<void> => {
-    await this._database.asyncSaveOrUpdate(UserProfileCollection.name, {
+    await this._database.asyncSaveOrUpdate('user_profile', {
       id: 'default',
       ...userProfile.serialize(),
     })
   }
 
   asyncGet = async (): Promise<UserProfile> => {
-    let userProfileData = await this._database.asyncFindOne(UserProfileCollection.name)
+    let userProfileData = await this._database.asyncFindOne('user_profile')
     if (!userProfileData) {
-      await this._database.asyncSaveOrUpdate(UserProfileCollection.name, {
+      await this._database.asyncSaveOrUpdate('user_profile', {
         id: 'default',
         ...this.defaultUserProfileData,
       })

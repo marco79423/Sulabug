@@ -9,26 +9,22 @@ import types from '../domain/types'
 export default function configureStore() {
   const epicMiddleware = createEpicMiddleware({
     dependencies: {
-      general: {
-        userProfileFactory: injector.get(types.UserProfileFactory),
-        userProfileRepository: injector.get(types.UserProfileRepository),
-      },
-      library: {
-        comicInfoFactory: injector.get(types.ComicInfoFactory),
-        comicInfoInfoRepository: injector.get(types.ComicInfoRepository),
-        comicInfoDatabaseService: injector.get(types.ComicInfoDatabaseService),
-      },
-      collection: {
-        comicFactory: injector.get(types.ComicFactory),
-        comicRepository: injector.get(types.ComicRepository),
-      },
-      downloader: {
-        downloadTaskFactory: injector.get(types.DownloadTaskFactory),
-        downloadTaskRepository: injector.get(types.DownloadTaskRepository),
-        downloadComicService: injector.get(types.DownloadComicService),
-      },
-      eventPublisher: injector.get(types.EventPublisher),
+      userProfileFactory: injector.get(types.UserProfileFactory),
+      userProfileRepository: injector.get(types.UserProfileRepository),
       fileService: injector.get(types.FileService),
+
+      comicInfoFactory: injector.get(types.ComicInfoFactory),
+      comicInfoInfoRepository: injector.get(types.ComicInfoRepository),
+      comicInfoDatabaseService: injector.get(types.ComicInfoDatabaseService),
+
+      comicFactory: injector.get(types.ComicFactory),
+      comicRepository: injector.get(types.ComicRepository),
+
+      downloadTaskFactory: injector.get(types.DownloadTaskFactory),
+      downloadTaskRepository: injector.get(types.DownloadTaskRepository),
+      downloadComicService: injector.get(types.DownloadComicService),
+
+      eventPublisher: injector.get(types.EventPublisher),
     }
   })
 
