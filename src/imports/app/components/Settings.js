@@ -32,7 +32,7 @@ export class Settings extends React.Component {
       buttonLabel: '確定',
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
     })
-    if (filePaths.length > 0) {
+    if (filePaths && filePaths.length > 0) {
       updateUserProfile({
         id: 'default',
         ...userProfile,
