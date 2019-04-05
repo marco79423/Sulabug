@@ -76,8 +76,8 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
 
     const comicFactory = new ComicFactory()
     const comics = [
-      comicFactory.createFromJson({comicInfoIdentity: "comicInfoIdentity-1"}),
-      comicFactory.createFromJson({comicInfoIdentity: "comicInfoIdentity-2"}),
+      comicFactory.createFromJson({comicInfoIdentity: 'comicInfoIdentity-1'}),
+      comicFactory.createFromJson({comicInfoIdentity: 'comicInfoIdentity-2'}),
     ]
     const comicRepository = {
       asyncGetAll: jest.fn(() => Promise.resolve(comics))
@@ -109,10 +109,10 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
 
     const actions$ = of(actions.sendAppStartSignal())
     const result = await initializeDataFromDBWhenAppStartsEpic(actions$, {}, {
-      general: {userProfileRepository},
-      library: {comicInfoInfoRepository},
-      collection: {comicRepository},
-      downloader: {downloadTaskRepository}
+      userProfileRepository,
+      comicInfoInfoRepository,
+      comicRepository,
+      downloadTaskRepository,
     }).pipe(
       toArray(),
     ).toPromise()
@@ -208,7 +208,7 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
     }
 
     const actions$ = of(actions.sendComicInfoDatabaseEmptySignal())
-    const result = await updateComicInfoDBWhenDBIsEmptyEpic(actions$, {}, {library: {comicInfoDatabaseService}}).pipe(
+    const result = await updateComicInfoDBWhenDBIsEmptyEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
       toArray(),
     ).toPromise()
 
@@ -256,7 +256,7 @@ describe('searchComicInfosEpic', () => {
     }
 
     const actions$ = of(actions.searchComic('search term'))
-    const result = await searchComicInfosEpic(actions$, {}, {library: {comicInfoInfoRepository}}).pipe(
+    const result = await searchComicInfosEpic(actions$, {}, {comicInfoInfoRepository}).pipe(
       toArray(),
     ).toPromise()
 
@@ -311,8 +311,9 @@ describe('createDownloadTaskEpic', () => {
 
     const actions$ = of(actions.createDownloadTask(comicInfo.identity))
     const result = await createDownloadTaskEpic(actions$, {}, {
-      library: {comicInfoInfoRepository},
-      downloader: {downloadTaskFactory, downloadTaskRepository}
+      comicInfoInfoRepository,
+      downloadTaskFactory,
+      downloadTaskRepository,
     }).pipe(
       toArray(),
     ).toPromise()
@@ -352,10 +353,8 @@ describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
 
     const actions$ = of(actions.addNewDownloadTaskToState(downloadTask))
     const result = await startToDownloadComicWhenNewDownloadTaskCreatedEpic(actions$, {}, {
-      downloader: {
-        downloadTaskRepository,
-        downloadComicService
-      }
+      downloadTaskRepository,
+      downloadComicService
     }).pipe(
       toArray(),
     ).toPromise()
@@ -395,7 +394,7 @@ describe('syncDownloadTasksToStateWhenDownloadStatusChanged', () => {
     downloadTaskRepository.getAll = jest.fn(() => downloadTasks)
 
     const actions$ = of(actions.sendDownloadStatusChangedSignal())
-    const result = await syncDownloadTasksToStateWhenDownloadStatusChanged(actions$, {}, {downloader: {downloadTaskRepository}}).pipe(
+    const result = await syncDownloadTasksToStateWhenDownloadStatusChanged(actions$, {}, {downloadTaskRepository}).pipe(
       toArray(),
     ).toPromise()
 
@@ -436,12 +435,7 @@ describe('updateUserProfileEpic', () => {
     }
 
     const actions$ = of(actions.updateUserProfile(userProfileData))
-    const result = await updateUserProfileEpic(actions$, {}, {
-      general: {
-        userProfileFactory,
-        userProfileRepository
-      }
-    }).pipe(
+    const result = await updateUserProfileEpic(actions$, {}, {userProfileFactory, userProfileRepository}).pipe(
       toArray(),
     ).toPromise()
 
