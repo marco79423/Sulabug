@@ -9,6 +9,7 @@ import IDatabase from '../../shared/interfaces'
 @injectable()
 export default class UserProfileRepository implements IUserProfileRepository {
   readonly defaultUserProfileData = {
+    databaseUpdatedTime: null,
     downloadFolderPath: './comics',
   }
 

@@ -10,8 +10,7 @@ import {
   sendSignalWhenComicInfoDBIsEmptyEpic,
   startToDownloadComicWhenNewDownloadTaskCreatedEpic,
   syncDownloadTasksToStateWhenDownloadStatusChanged,
-  transformDownloadTaskUpdatedEventToSignalEpic,
-  updateComicInfoDBWhenDBIsEmptyEpic,
+  transformDownloadTaskUpdatedEventToSignalEpic, updateComicInfoDatabaseEpic,
   updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
@@ -31,14 +30,17 @@ import ComicFactory from '../../domain/factories/ComicFactory'
 
 describe('initializeDataFromDBWhenAppStartsEpic', () => {
   it('will query init data from database and then sync to state in the beginning', async () => {
-    const userProfile = new UserProfile(
-      'comicsFolder'
-    )
-
     const userProfileRepository: IUserProfileRepository = {
       asyncSaveOrUpdate: jest.fn(),
-      asyncGet: jest.fn(() => Promise.resolve(userProfile)),
+      asyncGet: jest.fn(),
     }
+
+    const userProfile = new UserProfile(
+      new Date('2019-01-01T00:00:00Z'),
+      'comicsFolder',
+    )
+
+    userProfileRepository.asyncGet = jest.fn(() => Promise.resolve(userProfile))
 
     const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
@@ -171,7 +173,7 @@ describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
   })
 })
 
-describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
+describe('updateComicInfoDatabaseEpic', () => {
   it('will update database from network and sync to state when db is empty', async () => {
     const comicInfoFactory = new ComicInfoFactory()
     const comicInfos = [
@@ -208,13 +210,61 @@ describe('updateComicInfoDBWhenDBIsEmptyEpic', () => {
     }
 
     const actions$ = of(actions.sendComicInfoDatabaseEmptySignal())
-    const result = await updateComicInfoDBWhenDBIsEmptyEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
+    const result = await updateComicInfoDatabaseEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
       actions.waitForComicInfoDatabaseUpdate(),
       actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
+      actions.sendComicInfoDatabaseUpdatedSignal(),
+    ])
+  })
+
+  it('will update database from network', async () => {
+    const comicInfoFactory = new ComicInfoFactory()
+    const comicInfos = [
+      comicInfoFactory.createFromJson({
+        id: 'id-1',
+        name: 'name-1',
+        coverDataUrl: 'coverDataUrl-1',
+        source: 'source-1',
+        pageUrl: 'pageUrl-1',
+        catalog: 'catalog-1',
+        author: 'author-1',
+        lastUpdatedChapter: 'lastUpdatedChapter-1',
+        lastUpdatedTime: '2019-01-16T00:00:00.000Z',
+        summary: 'summary-1',
+        chapters: [],
+      }),
+      comicInfoFactory.createFromJson({
+        id: 'id-2',
+        name: 'name-2',
+        coverDataUrl: 'coverDataUrl-2',
+        source: 'source-2',
+        pageUrl: 'pageUrl-2',
+        catalog: 'catalog-2',
+        author: 'author-2',
+        lastUpdatedChapter: 'lastUpdatedChapter-2',
+        lastUpdatedTime: '2019-01-17T00:00:00.000Z',
+        summary: 'summary-2',
+        chapters: [],
+      })
+    ]
+
+    const comicInfoDatabaseService: IComicInfoDatabaseService = {
+      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comicInfos)),
+    }
+
+    const actions$ = of(actions.updateComicInfoDatabase())
+    const result = await updateComicInfoDatabaseEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
+      toArray(),
+    ).toPromise()
+
+    expect(result).toEqual([
+      actions.waitForComicInfoDatabaseUpdate(),
+      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
+      actions.sendComicInfoDatabaseUpdatedSignal(),
     ])
   })
 })
@@ -424,15 +474,16 @@ describe('transformDownloadTaskUpdatedEventToSignalEpic', () => {
 describe('updateUserProfileEpic', () => {
   it('will update user profile from database', async () => {
     const userProfileData = {
+      databaseUpdatedTime: '2019-01-01T00:00:00.000Z',
       downloadFolderPath: 'downloadFolderPath',
     }
-
-    const userProfileFactory = new UserProfileFactory()
 
     const userProfileRepository: IUserProfileRepository = {
       asyncSaveOrUpdate: jest.fn(() => Promise.resolve()),
       asyncGet: jest.fn(),
     }
+
+    const userProfileFactory = new UserProfileFactory()
 
     const actions$ = of(actions.updateUserProfile(userProfileData))
     const result = await updateUserProfileEpic(actions$, {}, {userProfileFactory, userProfileRepository}).pipe(

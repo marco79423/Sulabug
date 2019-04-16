@@ -10,9 +10,12 @@ describe('ComicList', () => {
   it('will render comic list correctly', async () => {
     const component = renderer.create(
       <ComicList loading={false}
+                 userProfile={{
+                   databaseUpdatedTime: '2019-01-01T00:00:00.000Z',
+                 }}
                  comics={[]}
-                 addComicToCollection={() => {
-                 }}/>
+                 addComicToCollection={() => {}}
+                 updateComicInfoDatabase={() => {}}/>
     )
     expect(component.toJSON()).toMatchSnapshot()
   })
@@ -21,6 +24,7 @@ describe('ComicList', () => {
     const component = renderer.create(
       <ComicList loading={true}
                  comics={[]}
+                 userProfile={undefined}
                  addComicToCollection={() => {
                  }}/>
     )

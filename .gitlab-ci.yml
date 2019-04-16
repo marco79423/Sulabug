@@ -18,6 +18,12 @@ install-npm-modules:
 run-testcases-with-coverage:
   stage: testing
   script:
+    #  設定時區 ( 給測試用)
+    - echo 'Asia/Taipei' > /etc/timezone &&
+      apt-get update && apt-get install -y tzdata &&
+      ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime &&
+      dpkg-reconfigure -f noninteractive tzdata
+
     - yarn test:coverage
 
 build-project-code:

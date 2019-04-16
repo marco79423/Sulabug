@@ -17,7 +17,7 @@ import {
   ISFComicDownloadAdapter,
   ISFComicInfoQueryAdapter,
   IUserProfileFactory,
-  IUserProfileRepository
+  IUserProfileRepository, ITimeAdapter
 } from '../domain/interfaces'
 import UserProfileRepository from '../infrastructure/domain/repositories/UserProfileRepository'
 import SFSourceSite from '../infrastructure/shared/source-sites/SFSourceSite'
@@ -43,6 +43,7 @@ import FileService from '../domain/services/FileService'
 import DBService from '../domain/services/DBService'
 import ComicFactory from '../domain/factories/ComicFactory'
 import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
+import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
 
 
 // domain
@@ -57,6 +58,7 @@ injector.bind<IUserProfileRepository>(types.UserProfileRepository).to(UserProfil
 injector.bind<IDBAdapter>(types.DBAdapter).to(DBAdapter).inSingletonScope()
 injector.bind<IFileAdapter>(types.FileAdapter).to(FileAdapter).inSingletonScope()
 injector.bind<INetAdapter>(types.NetAdapter).to(NetAdapter).inSingletonScope()
+injector.bind<ITimeAdapter>(types.TimeAdapter).to(TimeAdapter).inSingletonScope()
 
 // domain - library
 injector.bind<ISFComicInfoQueryAdapter>(types.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()

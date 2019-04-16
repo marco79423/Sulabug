@@ -1,7 +1,9 @@
 import 'reflect-metadata'
-import {IComicInfoRepository, ISFComicInfoQueryAdapter} from '../interfaces'
+import {IComicInfoRepository, ISFComicInfoQueryAdapter, ITimeAdapter, IUserProfileRepository} from '../interfaces'
 import ComicInfoDatabaseService from './ComicInfoDatabaseService'
 import ComicInfoFactory from '../factories/ComicInfoFactory'
+import UserProfileFactory from '../factories/UserProfileFactory'
+import UserProfile from '../entities/UserProfile'
 
 describe('ComicInfoDatabaseService', () => {
 
@@ -47,9 +49,27 @@ describe('ComicInfoDatabaseService', () => {
         asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
       }
 
+      const userProfileFactory = new UserProfileFactory()
+      const userProfile = new UserProfile(
+        new Date('2019-01-01T00:00:00Z'),
+        'comicsFolder',
+      )
+
+      const userProfileRepository: IUserProfileRepository = {
+        asyncSaveOrUpdate: jest.fn(),
+        asyncGet: jest.fn(() => Promise.resolve(userProfile)),
+      }
+
+      const timeAdapter: ITimeAdapter = {
+        getNow: jest.fn(() => new Date('2019-01-02T00:00:00Z')),
+      }
+
       const comicInfoQueryService = new ComicInfoDatabaseService(
         sfComicInfoQueryAdapter,
-        comicInfoInfoRepository
+        comicInfoInfoRepository,
+        userProfileRepository,
+        userProfileFactory,
+        timeAdapter
       )
 
       const result = await comicInfoQueryService.asyncUpdateAndReturn()

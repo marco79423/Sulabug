@@ -22,5 +22,6 @@ export default {
   DBAdapter: Symbol('Domain/General/DBAdapter'),
   FileAdapter: Symbol('Domain/General/FileAdapter'),
   NetAdapter: Symbol('Domain/General/NetAdapter'),
+  TimeAdapter: Symbol('Domain/General/TimeAdapter'),
   SFComicInfoQueryAdapter: Symbol('Domain/Library/SFComicInfoQueryAdapter'),
 }

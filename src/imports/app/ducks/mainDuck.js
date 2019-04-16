@@ -9,10 +9,12 @@ export const ActionTypes = {
   WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
   SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
 
-  // auto update comic info database
+  // update comic info database
+  UPDATE_COMIC_INFO_DATABASE: 'UPDATE_COMIC_INFO_DATABASE',
   SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
   WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
   SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
+  SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL: 'SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL',
 
   // search comic
   SEARCH_COMIC: 'SEARCH_COMIC',
@@ -54,8 +56,10 @@ export const actions = {
 
   // auto update comic info database
   sendComicInfoDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL),
+  updateComicInfoDatabase: createAction(ActionTypes.UPDATE_COMIC_INFO_DATABASE),
   waitForComicInfoDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_INFO_DATABASE_UPDATE),
   syncComicInfosToState: createAction(ActionTypes.SYNC_COMIC_INFOS_TO_STATE),
+  sendComicInfoDatabaseUpdatedSignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL),
 
   // search comic
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
@@ -88,9 +92,7 @@ export const actions = {
 }
 
 export const defaultState = {
-  userProfile: {
-    downloadFolderPath: '',
-  },
+  userProfile: null,
   comicInfo: {
     loading: false,
     allIds: [],
@@ -225,6 +227,9 @@ export const reducer = handleActions({
   }),
 }, defaultState)
 
+
+const selectLoadingUserProfile = state => !state.userProfile
+
 const selectUserProfile = state => state.userProfile
 
 const selectLoadingComicInfos = state => state.comicInfo.loading
@@ -250,6 +255,7 @@ const selectDownloadTasks = state => state.downloadTask.allIds.map(id => state.d
 const selectComicImages = state => state.comicImages
 
 export const selectors = {
+  selectLoadingUserProfile,
   selectUserProfile,
   selectLoadingComicInfos,
   selectComicInfos,
