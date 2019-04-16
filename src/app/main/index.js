@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, screen} from 'electron'
+import {app, BrowserWindow, ipcMain, screen, Tray, Menu} from 'electron'
 import * as path from 'path'
 import {format as formatUrl} from 'url'
 
@@ -74,6 +74,22 @@ function createMainWindow() {
 
   window.setMenu(null)
 
+  const appIcon = new Tray(path.join(__static, 'icon.ico'))
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '開啟 Sulabug', click: function () {
+        window.show()
+      }
+    },
+    {
+      label: '關閉程式', click: function () {
+        app.quit()
+      }
+    }
+  ])
+
+  appIcon.setContextMenu(contextMenu)
+
   if (isDevelopment) {
     window.webContents.openDevTools()
   }
@@ -87,6 +103,15 @@ function createMainWindow() {
       slashes: true
     }))
   }
+
+  window.on('minimize', function (event) {
+    event.preventDefault()
+    window.hide()
+  })
+
+  window.on('show', function () {
+    appIcon.setHighlightMode('always')
+  })
 
   window.on('closed', () => {
     mainWindow = null
