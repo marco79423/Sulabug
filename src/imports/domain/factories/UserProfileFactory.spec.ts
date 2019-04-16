@@ -6,6 +6,7 @@ describe('UserProfileFactory', () => {
   describe('createFromJson', () => {
     it('will generate a new UserProfile instance from json data', () => {
       const userProfileData = {
+        databaseUpdatedTime: '2019-01-01T00:00:00Z',
         downloadFolderPath: 'downloadFolderPath',
       }
 

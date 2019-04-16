@@ -5,12 +5,13 @@ import {IUserProfileFactory} from '../interfaces'
 
 @injectable()
 export default class UserProfileFactory implements IUserProfileFactory {
-
   createFromJson(json: {
+    databaseUpdatedTime: string | null,
     downloadFolderPath: string,
   }): UserProfile {
     return new UserProfile(
-      json.downloadFolderPath,
+      json.databaseUpdatedTime ? new Date(json.databaseUpdatedTime) : null,
+      json.downloadFolderPath
     )
   }
 }

@@ -39,15 +39,17 @@ export const sendSignalWhenComicInfoDBIsEmptyEpic = (action$) => action$.pipe(
   mapTo(actions.sendComicInfoDatabaseEmptySignal())
 )
 
-export const updateComicInfoDBWhenDBIsEmptyEpic = (action$, state$, {comicInfoDatabaseService}) => action$.pipe(
+export const updateComicInfoDatabaseEpic = (action$, state$, {comicInfoDatabaseService}) => action$.pipe(
   ofType(
-    ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL
+    ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL,
+    ActionTypes.UPDATE_COMIC_INFO_DATABASE,
   ),
   flatMap(() => concat(
     of(actions.waitForComicInfoDatabaseUpdate()),
     from(comicInfoDatabaseService.asyncUpdateAndReturn()).pipe(
-      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())))
+      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize()))),
     ),
+    of(actions.sendComicInfoDatabaseUpdatedSignal())
   )),
 )
 
@@ -195,6 +197,18 @@ export const transformDownloadTaskUpdatedEventToSignalEpic = (action$, state$, {
   map(() => actions.sendDownloadStatusChangedSignal()),
 )
 
+export const autoUpdateUserProfileWhenComicInfoDatabaseUpdateEpic = (action$, state$, {userProfileRepository}) => action$.pipe(
+  ofType(
+    ActionTypes.SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL,
+  ),
+  flatMap(() => concat(
+    of(actions.waitForUpdatingUserProfile()),
+    from(userProfileRepository.asyncGet()).pipe(
+      map(userProfile => actions.syncUserProfileToState(userProfile.serialize())),
+    ),
+)),
+)
+
 export const updateUserProfileEpic = (action$, state$, {userProfileFactory, userProfileRepository}) => action$.pipe(
   ofType(
     ActionTypes.UPDATE_USER_PROFILE
@@ -214,8 +228,9 @@ export default combineEpics(
 
   // library
   sendSignalWhenComicInfoDBIsEmptyEpic,
-  updateComicInfoDBWhenDBIsEmptyEpic,
+  updateComicInfoDatabaseEpic,
   searchComicInfosEpic,
+  autoUpdateUserProfileWhenComicInfoDatabaseUpdateEpic,
 
   // collection
   sendSignalWhenCollectionsIsNotEmptyEpic,

@@ -77,6 +77,11 @@ export interface ISFComicInfoQueryAdapter {
   asyncQueryComicInfos(): Promise<ComicInfo[]>
 }
 
+
+export interface ITimeAdapter {
+  getNow(): Date
+}
+
 export interface IComicInfoRepository {
 
   asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
@@ -124,6 +129,7 @@ export interface IComicFactory {
 
 export interface IUserProfileFactory {
   createFromJson(json: {
+    databaseUpdatedTime: string | null,
     downloadFolderPath: string,
   }): UserProfile
 }
