@@ -61,6 +61,7 @@ if (!lock) {
 
 function createMainWindow() {
   const window = new BrowserWindow({
+    title: config.APPLICATOIN_NAME,
     icon: path.join(__static, 'icon.ico'),
 
     width: config.WINDOW_WIDTH,
@@ -140,6 +141,7 @@ function createReadingWindow(comicInfId) {
   const {width, height} = screen.getPrimaryDisplay().workAreaSize
 
   const window = new BrowserWindow({
+    title: config.APPLICATOIN_NAME,
     icon: path.join(__static, 'icon.ico'),
 
     width: width,
