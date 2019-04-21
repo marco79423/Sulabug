@@ -7,8 +7,9 @@ import * as config from './config'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
-let mainWindow
-let readingWindow
+let mainWindow = null
+let readingWindow = null
+let isQuiting = false
 
 const lock = app.requestSingleInstanceLock()
 
@@ -83,6 +84,7 @@ function createMainWindow() {
     },
     {
       label: '關閉程式', click: function () {
+        isQuiting = true;
         app.quit()
       }
     }
@@ -104,13 +106,15 @@ function createMainWindow() {
     }))
   }
 
-  window.on('minimize', function (event) {
-    event.preventDefault()
-    window.hide()
-    tray.displayBalloon({
-      title: 'Sulabug',
-      content: 'Sulabug 仍在執行中'
-    })
+  window.on('close', function (event) {
+    if (!isQuiting) {
+      event.preventDefault()
+      window.hide()
+      tray.displayBalloon({
+        title: 'Sulabug',
+        content: 'Sulabug 仍在執行中'
+      })
+    }
   })
 
   window.on('show', function () {
@@ -144,7 +148,7 @@ function createReadingWindow(comicInfId) {
     webPreferences: {
       webSecurity: false, // for same-origin policy
       nodeIntegration: true,
-    }
+    },
   })
 
   window.setMenu(null)
