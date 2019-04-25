@@ -15,6 +15,9 @@ const styles = (theme) => createStyles({
   root: {
     padding: 0,
   },
+  body: {
+    marginTop: theme.spacing.unit * 3,
+  },
   progress: {
     marginRight: theme.spacing.unit * 2
   }
@@ -32,7 +35,7 @@ export class DownloadTaskList extends React.Component {
         <Card className={classes.card}>
           <CardContent>
             <Typography variant="h2" gutterBottom>報告老大！</Typography>
-            <Typography variant="body1">沒有正在下載的任務！</Typography>
+            <Typography  classes={{body1: classes.body}} variant="body1">沒有正在下載的任務！</Typography>
           </CardContent>
         </Card>
       )
