@@ -88,6 +88,19 @@ export const addComicToCollectionEpic = (action$, state$, {comicFactory, comicRe
   ))
 )
 
+export const removeComicFromCollectionEpic = (action$, state$, {comicRepository}) => action$.pipe(
+  ofType(
+    ActionTypes.REMOVE_COMIC_FROM_COLLECTION,
+  ),
+  map(action => action.payload),
+  flatMap(comicId => concat(
+    of(actions.waitForRemovingComicFromCollection()),
+    from(comicRepository.asyncDelete(comicId)).pipe(
+      mapTo(actions.sendCollectionChangedSignal())
+    )
+  ))
+)
+
 export const syncCollectionToStateEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
@@ -235,6 +248,7 @@ export default combineEpics(
   // collection
   sendSignalWhenCollectionsIsNotEmptyEpic,
   addComicToCollectionEpic,
+  removeComicFromCollectionEpic,
   syncCollectionToStateEpic,
   createCreateDownloadTasksWhenCollectionChangedEpic,
   openReadingPageEpic,

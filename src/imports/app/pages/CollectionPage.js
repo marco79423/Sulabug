@@ -13,6 +13,7 @@ class CollectionPage extends React.Component {
         collections={this.props.collections}
         comicInfos={this.props.comicInfos}
 
+        removeComicFromCollection={this.props.removeComicFromCollection}
         openReadingPage={this.props.openReadingPage}
       />
     )
@@ -28,6 +29,7 @@ export default compose(
       collections: selectors.selectCollection(state),
     }),
     dispatch => bindActionCreators({
+      removeComicFromCollection: actions.removeComicFromCollection,
       openReadingPage: actions.openReadingPage,
     }, dispatch)
   )

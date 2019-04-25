@@ -51,6 +51,7 @@ export class CollectionList extends React.Component {
           {collections.map((collection) => <CollectionListItem key={collection.id}
                                                                collection={collection}
                                                                comicInfos={comicInfos}
+                                                               removeComicFromCollection={this.props.removeComicFromCollection}
                                                                openReadingPage={this.props.openReadingPage}/>)}
         </List>
       </div>

@@ -23,6 +23,12 @@ export const ActionTypes = {
   // add comic info to collection
   ADD_COMIC_TO_COLLECTION: 'ADD_COMIC_TO_COLLECTION',
   WAIT_FOR_ADDING_COMIC_INFO_COLLECTION: 'WAIT_FOR_ADDING_COMIC_INFO_COLLECTION',
+
+  // remove comic from collection
+  REMOVE_COMIC_FROM_COLLECTION: 'REMOVE_COMIC_FROM_COLLECTION',
+  WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION: 'WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION',
+
+  // sync collection to state
   SEND_COLLECTION_CHANGED_SIGNAL: 'SEND_COLLECTION_CHANGED_SIGNAL',
   SYNC_COLLECTION_TO_STATE: 'SYNC_COLLECTION_TO_STATE',
 
@@ -68,6 +74,12 @@ export const actions = {
   // add comic to collection
   addComicToCollection: createAction(ActionTypes.ADD_COMIC_TO_COLLECTION),
   waitForAddingComicToCollections: createAction(ActionTypes.WAIT_FOR_ADDING_COMIC_INFO_COLLECTION),
+
+  // remove comic from collection
+  removeComicFromCollection: createAction(ActionTypes.REMOVE_COMIC_FROM_COLLECTION),
+  waitForRemovingComicFromCollection: createAction(ActionTypes.WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION),
+
+  // sync collection to state
   sendCollectionChangedSignal: createAction(ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL),
   syncCollectionToState: createAction(ActionTypes.SYNC_COLLECTION_TO_STATE),
 
@@ -167,6 +179,14 @@ export const reducer = handleActions({
         ...comicInfoMap,
         [comicInfo.id]: comicInfo,
       }), {}),
+    },
+  }),
+  [ActionTypes.WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION]: (state) => ({
+    ...state,
+    collection: {
+      loading: true,
+      allIds: [],
+      byId: {},
     },
   }),
   [ActionTypes.SYNC_COLLECTION_TO_STATE]: (state, action) => ({
