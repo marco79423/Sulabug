@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button'
 import CollectionsIcon from '@material-ui/icons/Collections'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import ListItem from '@material-ui/core/ListItem/ListItem'
+import OpenInNewIcon from '@material-ui/core/SvgIcon/SvgIcon'
 
 
 const styles = (theme) => createStyles({
@@ -95,7 +96,7 @@ export class ComicListItem extends React.Component {
             </CardContent>
             <CardActions className={classes.actions}>
               <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
-              <Button size="small" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/><Typography variant="button">收藏</Typography></Button>
+              <Button size="small" variant="contained" color="primary" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/>收藏</Button>
             </CardActions>
           </div>
         </Card>
