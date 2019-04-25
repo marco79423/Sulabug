@@ -55,7 +55,7 @@ export class ComicList extends React.Component {
   }
 
   render() {
-    const {classes, loading, comics, addComicToCollection} = this.props
+    const {classes, loading, comics, collection, addComicToCollection} = this.props
     if (loading) {
       return <LinearProgress color="secondary" variant="query"/>
     }
@@ -63,7 +63,7 @@ export class ComicList extends React.Component {
       <>
         {this.renderMetaSection()}
         <List className={classes.root}>
-          {comics.map((comic) => <ComicListItem key={comic.id} comic={comic}
+          {comics.map((comic) => <ComicListItem key={comic.id} comic={comic} collection={collection}
                                                 addComicToCollection={addComicToCollection}/>)}
         </List>
       </>

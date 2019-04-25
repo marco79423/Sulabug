@@ -10,7 +10,6 @@ import Button from '@material-ui/core/Button'
 import CollectionsIcon from '@material-ui/icons/Collections'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import ListItem from '@material-ui/core/ListItem/ListItem'
-import OpenInNewIcon from '@material-ui/core/SvgIcon/SvgIcon'
 
 
 const styles = (theme) => createStyles({
@@ -77,7 +76,10 @@ export class ComicListItem extends React.Component {
   }
 
   render() {
-    const {classes, comic} = this.props
+    const {classes, comic, collection} = this.props
+
+    const inCollection = collection.filter(c => c.comicInfoId === comic.id).length > 0
+
     return (
       <ListItem className={classes.root}>
         <Card className={classes.card}>
@@ -95,8 +97,11 @@ export class ComicListItem extends React.Component {
               <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
-              <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
-              <Button size="small" variant="contained" color="primary" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/>收藏</Button>
+              <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon
+                className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
+              <Button size="small" variant="contained" color="primary" disabled={inCollection}
+                      onClick={this.addComicToCollection}><CollectionsIcon
+                className={classes.collectionsIcon}/>{inCollection ? '已收藏' : '收藏'}</Button>
             </CardActions>
           </div>
         </Card>
