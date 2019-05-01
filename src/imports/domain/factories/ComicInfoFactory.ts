@@ -1,13 +1,21 @@
 import 'reflect-metadata'
 
-import {injectable} from 'inversify'
+import {inject, injectable} from 'inversify'
 import ComicInfo from '../entities/ComicInfo'
 import Chapter from '../entities/Chapter'
-import {IComicInfoFactory} from '../interfaces'
+import {IComicInfoFactory, IComicSourceFactory} from '../interfaces'
+import types from '../types'
 
 
 @injectable()
 export default class ComicInfoFactory implements IComicInfoFactory {
+  private readonly _comicSourceFactory: IComicSourceFactory
+
+  public constructor(
+    @inject(types.ComicSourceFactory) comicSourceFactory: IComicSourceFactory,
+  ) {
+    this._comicSourceFactory = comicSourceFactory
+  }
 
   createFromJson(json: {
     id: string,
@@ -44,6 +52,7 @@ export default class ComicInfoFactory implements IComicInfoFactory {
         rawChapter.name,
         rawChapter.sourcePageUrl,
       )),
+      this._comicSourceFactory,
     )
   }
 }

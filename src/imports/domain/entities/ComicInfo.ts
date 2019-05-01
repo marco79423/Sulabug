@@ -1,5 +1,7 @@
 import {Entity} from '../base-types'
 import Chapter from './Chapter'
+import ComicSource from './ComicSource'
+import {IComicSourceFactory} from '../interfaces'
 
 export default class ComicInfo extends Entity {
   readonly name: string
@@ -13,6 +15,8 @@ export default class ComicInfo extends Entity {
   readonly summary: string
   readonly chapters: Chapter[]
 
+  readonly _comicSourceFactory: IComicSourceFactory
+
   constructor(
     identity: string,
     name: string,
@@ -25,6 +29,7 @@ export default class ComicInfo extends Entity {
     lastUpdatedTime: Date,
     summary: string,
     chapters: Chapter[],
+    comicSourceFactory: IComicSourceFactory
   ) {
     super(identity)
     this.name = name
@@ -37,6 +42,8 @@ export default class ComicInfo extends Entity {
     this.lastUpdatedTime = lastUpdatedTime
     this.summary = summary
     this.chapters = chapters
+
+    this._comicSourceFactory = comicSourceFactory
   }
 
   serialize() {
@@ -53,5 +60,14 @@ export default class ComicInfo extends Entity {
       summary: this.summary,
       chapters: this.chapters.map(chapter => chapter.serialize()),
     }
+  }
+
+  getAvailableSource(): ComicSource {
+    return this._comicSourceFactory.createFromJson({
+      id: this.identity,
+      name: this.name,
+      source: this.source,
+      pageUrl: this.pageUrl,
+    })
   }
 }

@@ -1,6 +1,7 @@
 import {Entity} from '../base-types'
 import Chapter from './Chapter'
-import {INetAdapter} from '../interfaces'
+import {IFileAdapter, INetAdapter} from '../interfaces'
+import * as path from "path"
 
 export default class ComicSource extends Entity {
   readonly name: string
@@ -13,7 +14,9 @@ export default class ComicSource extends Entity {
   private _lastUpdatedTime: Date | null = null
   private _summary: string = ''
   private _chapters: Chapter[] = []
+
   private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
 
   constructor(
     identity: string,
@@ -21,12 +24,14 @@ export default class ComicSource extends Entity {
     source: string,
     pageUrl: string,
     netAdapter: INetAdapter,
+    fileAdapter: IFileAdapter,
   ) {
     super(identity)
     this.name = name
     this.source = source
     this.pageUrl = pageUrl
     this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
   }
 
   serialize() {
@@ -81,10 +86,74 @@ export default class ComicSource extends Entity {
   }
 
   async asyncGetChapters(): Promise<Chapter[]> {
-    if (!this._chapters) {
+    if (this._chapters.length === 0) {
       await this._asyncGetInfoFromSource()
     }
     return this._chapters
+  }
+
+  async asyncDownload(downloadFolderPath: string, progressCallback): Promise<void> {
+    const chapters = await this.asyncGetChapters()
+    let totalProgress = 0.0
+    const progressUnit = Math.floor(100 / (chapters.length + 1))
+
+    const targetComicFolderPath = path.join(downloadFolderPath, this.name)
+
+    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: this.identity})
+
+    totalProgress += progressUnit
+    progressCallback(totalProgress, false)
+    for (let index = 0; index < chapters.length; index++) {
+      const chapter = chapters[index]
+      const targetComicChapterFolderPath = path.join(targetComicFolderPath, chapter.name)
+      await this._asyncDownloadChapter(chapter.sourcePageUrl, targetComicChapterFolderPath)
+      totalProgress += progressUnit
+      progressCallback(totalProgress, false)
+    }
+    progressCallback(100, true)
+  }
+
+  private async _asyncDownloadChapter(pageUrl: string, targetDir: string): Promise<void> {
+    if (await this._fileAdapter.asyncPathExists(path.join(targetDir, '.done'))) {
+      return
+    }
+
+    await this._fileAdapter.asyncEnsureDir(targetDir)
+    const images = await this._asyncGetAllImagesFromChapterPageUrl(pageUrl)
+    for (const image of images) {
+      const imagePath = path.join(targetDir, image.name)
+      await this._netAdapter.asyncDownload(image.imageUrl, imagePath)
+    }
+
+    await this._fileAdapter.asyncWriteJson(targetDir + '/.done', null)
+  }
+
+  private async _asyncGetAllImagesFromChapterPageUrl(pageUrl: string): Promise<{
+    name: string,
+    imageUrl: string,
+  }[]> {
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(await this._netAdapter.asyncGetText(pageUrl), 'text/html')
+
+    // @ts-ignore
+    const url = dom.querySelector('head > script:nth-child(7)').src
+
+    const text = await this._netAdapter.asyncGetText(url)
+
+    // @ts-ignore
+    const host = /hosts = \["([^"]+)"/g.exec(text)[1]
+
+    const images: { name: string, imageUrl: string }[] = []
+    let matched
+    const re = /picAy\[(\d+)\] = "([^"]+)"/g
+    while ((matched = re.exec(text)) !== null) {
+      images.push({
+        name: `${+matched[1] + 1}`.padStart(3, '0') + '.jpg',
+        imageUrl: host + matched[2]
+      })
+    }
+
+    return images
   }
 
   private async _asyncGetInfoFromSource() {

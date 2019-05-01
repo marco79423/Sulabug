@@ -168,16 +168,5 @@ export interface IFileService {
 }
 
 export interface IComicSourceSiteService {
-
   asyncGetAllComicSources(): Promise<ComicSource[]>
-
-  asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{
-    name: string,
-    pageUrl: string,
-  }[]>
-
-  asyncGetAllImagesFromChapterPageUrl(pageUrl: string): Promise<{
-    name: string,
-    imageUrl: string,
-  }[]>
 }

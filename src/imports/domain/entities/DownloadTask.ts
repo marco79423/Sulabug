@@ -53,12 +53,12 @@ export default class DownloadTask extends Entity {
     this._downloadTaskRepository.saveOrUpdate(this)
   }
 
-  addProgress(progress: number) {
+  updateProgress(progress: number) {
     if (this.status !== DownloadStatus.DOWNLOADING) {
       this.status = DownloadStatus.DOWNLOADING
     }
 
-    this.progress += progress
+    this.progress = progress
     if (this.progress >= 100) {
       this.progress = 100
     }

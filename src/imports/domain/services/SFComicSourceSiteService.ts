@@ -29,56 +29,6 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
     return allComicSource
   }
 
-  async asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{
-    name: string,
-    pageUrl: string,
-  }[]> {
-    const text = await this._netAdapter.asyncGetText(pageUrl)
-    const parser = new DOMParser()
-    const dom = parser.parseFromString(text, 'text/html')
-
-    const chapters: { name: string, pageUrl: string }[] = []
-    const nodes = dom.querySelectorAll('.comic_Serial_list > a')
-    for (const node of nodes) {
-      chapters.push({
-        // @ts-ignore
-        name: node.innerText,
-        // @ts-ignore
-        pageUrl: 'https://manhua.sfacg.com' + node.pathname,
-      })
-    }
-
-    return chapters
-  }
-
-  async asyncGetAllImagesFromChapterPageUrl(pageUrl: string): Promise<{
-    name: string,
-    imageUrl: string,
-  }[]> {
-    const parser = new DOMParser()
-    const dom = parser.parseFromString(await this._netAdapter.asyncGetText(pageUrl), 'text/html')
-
-    // @ts-ignore
-    const url = dom.querySelector('head > script:nth-child(7)').src
-
-    const text = await this._netAdapter.asyncGetText(url)
-
-    // @ts-ignore
-    const host = /hosts = \["([^"]+)"/g.exec(text)[1]
-
-    const images: { name: string, imageUrl: string }[] = []
-    let matched
-    const re = /picAy\[(\d+)\] = "([^"]+)"/g
-    while ((matched = re.exec(text)) !== null) {
-      images.push({
-        name: `${+matched[1] + 1}`.padStart(3, '0') + '.jpg',
-        imageUrl: host + matched[2]
-      })
-    }
-
-    return images
-  }
-
   private _asyncGetAllComicListPageUrls = async () => {
     const url = `https://manhua.sfacg.com/catalog/default.aspx`
 
