@@ -1,11 +1,10 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
-  IComicFactory,
+  ICollectionService,
   IComicInfoDatabaseService,
   IComicInfoFactory,
   IComicInfoRepository,
-  IComicRepository,
   IComicSourceFactory,
   IComicSourceSiteService,
   IDBAdapter,
@@ -38,11 +37,10 @@ import ComicInfoFactory from '../domain/factories/ComicInfoFactory'
 import ComicInfoDatabaseService from '../domain/services/ComicInfoDatabaseService'
 import FileService from '../domain/services/FileService'
 import DBService from '../domain/services/DBService'
-import ComicFactory from '../domain/factories/ComicFactory'
-import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
 import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
 import SFComicSourceSiteService from '../domain/services/SFComicSourceSiteService'
 import ComicSourceFactory from '../domain/factories/ComicSourceFactory'
+import CollectionService from '../domain/services/CollectionService'
 
 
 // domain
@@ -65,8 +63,7 @@ injector.bind<IComicInfoRepository>(types.ComicInfoRepository).to(ComicInfoRepos
 injector.bind<IComicInfoDatabaseService>(types.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
 
 // domain - collection
-injector.bind<IComicFactory>(types.ComicFactory).to(ComicFactory).inSingletonScope()
-injector.bind<IComicRepository>(types.ComicRepository).to(ComicRepository).inSingletonScope()
+injector.bind<ICollectionService>(types.CollectionService).to(CollectionService).inSingletonScope()
 
 // domain - downloader
 injector.bind<EventPublisher>(types.EventPublisher).to(EventPublisher).inSingletonScope()

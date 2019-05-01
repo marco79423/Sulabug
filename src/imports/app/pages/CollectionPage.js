@@ -9,9 +9,8 @@ class CollectionPage extends React.Component {
   render() {
     return (
       <CollectionList
-        loading={this.props.loadingCollections || this.props.loadingComicInfos}
-        collections={this.props.collections}
-        comicInfos={this.props.comicInfos}
+        loading={this.props.loadingCollection}
+        comics={this.props.comics}
 
         removeComicFromCollection={this.props.removeComicFromCollection}
         openReadingPage={this.props.openReadingPage}
@@ -23,10 +22,8 @@ class CollectionPage extends React.Component {
 export default compose(
   connect(
     state => ({
-      loadingComicInfos: selectors.selectLoadingComicInfos(state),
-      comicInfos: selectors.selectComicInfos(state),
-      loadingCollections: selectors.selectLoadingCollections(state),
-      collections: selectors.selectCollection(state),
+      loadingCollection: selectors.selectLoadingCollection(state),
+      comics: selectors.selectCollection(state),
     }),
     dispatch => bindActionCreators({
       removeComicFromCollection: actions.removeComicFromCollection,

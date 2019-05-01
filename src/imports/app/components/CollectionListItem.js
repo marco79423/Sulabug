@@ -68,13 +68,12 @@ const styles = (theme) => createStyles({
 export class CollectionListItem extends React.Component {
 
   openReadingPage = () => {
-    const {collection, comicInfos} = this.props
-    const comicInfo = comicInfos.filter(comicInfo => comicInfo.id === collection.comicInfoId)[0]
-    this.props.openReadingPage(comicInfo.id)
+    const {comic} = this.props
+    this.props.openReadingPage(comic.id)
   }
 
   remove = () => {
-    const {collection} = this.props
+    const {comic} = this.props
     remote.dialog.showMessageBox({
       type: 'warning',
       title: '警告',
@@ -83,30 +82,29 @@ export class CollectionListItem extends React.Component {
       buttons: ['刪除', '取消'],
     }, (index) => {
       if (index === 0) {
-        this.props.removeComicFromCollection(collection.comicInfoId)
+        this.props.removeComicFromCollection(comic.id)
       }
     })
   }
 
   render() {
-    const {classes, collection, comicInfos} = this.props
-    const comicInfo = comicInfos.filter(comicInfo => comicInfo.id === collection.comicInfoId)[0]
+    const {classes, comic} = this.props
 
     return (
       <ListItem className={classes.root}>
         <Card className={classes.card}>
           <CardMedia
             className={classes.cover}
-            image={comicInfo.coverDataUrl}
-            title={comicInfo.name}
+            image={comic.coverDataUrl}
+            title={comic.name}
           />
           <div className={classes.details}>
             <CardContent className={classes.content}>
-              <Typography className={classes.title} noWrap={true} variant="h2">{comicInfo.name}</Typography>
+              <Typography className={classes.title} noWrap={true} variant="h2">{comic.name}</Typography>
               <Typography className={classes.metadata} variant="subtitle2" color="textSecondary">
-                最新: {comicInfo.lastUpdatedChapter} ({dateformat(comicInfo.lastUpdatedTime, 'yyyy/mm/dd')})
+                最新: {comic.lastUpdatedChapter} ({dateformat(comic.lastUpdatedTime, 'yyyy/mm/dd')})
               </Typography>
-              <Typography variant="subtitle2">{comicInfo.summary.substring(0, 35)}...</Typography>
+              <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
               <Button size="small" onClick={this.remove}><DeleteIcon className={classes.openReadingPageButton}/>移除</Button>

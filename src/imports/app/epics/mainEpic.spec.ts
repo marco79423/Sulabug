@@ -26,7 +26,6 @@ import {
 } from '../../domain/interfaces'
 import ComicInfoFactory from '../../domain/factories/ComicInfoFactory'
 import DownloadTaskFactory from '../../domain/factories/DownloadTaskFactory'
-import ComicFactory from '../../domain/factories/ComicFactory'
 
 describe('initializeDataFromDBWhenAppStartsEpic', () => {
   it('will query init data from database and then sync to state in the beginning', async () => {

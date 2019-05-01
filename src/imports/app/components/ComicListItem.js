@@ -78,7 +78,7 @@ export class ComicListItem extends React.Component {
   render() {
     const {classes, comic, collection} = this.props
 
-    const inCollection = collection.filter(c => c.comicInfoId === comic.id).length > 0
+    const inCollection = collection.filter(c => c.id === comic.id).length > 0
 
     return (
       <ListItem className={classes.root}>

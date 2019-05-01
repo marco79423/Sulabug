@@ -7,7 +7,7 @@ import {actions, ActionTypes} from '../ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
 import * as path from 'path'
 
-export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProfileRepository, comicInfoInfoRepository, comicRepository, downloadTaskRepository}) => action$.pipe(
+export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProfileRepository, comicInfoInfoRepository, collectionService, downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_APP_START_SIGNAL
   ),
@@ -16,7 +16,7 @@ export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProf
     from(Promise.all([
         userProfileRepository.asyncGet(),
         comicInfoInfoRepository.asyncGetAllBySearchTerm(),
-        comicRepository.asyncGetAll(),
+        collectionService.asyncGetAllComicsFromCollection(),
         downloadTaskRepository.getAll()
       ]).then(([userProfile, comicInfos, comics, downloadTasks]) => ({
         userProfile: userProfile.serialize(),
@@ -75,37 +75,37 @@ export const sendSignalWhenCollectionsIsNotEmptyEpic = (action$) => action$.pipe
   mapTo(actions.sendCollectionChangedSignal())
 )
 
-export const addComicToCollectionEpic = (action$, state$, {comicFactory, comicRepository}) => action$.pipe(
+export const addComicToCollectionEpic = (action$, state$, {collectionService}) => action$.pipe(
   ofType(
     ActionTypes.ADD_COMIC_TO_COLLECTION,
   ),
-  map(action => comicFactory.createFromJson({comicInfoIdentity: action.payload})),
-  flatMap(comic => concat(
+  map(action => action.payload),
+  flatMap(comicId => concat(
     of(actions.waitForAddingComicToCollections()),
-    from(comicRepository.asyncSaveOrUpdate(comic)).pipe(
+    from(collectionService.asyncAddComicToCollection(comicId)).pipe(
       mapTo(actions.sendCollectionChangedSignal())
     )
   ))
 )
 
-export const removeComicFromCollectionEpic = (action$, state$, {comicRepository}) => action$.pipe(
+export const removeComicFromCollectionEpic = (action$, state$, {collectionService}) => action$.pipe(
   ofType(
     ActionTypes.REMOVE_COMIC_FROM_COLLECTION,
   ),
   map(action => action.payload),
   flatMap(comicId => concat(
     of(actions.waitForRemovingComicFromCollection()),
-    from(comicRepository.asyncDelete(comicId)).pipe(
+    from(collectionService.asyncRemoveComicFromCollection(comicId)).pipe(
       mapTo(actions.sendCollectionChangedSignal())
     )
   ))
 )
 
-export const syncCollectionToStateEpic = (action$, state$, {comicRepository}) => action$.pipe(
+export const syncCollectionToStateEpic = (action$, state$, {collectionService}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
-  flatMap(() => from(comicRepository.asyncGetAll()).pipe(
+  flatMap(() => from(collectionService.asyncGetAllComicsFromCollection()).pipe(
     map(comics => actions.syncCollectionToState(comics.map(comic => comic.serialize())))
   ))
 )
@@ -154,15 +154,13 @@ export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService,
 )
 
 
-export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {comicRepository}) => action$.pipe(
+export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {collectionService}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
-  flatMap(() => from(comicRepository.asyncGetAll()).pipe(
-    flatMap(comics => from(comics)))
-  ),
-  map(comic => comic.comicInfoIdentity),
-  map(comicInfoId => actions.createDownloadTask(comicInfoId)),
+  flatMap(collectionService.asyncGetAllComicsFromCollection),
+  flatMap(comics => from(comics)),
+  map(comic => actions.createDownloadTask(comic.identity)),
 )
 
 export const createDownloadTaskEpic = (action$, state$, {comicInfoInfoRepository, downloadTaskFactory, downloadTaskRepository}) => action$.pipe(

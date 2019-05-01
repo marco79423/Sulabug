@@ -24,7 +24,7 @@ class BrowsePage extends React.Component {
 export default compose(
   connect(
     state => ({
-      loading:  selectors.selectLoadingUserProfile(state) || selectors.selectLoadingComicInfos(state) || selectors.selectLoadingCollections(state),
+      loading:  selectors.selectLoadingUserProfile(state) || selectors.selectLoadingComicInfos(state) || selectors.selectLoadingCollection(state),
       userProfile: selectors.selectUserProfile(state),
       comicInfos: selectors.selectComicInfos(state),
       collection: selectors.selectCollection(state),

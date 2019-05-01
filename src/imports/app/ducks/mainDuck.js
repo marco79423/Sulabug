@@ -256,7 +256,7 @@ const selectLoadingComicInfos = state => state.comicInfo.loading
 
 const selectComicInfos = state => state.comicInfo.allIds.map(id => state.comicInfo.byId[id])
 
-const selectLoadingCollections = state => state.collection.loading
+const selectLoadingCollection = state => state.collection.loading
 
 const selectCollection = state => state.collection.allIds.map(id => state.collection.byId[id])
 
@@ -279,7 +279,7 @@ export const selectors = {
   selectUserProfile,
   selectLoadingComicInfos,
   selectComicInfos,
-  selectLoadingCollections,
+  selectLoadingCollection,
   selectCollection,
   selectLoadingDownloadTaskInfos,
   selectDownloadTasks,

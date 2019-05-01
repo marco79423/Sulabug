@@ -1,7 +1,6 @@
 import DownloadTask from './entities/DownloadTask'
 import ComicInfo from './entities/ComicInfo'
 import UserProfile from './entities/UserProfile'
-import Comic from './entities/Comic'
 import ComicSource from './entities/ComicSource'
 
 
@@ -92,14 +91,14 @@ export interface IComicInfoRepository {
   asyncGetAllBySearchTerm(searchTerm: string): Promise<ComicInfo[]>
 }
 
-export interface IComicRepository {
-  asyncSaveOrUpdate(comic: Comic): void
+export interface ICollectionService {
+  asyncAddComicToCollection(identity: string): Promise<void>
 
-  asyncGetById(identity: string): Promise<Comic | null>
+  asyncGetAllComicsFromCollection(): Promise<ComicInfo[]>
 
-  asyncGetAll(): Promise<Comic[]>
+  asyncCheckCollection(identity: string): Promise<boolean>
 
-  asyncDelete(identity: string): Promise<void>
+  asyncRemoveComicFromCollection(identity: string): Promise<void>
 }
 
 export interface IDownloadTaskRepository {
@@ -120,13 +119,6 @@ export interface IUserProfileRepository {
 
   asyncGet(): Promise<UserProfile>
 }
-
-export interface IComicFactory {
-  createFromJson(json: {
-    comicInfoIdentity: string,
-  }): Comic
-}
-
 
 export interface IUserProfileFactory {
   createFromJson(json: {

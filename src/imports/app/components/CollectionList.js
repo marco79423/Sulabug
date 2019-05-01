@@ -28,12 +28,12 @@ const styles = (theme) => createStyles({
 
 export class CollectionList extends React.Component {
   render() {
-    const {classes, loading, collections, comicInfos} = this.props
+    const {classes, loading, comics} = this.props
     if (loading) {
       return <LinearProgress color="secondary" variant="query"/>
     }
 
-    if (collections.length === 0) {
+    if (comics.length === 0) {
       return (
         <Card className={classes.card}>
           <CardContent>
@@ -48,11 +48,10 @@ export class CollectionList extends React.Component {
     return (
       <div className={classes.root}>
         <List>
-          {collections.map((collection) => <CollectionListItem key={collection.id}
-                                                               collection={collection}
-                                                               comicInfos={comicInfos}
-                                                               removeComicFromCollection={this.props.removeComicFromCollection}
-                                                               openReadingPage={this.props.openReadingPage}/>)}
+          {comics.map((comic) => <CollectionListItem key={comic.id}
+                                                     comic={comic}
+                                                     removeComicFromCollection={this.props.removeComicFromCollection}
+                                                     openReadingPage={this.props.openReadingPage}/>)}
         </List>
       </div>
     )

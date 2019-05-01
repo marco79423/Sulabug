@@ -1,7 +1,6 @@
 export default {
   EventPublisher: Symbol('Domain/Downloader/EventPublisher'),
 
-  ComicFactory: Symbol('Domain/Comic/ComicFactory'),
   ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
   ComicSourceFactory: Symbol('Domain/Library/ComicSourceFactory'),
   DownloadTaskFactory: Symbol('Domain/Downloader/DownloadTaskFactory'),
@@ -13,7 +12,7 @@ export default {
   FileService: Symbol('Domain/General/FileService'),
   SFComicSourceSiteService: Symbol('Infrastructure/shared/SFComicSourceSiteService'),
 
-  ComicRepository: Symbol('Domain/Comic/ComicRepository'),
+  CollectionService: Symbol('Domain/Comic/CollectionService'),
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
   UserProfileRepository: Symbol('Domain/General/UserProfileRepository'),
   ComicInfoRepository: Symbol('Domain/Library/ComicInfoRepository'),
