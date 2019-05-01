@@ -13,6 +13,7 @@ export default {
   DownloadComicService: Symbol('Domain/Downloader/DownloadComicService'),
   FileService: Symbol('Domain/General/FileService'),
   NetService: Symbol('Domain/General/NetService'),
+  SFComicSourceSiteService: Symbol('Infrastructure/shared/SFComicSourceSiteService'),
 
   ComicRepository: Symbol('Domain/Comic/ComicRepository'),
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
@@ -23,5 +24,4 @@ export default {
   FileAdapter: Symbol('Domain/General/FileAdapter'),
   NetAdapter: Symbol('Domain/General/NetAdapter'),
   TimeAdapter: Symbol('Domain/General/TimeAdapter'),
-  SFComicInfoQueryAdapter: Symbol('Domain/Library/SFComicInfoQueryAdapter'),
 }

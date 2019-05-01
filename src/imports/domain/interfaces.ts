@@ -73,11 +73,6 @@ export interface ISFComicDownloadAdapter {
   asyncDownload(downloadTask: DownloadTask): Promise<void>
 }
 
-export interface ISFComicInfoQueryAdapter {
-  asyncQueryComicInfos(): Promise<ComicInfo[]>
-}
-
-
 export interface ITimeAdapter {
   getNow(): Date
 }
@@ -173,4 +168,20 @@ export interface INetService {
   asyncDownload(targetUrl: string, targetPath: string): Promise<void>
 
   asyncGetBinaryBase64(targetUrl: string): Promise<string>
+}
+
+
+export interface IComicSourceSiteService {
+
+  asyncQueryComicInfos(): Promise<ComicInfo[]>
+
+  asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{
+    name: string,
+    pageUrl: string,
+  }[]>
+
+  asyncGetAllImagesFromChapterPageUrl(pageUrl: string): Promise<{
+    name: string,
+    imageUrl: string,
+  }[]>
 }

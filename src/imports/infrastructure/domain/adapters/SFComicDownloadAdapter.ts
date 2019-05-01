@@ -2,33 +2,35 @@ import {inject, injectable} from 'inversify'
 import * as path from 'path'
 
 import types from '../../../domain/types'
-import infraTypes from '../../infraTypes'
-import {ISFComicDownloadAdapter} from '../../../domain/interfaces'
+import {
+  IComicInfoRepository,
+  IComicSourceSiteService,
+  IFileService,
+  INetService,
+  ISFComicDownloadAdapter,
+  IUserProfileRepository
+} from '../../../domain/interfaces'
 import DownloadTask from '../../../domain/entities/DownloadTask'
-import {ISFSourceSite} from '../../shared/interfaces'
-import {IFileService, INetService, IUserProfileRepository} from '../../../domain/interfaces'
-import libraryTypes from '../../../domain/types'
-import {IComicInfoRepository} from '../../../domain/interfaces'
 
 
 @injectable()
 export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   private readonly _userProfileRepository: IUserProfileRepository
   private readonly _comicInfoRepository: IComicInfoRepository
-  private readonly _sfSourceSite: ISFSourceSite
+  private readonly _sfComicSourceSite: IComicSourceSiteService
   private readonly _fileService: IFileService
   private readonly _netService: INetService
 
   public constructor(
     @inject(types.UserProfileRepository) userProfileRepository: IUserProfileRepository,
-    @inject(libraryTypes.ComicInfoRepository) comicInfoRepository: IComicInfoRepository,
-    @inject(infraTypes.SFSourceSite) sfSourceSite: ISFSourceSite,
+    @inject(types.ComicInfoRepository) comicInfoRepository: IComicInfoRepository,
+    @inject(types.SFComicSourceSiteService) sfComicSourceSite: IComicSourceSiteService,
     @inject(types.FileService) fileService: IFileService,
     @inject(types.NetService) netService: INetService,
   ) {
     this._userProfileRepository = userProfileRepository
     this._comicInfoRepository = comicInfoRepository
-    this._sfSourceSite = sfSourceSite
+    this._sfComicSourceSite = sfComicSourceSite
     this._fileService = fileService
     this._netService = netService
   }
@@ -60,7 +62,7 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
     }
 
     await this._fileService.asyncEnsureDir(targetDir)
-    const images = await this._sfSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
+    const images = await this._sfComicSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
       await this._netService.asyncDownload(image.imageUrl, imagePath)

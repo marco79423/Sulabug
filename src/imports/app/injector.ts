@@ -1,10 +1,12 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
-  IComicFactory, IComicRepository,
+  IComicFactory,
   IComicInfoDatabaseService,
   IComicInfoFactory,
   IComicInfoRepository,
+  IComicRepository,
+  IComicSourceSiteService,
   IDBAdapter,
   IDBService,
   IDownloadComicService,
@@ -15,21 +17,19 @@ import {
   INetAdapter,
   INetService,
   ISFComicDownloadAdapter,
-  ISFComicInfoQueryAdapter,
+  ITimeAdapter,
   IUserProfileFactory,
-  IUserProfileRepository, ITimeAdapter
+  IUserProfileRepository
 } from '../domain/interfaces'
 import UserProfileRepository from '../infrastructure/domain/repositories/UserProfileRepository'
-import SFSourceSite from '../infrastructure/shared/source-sites/SFSourceSite'
 import types from '../domain/types'
 import DBAdapter from '../infrastructure/domain/adapters/DBAdapter'
 import SFComicDownloadAdapter from '../infrastructure/domain/adapters/SFComicDownloadAdapter'
 import Database from '../infrastructure/shared/database/Database'
 import ComicInfoRepository from '../infrastructure/domain/repositories/ComicInfoRepository'
 import NetAdapter from '../infrastructure/domain/adapters/NetAdapter'
-import IDatabase, {ISFSourceSite} from '../infrastructure/shared/interfaces'
+import IDatabase from '../infrastructure/shared/interfaces'
 import EventPublisher from '../domain/event/EventPublisher'
-import SFComicInfoQueryAdapter from '../infrastructure/domain/adapters/SFComicInfoQueryAdapter'
 import DownloadTaskRepository from '../infrastructure/domain/repositories/DownloadTaskRepository'
 import infraTypes from '../infrastructure/infraTypes'
 import UserProfileFactory from '../domain/factories/UserProfileFactory'
@@ -44,6 +44,7 @@ import DBService from '../domain/services/DBService'
 import ComicFactory from '../domain/factories/ComicFactory'
 import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
 import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
+import SFComicSourceSiteService from '../domain/services/SFComicSourceSiteService'
 
 
 // domain
@@ -61,7 +62,6 @@ injector.bind<INetAdapter>(types.NetAdapter).to(NetAdapter).inSingletonScope()
 injector.bind<ITimeAdapter>(types.TimeAdapter).to(TimeAdapter).inSingletonScope()
 
 // domain - library
-injector.bind<ISFComicInfoQueryAdapter>(types.SFComicInfoQueryAdapter).to(SFComicInfoQueryAdapter).inSingletonScope()
 injector.bind<IComicInfoFactory>(types.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
 injector.bind<IComicInfoRepository>(types.ComicInfoRepository).to(ComicInfoRepository).inSingletonScope()
 injector.bind<IComicInfoDatabaseService>(types.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
@@ -79,7 +79,7 @@ injector.bind<IDownloadComicService>(types.DownloadComicService).to(DownloadComi
 
 // infrastructure
 injector.bind<IDatabase>(infraTypes.Database).to(Database).inSingletonScope()
-injector.bind<ISFSourceSite>(infraTypes.SFSourceSite).to(SFSourceSite).inSingletonScope()
+injector.bind<IComicSourceSiteService>(types.SFComicSourceSiteService).to(SFComicSourceSiteService).inSingletonScope()
 
 if (process.env.NODE_ENV !== 'production') {
   injector.applyMiddleware(makeLoggerMiddleware())

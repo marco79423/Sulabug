@@ -1,53 +1,27 @@
 import {inject, injectable} from 'inversify'
 
-import {ISFSourceSite} from '../interfaces'
-import types from '../../../domain/types'
-import {INetService} from '../../../domain/interfaces'
+import {IComicInfoFactory, IComicSourceSiteService, INetService} from '../interfaces'
+import types from '../types'
+import ComicInfo from '../entities/ComicInfo'
+
 
 @injectable()
-export default class SFSourceSite implements ISFSourceSite {
+export default class SFComicSourceSiteService implements IComicSourceSiteService {
+  private readonly _comicInfoFactory: IComicInfoFactory
   private readonly _netService: INetService
 
   public constructor(
+    @inject(types.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
     @inject(types.NetService) netService: INetService,
   ) {
+    this._comicInfoFactory = comicInfoFactory
     this._netService = netService
   }
 
-  async asyncQueryComicInfos(): Promise<{
-    name: string,
-    coverDataUrl: string,
-    pageUrl: string,
-    catalog: string,
-    author: string,
-    lastUpdatedChapter: string,
-    lastUpdatedTime: Date,
-    summary: string,
-    chapters: {
-      id: string
-      order: number
-      name: string
-      sourcePageUrl: string
-    }[],
-  }[]> {
+  async asyncQueryComicInfos(): Promise<ComicInfo[]> {
     const comicListPageUrls = await this._asyncGetAllComicListPageUrls()
 
-    let allComicInfos: {
-      name: string,
-      coverDataUrl: string,
-      pageUrl: string,
-      catalog: string,
-      author: string,
-      lastUpdatedChapter: string,
-      lastUpdatedTime: Date,
-      summary: string,
-      chapters: {
-        id: string
-        order: number
-        name: string
-        sourcePageUrl: string
-      }[],
-    }[] = []
+    let allComicInfos: ComicInfo[] = []
     for (const comicListPageUrl of comicListPageUrls) {
       const comicInfos = await this._asyncQueryComicInfosFromComicListPage(comicListPageUrl)
       allComicInfos = allComicInfos.concat(comicInfos)
@@ -117,28 +91,15 @@ export default class SFSourceSite implements ISFSourceSite {
     const comicListPageUrls: string[] = []
     for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
       comicListPageUrls.push(`https://manhua.sfacg.com/catalog/default.aspx?PageIndex=${pageIndex}`)
+
+      break // TODO
     }
 
     return comicListPageUrls
   }
 
   private _asyncQueryComicInfosFromComicListPage = async (comicListPageUrl) => {
-    const comicInfos: {
-      name: string,
-      coverDataUrl: string,
-      pageUrl: string,
-      catalog: string,
-      author: string,
-      lastUpdatedChapter: string,
-      lastUpdatedTime: Date,
-      summary: string,
-      chapters: {
-        id: string
-        order: number
-        name: string
-        sourcePageUrl: string
-      }[],
-    }[] = []
+    const comicInfos: ComicInfo[] = []
     const text = await this._netService.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
@@ -196,17 +157,20 @@ export default class SFSourceSite implements ISFSourceSite {
       }
 
       console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary, chapters)
-      comicInfos.push({
-        name,
+
+      comicInfos.push(this._comicInfoFactory.createFromJson({
+        id: name,
+        name: name,
         coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,
-        pageUrl,
-        catalog,
-        author,
-        lastUpdatedChapter,
-        lastUpdatedTime,
-        summary,
-        chapters,
-      })
+        source: 'SF',
+        pageUrl: pageUrl,
+        catalog: catalog,
+        author: author,
+        lastUpdatedChapter: lastUpdatedChapter,
+        lastUpdatedTime: lastUpdatedTime.toISOString(),
+        summary: summary,
+        chapters: chapters,
+      }))
     }
 
     return comicInfos
