@@ -1,19 +1,19 @@
 import 'reflect-metadata'
 
 import {inject, injectable} from 'inversify'
-import {IComicSourceFactory, INetService} from '../interfaces'
+import {IComicSourceFactory, INetAdapter} from '../interfaces'
 import types from '../types'
 import ComicSource from '../entities/ComicSource'
 
 
 @injectable()
 export default class ComicSourceFactory implements IComicSourceFactory {
-  private readonly _netService: INetService
+  private readonly _netAdapter: INetAdapter
 
   public constructor(
-    @inject(types.NetService) netService: INetService,
+    @inject(types.NetAdapter) netAdapter: INetAdapter,
   ) {
-    this._netService = netService
+    this._netAdapter = netAdapter
   }
 
   createFromJson(json: {
@@ -27,7 +27,7 @@ export default class ComicSourceFactory implements IComicSourceFactory {
       json.name,
       json.source,
       json.pageUrl,
-      this._netService
+      this._netAdapter
     )
   }
 }

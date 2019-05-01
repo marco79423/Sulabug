@@ -171,16 +171,6 @@ export interface IFileService {
   asyncListFolder(targetPath: string): Promise<string[]>
 }
 
-export interface INetService {
-
-  asyncGetText(targetUrl: string): Promise<string>
-
-  asyncDownload(targetUrl: string, targetPath: string): Promise<void>
-
-  asyncGetBinaryBase64(targetUrl: string): Promise<string>
-}
-
-
 export interface IComicSourceSiteService {
 
   asyncGetAllComicSources(): Promise<ComicSource[]>

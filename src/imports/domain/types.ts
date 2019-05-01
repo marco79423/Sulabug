@@ -13,7 +13,6 @@ export default {
   DBService: Symbol('Domain/General/DBService'),
   DownloadComicService: Symbol('Domain/Downloader/DownloadComicService'),
   FileService: Symbol('Domain/General/FileService'),
-  NetService: Symbol('Domain/General/NetService'),
   SFComicSourceSiteService: Symbol('Infrastructure/shared/SFComicSourceSiteService'),
 
   ComicRepository: Symbol('Domain/Comic/ComicRepository'),

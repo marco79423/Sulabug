@@ -1,6 +1,6 @@
 import {Entity} from '../base-types'
 import Chapter from './Chapter'
-import {INetService} from '../interfaces'
+import {INetAdapter} from '../interfaces'
 
 export default class ComicSource extends Entity {
   readonly name: string
@@ -13,20 +13,20 @@ export default class ComicSource extends Entity {
   private _lastUpdatedTime: Date | null = null
   private _summary: string = ''
   private _chapters: Chapter[] = []
-  private readonly _netService: INetService
+  private readonly _netAdapter: INetAdapter
 
   constructor(
     identity: string,
     name: string,
     source: string,
     pageUrl: string,
-    netService: INetService,
+    netAdapter: INetAdapter,
   ) {
     super(identity)
     this.name = name
     this.source = source
     this.pageUrl = pageUrl
-    this._netService = netService
+    this._netAdapter = netAdapter
   }
 
   serialize() {
@@ -39,56 +39,56 @@ export default class ComicSource extends Entity {
   }
 
   async asyncGetCoverDataUrl(): Promise<string> {
-    if(!this._coverDataUrl) {
+    if (!this._coverDataUrl) {
       await this._asyncGetInfoFromSource()
     }
     return this._coverDataUrl
   }
 
   async asyncGetCatalog(): Promise<string> {
-    if(!this._catalog) {
+    if (!this._catalog) {
       await this._asyncGetInfoFromSource()
     }
     return this._catalog
   }
 
   async asyncGetAuthor(): Promise<string> {
-    if(!this._author) {
+    if (!this._author) {
       await this._asyncGetInfoFromSource()
     }
     return this._author
   }
 
   async asyncGetLastUpdatedChapter(): Promise<string> {
-    if(!this._lastUpdatedChapter) {
+    if (!this._lastUpdatedChapter) {
       await this._asyncGetInfoFromSource()
     }
     return this._lastUpdatedChapter
   }
 
   async asyncGetLastUpdatedTime(): Promise<Date> {
-    if(!this._lastUpdatedTime) {
+    if (!this._lastUpdatedTime) {
       await this._asyncGetInfoFromSource()
     }
     return this._lastUpdatedTime as Date
   }
 
   async asyncGetSummary(): Promise<string> {
-    if(!this._summary) {
+    if (!this._summary) {
       await this._asyncGetInfoFromSource()
     }
     return this._summary
   }
 
   async asyncGetChapters(): Promise<Chapter[]> {
-    if(!this._chapters) {
+    if (!this._chapters) {
       await this._asyncGetInfoFromSource()
     }
     return this._chapters
   }
 
   private async _asyncGetInfoFromSource() {
-    const text = await this._netService.asyncGetText(this.pageUrl)
+    const text = await this._netAdapter.asyncGetText(this.pageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
 
@@ -112,7 +112,7 @@ export default class ComicSource extends Entity {
     const summary = dom.querySelector('ul.synopsises_font>li:nth-child(2)>br').nextSibling.textContent.trim()
 
     const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
-    const coverBase64Content = await this._netService.asyncGetBinaryBase64(coverImageUrl)
+    const coverBase64Content = await this._netAdapter.asyncGetBinaryBase64(coverImageUrl)
 
     const chapters: {
       id: string

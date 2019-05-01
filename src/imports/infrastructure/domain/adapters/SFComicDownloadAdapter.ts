@@ -6,7 +6,7 @@ import {
   IComicInfoRepository,
   IComicSourceSiteService,
   IFileService,
-  INetService,
+  INetAdapter,
   ISFComicDownloadAdapter,
   IUserProfileRepository
 } from '../../../domain/interfaces'
@@ -19,20 +19,20 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
   private readonly _comicInfoRepository: IComicInfoRepository
   private readonly _sfComicSourceSite: IComicSourceSiteService
   private readonly _fileService: IFileService
-  private readonly _netService: INetService
+  private readonly _netAdapter: INetAdapter
 
   public constructor(
     @inject(types.UserProfileRepository) userProfileRepository: IUserProfileRepository,
     @inject(types.ComicInfoRepository) comicInfoRepository: IComicInfoRepository,
     @inject(types.SFComicSourceSiteService) sfComicSourceSite: IComicSourceSiteService,
     @inject(types.FileService) fileService: IFileService,
-    @inject(types.NetService) netService: INetService,
+    @inject(types.NetAdapter) netAdapter: INetAdapter,
   ) {
     this._userProfileRepository = userProfileRepository
     this._comicInfoRepository = comicInfoRepository
     this._sfComicSourceSite = sfComicSourceSite
     this._fileService = fileService
-    this._netService = netService
+    this._netAdapter = netAdapter
   }
 
   async asyncDownload(downloadTask: DownloadTask): Promise<void> {
@@ -65,7 +65,7 @@ export default class SFComicDownloadAdapter implements ISFComicDownloadAdapter {
     const images = await this._sfComicSourceSite.asyncGetAllImagesFromChapterPageUrl(pageUrl)
     for (const image of images) {
       const imagePath = path.join(targetDir, image.name)
-      await this._netService.asyncDownload(image.imageUrl, imagePath)
+      await this._netAdapter.asyncDownload(image.imageUrl, imagePath)
     }
 
     await this._fileService.asyncWriteJson(targetDir + '/.done', null)

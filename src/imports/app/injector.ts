@@ -5,7 +5,8 @@ import {
   IComicInfoDatabaseService,
   IComicInfoFactory,
   IComicInfoRepository,
-  IComicRepository, IComicSourceFactory,
+  IComicRepository,
+  IComicSourceFactory,
   IComicSourceSiteService,
   IDBAdapter,
   IDBService,
@@ -15,7 +16,6 @@ import {
   IFileAdapter,
   IFileService,
   INetAdapter,
-  INetService,
   ISFComicDownloadAdapter,
   ITimeAdapter,
   IUserProfileFactory,
@@ -38,7 +38,6 @@ import DownloadTaskFactory from '../domain/factories/DownloadTaskFactory'
 import DownloadComicService from '../domain/services/DownloadComicService'
 import ComicInfoFactory from '../domain/factories/ComicInfoFactory'
 import ComicInfoDatabaseService from '../domain/services/ComicInfoDatabaseService'
-import NetService from '../domain/services/NetService'
 import FileService from '../domain/services/FileService'
 import DBService from '../domain/services/DBService'
 import ComicFactory from '../domain/factories/ComicFactory'
@@ -55,7 +54,6 @@ const injector = new Container()
 injector.bind<IUserProfileFactory>(types.UserProfileFactory).to(UserProfileFactory).inSingletonScope()
 injector.bind<IDBService>(types.DBService).to(DBService).inSingletonScope()
 injector.bind<IFileService>(types.FileService).to(FileService).inSingletonScope()
-injector.bind<INetService>(types.NetService).to(NetService).inSingletonScope()
 injector.bind<IUserProfileRepository>(types.UserProfileRepository).to(UserProfileRepository).inSingletonScope()
 injector.bind<IDBAdapter>(types.DBAdapter).to(DBAdapter).inSingletonScope()
 injector.bind<IFileAdapter>(types.FileAdapter).to(FileAdapter).inSingletonScope()

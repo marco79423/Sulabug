@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify'
 
-import {IComicSourceFactory, IComicSourceSiteService, INetService} from '../interfaces'
+import {IComicSourceFactory, IComicSourceSiteService, INetAdapter} from '../interfaces'
 import types from '../types'
 import ComicSource from '../entities/ComicSource'
 
@@ -8,14 +8,14 @@ import ComicSource from '../entities/ComicSource'
 @injectable()
 export default class SFComicSourceSiteService implements IComicSourceSiteService {
   private readonly _comicSourceFactory: IComicSourceFactory
-  private readonly _netService: INetService
+  private readonly _netAdapter: INetAdapter
 
   public constructor(
     @inject(types.ComicSourceFactory) comicSourceFactory: IComicSourceFactory,
-    @inject(types.NetService) netService: INetService,
+    @inject(types.NetAdapter) netAdapter: INetAdapter,
   ) {
     this._comicSourceFactory = comicSourceFactory
-    this._netService = netService
+    this._netAdapter = netAdapter
   }
 
   async asyncGetAllComicSources(): Promise<ComicSource[]> {
@@ -33,7 +33,7 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
     name: string,
     pageUrl: string,
   }[]> {
-    const text = await this._netService.asyncGetText(pageUrl)
+    const text = await this._netAdapter.asyncGetText(pageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
 
@@ -56,12 +56,12 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
     imageUrl: string,
   }[]> {
     const parser = new DOMParser()
-    const dom = parser.parseFromString(await this._netService.asyncGetText(pageUrl), 'text/html')
+    const dom = parser.parseFromString(await this._netAdapter.asyncGetText(pageUrl), 'text/html')
 
     // @ts-ignore
     const url = dom.querySelector('head > script:nth-child(7)').src
 
-    const text = await this._netService.asyncGetText(url)
+    const text = await this._netAdapter.asyncGetText(url)
 
     // @ts-ignore
     const host = /hosts = \["([^"]+)"/g.exec(text)[1]
@@ -83,7 +83,7 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
     const url = `https://manhua.sfacg.com/catalog/default.aspx`
 
     const parser = new DOMParser()
-    const dom = parser.parseFromString(await this._netService.asyncGetText(url), 'text/html')
+    const dom = parser.parseFromString(await this._netAdapter.asyncGetText(url), 'text/html')
 
     // @ts-ignore
     const lastPageIndex = +dom.querySelector('.pagebarNext').previousSibling.innerText + 1
@@ -100,7 +100,7 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
 
   private _asyncQueryComicSourcesFromComicListPage = async (comicListPageUrl) => {
 
-    const text = await this._netService.asyncGetText(comicListPageUrl)
+    const text = await this._netAdapter.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
     const nodes = dom.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
