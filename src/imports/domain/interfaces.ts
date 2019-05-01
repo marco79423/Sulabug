@@ -79,10 +79,6 @@ export interface INetAdapter {
   asyncGetBinaryBase64(targetUrl: string): Promise<string>
 }
 
-export interface ISFComicDownloadAdapter {
-  asyncDownload(downloadTask: DownloadTask): Promise<void>
-}
-
 export interface ITimeAdapter {
   getNow(): Date
 }

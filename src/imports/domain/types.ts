@@ -1,8 +1,6 @@
 export default {
   EventPublisher: Symbol('Domain/Downloader/EventPublisher'),
 
-  SFComicDownloadAdapter: Symbol('Domain/Downloader/SFComicDownloadAdapter'),
-
   ComicFactory: Symbol('Domain/Comic/ComicFactory'),
   ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
   ComicSourceFactory: Symbol('Domain/Library/ComicSourceFactory'),

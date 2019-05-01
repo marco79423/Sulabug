@@ -16,7 +16,6 @@ import {
   IFileAdapter,
   IFileService,
   INetAdapter,
-  ISFComicDownloadAdapter,
   ITimeAdapter,
   IUserProfileFactory,
   IUserProfileRepository
@@ -24,7 +23,6 @@ import {
 import UserProfileRepository from '../infrastructure/domain/repositories/UserProfileRepository'
 import types from '../domain/types'
 import DBAdapter from '../infrastructure/domain/adapters/DBAdapter'
-import SFComicDownloadAdapter from '../infrastructure/domain/adapters/SFComicDownloadAdapter'
 import Database from '../infrastructure/shared/database/Database'
 import ComicInfoRepository from '../infrastructure/domain/repositories/ComicInfoRepository'
 import NetAdapter from '../infrastructure/domain/adapters/NetAdapter'
@@ -72,7 +70,6 @@ injector.bind<IComicRepository>(types.ComicRepository).to(ComicRepository).inSin
 
 // domain - downloader
 injector.bind<EventPublisher>(types.EventPublisher).to(EventPublisher).inSingletonScope()
-injector.bind<ISFComicDownloadAdapter>(types.SFComicDownloadAdapter).to(SFComicDownloadAdapter).inSingletonScope()
 injector.bind<IDownloadTaskFactory>(types.DownloadTaskFactory).to(DownloadTaskFactory).inSingletonScope()
 injector.bind<IDownloadTaskRepository>(types.DownloadTaskRepository).to(DownloadTaskRepository).inSingletonScope()
 injector.bind<IDownloadComicService>(types.DownloadComicService).to(DownloadComicService).inSingletonScope()
