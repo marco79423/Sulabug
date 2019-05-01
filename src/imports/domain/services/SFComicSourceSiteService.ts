@@ -1,32 +1,32 @@
 import {inject, injectable} from 'inversify'
 
-import {IComicInfoFactory, IComicSourceSiteService, INetService} from '../interfaces'
+import {IComicSourceFactory, IComicSourceSiteService, INetService} from '../interfaces'
 import types from '../types'
-import ComicInfo from '../entities/ComicInfo'
+import ComicSource from '../entities/ComicSource'
 
 
 @injectable()
 export default class SFComicSourceSiteService implements IComicSourceSiteService {
-  private readonly _comicInfoFactory: IComicInfoFactory
+  private readonly _comicSourceFactory: IComicSourceFactory
   private readonly _netService: INetService
 
   public constructor(
-    @inject(types.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
+    @inject(types.ComicSourceFactory) comicSourceFactory: IComicSourceFactory,
     @inject(types.NetService) netService: INetService,
   ) {
-    this._comicInfoFactory = comicInfoFactory
+    this._comicSourceFactory = comicSourceFactory
     this._netService = netService
   }
 
-  async asyncQueryComicInfos(): Promise<ComicInfo[]> {
+  async asyncGetAllComicSources(): Promise<ComicSource[]> {
     const comicListPageUrls = await this._asyncGetAllComicListPageUrls()
 
-    let allComicInfos: ComicInfo[] = []
+    let allComicSource: ComicSource[] = []
     for (const comicListPageUrl of comicListPageUrls) {
-      const comicInfos = await this._asyncQueryComicInfosFromComicListPage(comicListPageUrl)
-      allComicInfos = allComicInfos.concat(comicInfos)
+      const comicSources = await this._asyncQueryComicSourcesFromComicListPage(comicListPageUrl)
+      allComicSource = allComicSource.concat(comicSources)
     }
-    return allComicInfos
+    return allComicSource
   }
 
   async asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{
@@ -98,8 +98,8 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
     return comicListPageUrls
   }
 
-  private _asyncQueryComicInfosFromComicListPage = async (comicListPageUrl) => {
-    const comicInfos: ComicInfo[] = []
+  private _asyncQueryComicSourcesFromComicListPage = async (comicListPageUrl) => {
+    const comicSources: ComicSource[] = []
     const text = await this._netService.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
@@ -158,7 +158,7 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
 
       console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary, chapters)
 
-      comicInfos.push(this._comicInfoFactory.createFromJson({
+      comicSources.push(this._comicSourceFactory.createFromJson({
         id: name,
         name: name,
         coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,
@@ -173,7 +173,7 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
       }))
     }
 
-    return comicInfos
+    return comicSources
   }
 
   private _guessMediaTypeByUrl(url: string): string {

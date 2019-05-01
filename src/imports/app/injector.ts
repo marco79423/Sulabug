@@ -5,7 +5,7 @@ import {
   IComicInfoDatabaseService,
   IComicInfoFactory,
   IComicInfoRepository,
-  IComicRepository,
+  IComicRepository, IComicSourceFactory,
   IComicSourceSiteService,
   IDBAdapter,
   IDBService,
@@ -45,6 +45,7 @@ import ComicFactory from '../domain/factories/ComicFactory'
 import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
 import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
 import SFComicSourceSiteService from '../domain/services/SFComicSourceSiteService'
+import ComicSourceFactory from '../domain/factories/ComicSourceFactory'
 
 
 // domain
@@ -63,6 +64,7 @@ injector.bind<ITimeAdapter>(types.TimeAdapter).to(TimeAdapter).inSingletonScope(
 
 // domain - library
 injector.bind<IComicInfoFactory>(types.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
+injector.bind<IComicSourceFactory>(types.ComicSourceFactory).to(ComicSourceFactory).inSingletonScope()
 injector.bind<IComicInfoRepository>(types.ComicInfoRepository).to(ComicInfoRepository).inSingletonScope()
 injector.bind<IComicInfoDatabaseService>(types.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
 

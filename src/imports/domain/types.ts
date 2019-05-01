@@ -5,6 +5,7 @@ export default {
 
   ComicFactory: Symbol('Domain/Comic/ComicFactory'),
   ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
+  ComicSourceFactory: Symbol('Domain/Library/ComicSourceFactory'),
   DownloadTaskFactory: Symbol('Domain/Downloader/DownloadTaskFactory'),
   UserProfileFactory: Symbol('Domain/General/UserProfileFactory'),
 

@@ -2,9 +2,31 @@ import DownloadTask from './entities/DownloadTask'
 import ComicInfo from './entities/ComicInfo'
 import UserProfile from './entities/UserProfile'
 import Comic from './entities/Comic'
+import ComicSource from './entities/ComicSource'
 
 
 export interface IComicInfoFactory {
+  createFromJson(json: {
+    id: string,
+    name: string,
+    coverDataUrl: string,
+    source: string,
+    pageUrl: string,
+    catalog: string,
+    author: string,
+    lastUpdatedChapter: string,
+    lastUpdatedTime: string,
+    summary: string,
+    chapters: {
+      id: string
+      order: number
+      name: string
+      sourcePageUrl: string
+    }[],
+  }): ComicInfo
+}
+
+export interface IComicSourceFactory {
   createFromJson(json: {
     id: string,
     name: string,
@@ -173,7 +195,7 @@ export interface INetService {
 
 export interface IComicSourceSiteService {
 
-  asyncQueryComicInfos(): Promise<ComicInfo[]>
+  asyncGetAllComicSources(): Promise<ComicSource[]>
 
   asyncGetAllChaptersByComicPageUrl(pageUrl: string): Promise<{
     name: string,
