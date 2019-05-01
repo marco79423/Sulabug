@@ -39,7 +39,27 @@ export default class ComicInfoDatabaseService implements IComicInfoDatabaseServi
   asyncUpdateAndReturn = async (): Promise<ComicInfo[]> => {
     const comicSources = await this._sfComicSourceSiteService.asyncGetAllComicSources()
     for (let comicSource of comicSources) {
-      await this._comicInfoRepository.asyncSaveOrUpdate(this._comicInfoFactory.createFromJson(comicSource.serialize()))
+      const coverDataUrl = await comicSource.asyncGetCoverDataUrl()
+      const catalog = await comicSource.asyncGetCatalog()
+      const author = await comicSource.asyncGetAuthor()
+      const lastUpdatedChapter = await comicSource.asyncGetLastUpdatedChapter()
+      const lastUpdatedTime = await comicSource.asyncGetLastUpdatedTime()
+      const summary = await comicSource.asyncGetSummary()
+      const chapters = await comicSource.asyncGetChapters()
+
+      await this._comicInfoRepository.asyncSaveOrUpdate(this._comicInfoFactory.createFromJson({
+        id: comicSource.name,
+        name: comicSource.name,
+        coverDataUrl: coverDataUrl,
+        source: comicSource.source,
+        pageUrl: comicSource.pageUrl,
+        catalog: catalog,
+        author: author,
+        lastUpdatedChapter: lastUpdatedChapter,
+        lastUpdatedTime: lastUpdatedTime.toISOString(),
+        summary: summary,
+        chapters: chapters.map(chapter => chapter.serialize())
+      }))
     }
 
     const userProfile = await this._userProfileRepository.asyncGet()

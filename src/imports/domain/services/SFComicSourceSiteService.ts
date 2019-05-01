@@ -99,11 +99,13 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
   }
 
   private _asyncQueryComicSourcesFromComicListPage = async (comicListPageUrl) => {
-    const comicSources: ComicSource[] = []
+
     const text = await this._netService.asyncGetText(comicListPageUrl)
     const parser = new DOMParser()
     const dom = parser.parseFromString(text, 'text/html')
     const nodes = dom.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
+
+    const comicSources: ComicSource[] = []
     for (const node of nodes) {
       // @ts-ignore
       const name = node.text
@@ -111,76 +113,14 @@ export default class SFComicSourceSiteService implements IComicSourceSiteService
       // @ts-ignore
       const pageUrl = node.href
 
-      const text = await this._netService.asyncGetText(pageUrl)
-      const parser = new DOMParser()
-      const dom = parser.parseFromString(text, 'text/html')
-
-      // @ts-ignore
-      const coverImageUrl = dom.querySelector('body > div:nth-child(6) > div.plate_top > ul.synopsises_font > li.cover > img').src
-
-      // @ts-ignore
-      const catalog = dom.querySelector('ul.synopsises_font>li:nth-child(2)>a:nth-child(10)').textContent as string
-
-      // @ts-ignore
-      const author = dom.querySelector('ul.synopsises_font>li:nth-child(2)>a:nth-child(8)').textContent as string
-
-      // @ts-ignore
-      const lastUpdatedChapter = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(13)').textContent as string
-
-      // @ts-ignore
-      const dateString = dom.querySelector('ul.synopsises_font>li:nth-child(2)>span:nth-child(16)').nextSibling.textContent.trim()
-      const lastUpdatedTime = new Date(dateString)
-
-      // @ts-ignore
-      const summary = dom.querySelector('ul.synopsises_font>li:nth-child(2)>br').nextSibling.textContent.trim()
-
-      const coverImageType = this._guessMediaTypeByUrl(coverImageUrl)
-      const coverBase64Content = await this._netService.asyncGetBinaryBase64(coverImageUrl)
-
-      const chapters: {
-        id: string
-        order: number
-        name: string
-        sourcePageUrl: string
-      }[] = []
-      const nodes = dom.querySelectorAll('.comic_Serial_list > a')
-      for (const [index, node] of nodes.entries()) {
-        chapters.push({
-          // @ts-ignore
-          id: `${name}-${node.innerText}`,
-          order: nodes.length - index - 1,
-          // @ts-ignore
-          name: node.innerText,
-          // @ts-ignore
-          sourcePageUrl: 'https://manhua.sfacg.com' + node.pathname,
-        })
-      }
-
-      console.log(name, pageUrl, catalog, author, lastUpdatedChapter, lastUpdatedTime, summary, chapters)
-
       comicSources.push(this._comicSourceFactory.createFromJson({
         id: name,
         name: name,
-        coverDataUrl: `data:${coverImageType};base64,${coverBase64Content}`,
         source: 'SF',
         pageUrl: pageUrl,
-        catalog: catalog,
-        author: author,
-        lastUpdatedChapter: lastUpdatedChapter,
-        lastUpdatedTime: lastUpdatedTime.toISOString(),
-        summary: summary,
-        chapters: chapters,
       }))
     }
 
     return comicSources
-  }
-
-  private _guessMediaTypeByUrl(url: string): string {
-    if (url.endsWith('.png')) {
-      return 'image/png'
-    } else {
-      return 'image/jpeg'
-    }
   }
 }

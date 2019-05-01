@@ -30,21 +30,9 @@ export interface IComicSourceFactory {
   createFromJson(json: {
     id: string,
     name: string,
-    coverDataUrl: string,
     source: string,
     pageUrl: string,
-    catalog: string,
-    author: string,
-    lastUpdatedChapter: string,
-    lastUpdatedTime: string,
-    summary: string,
-    chapters: {
-      id: string
-      order: number
-      name: string
-      sourcePageUrl: string
-    }[],
-  }): ComicInfo
+  }): ComicSource
 }
 
 export interface IDownloadTaskFactory {
