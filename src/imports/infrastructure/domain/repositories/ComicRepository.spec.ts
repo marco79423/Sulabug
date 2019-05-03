@@ -1,15 +1,15 @@
 import 'reflect-metadata'
 
 import IDatabase from '../../shared/interfaces'
-import ComicInfoFactory from '../../../domain/factories/ComicInfoFactory'
-import ComicInfoRepository from './ComicInfoRepository'
+import ComicFactory from '../../../domain/factories/ComicFactory'
+import ComicRepository from './ComicRepository'
 
-describe('ComicInfoRepository', () => {
+describe('ComicRepository', () => {
   describe('asyncSaveOrUpdate', () => {
     it('will save or update the target comic info into repository', async () => {
-      const comicInfoFactory = new ComicInfoFactory()
+      const comicFactory = new ComicFactory()
 
-      const comicInfo = comicInfoFactory.createFromJson({
+      const comic = comicFactory.createFromJson({
         id: 'id',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
@@ -29,22 +29,22 @@ describe('ComicInfoRepository', () => {
         asyncFindOne: jest.fn(),
       }
 
-      const comicInfoRepository = new ComicInfoRepository(
-        comicInfoFactory,
+      const comicRepository = new ComicRepository(
+        comicFactory,
         database
       )
 
-      await comicInfoRepository.asyncSaveOrUpdate(comicInfo)
+      await comicRepository.asyncSaveOrUpdate(comic)
 
-      expect(database.asyncSaveOrUpdate).toBeCalledWith('comic_info', comicInfo.serialize())
+      expect(database.asyncSaveOrUpdate).toBeCalledWith('comic', comic.serialize())
     })
   })
 
   describe('asyncGetById', () => {
     it('will get comic info by id', async () => {
-      const comicInfoFactory = new ComicInfoFactory()
+      const comicFactory = new ComicFactory()
 
-      const comicInfo = comicInfoFactory.createFromJson({
+      const comic = comicFactory.createFromJson({
         id: 'id',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
@@ -61,25 +61,25 @@ describe('ComicInfoRepository', () => {
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
         asyncFind: jest.fn(),
-        asyncFindOne: jest.fn(() => comicInfo.serialize()),
+        asyncFindOne: jest.fn(() => comic.serialize()),
       }
 
-      const comicInfoRepository = new ComicInfoRepository(
-        comicInfoFactory,
+      const comicRepository = new ComicRepository(
+        comicFactory,
         database
       )
 
-      const result = await comicInfoRepository.asyncGetById('id')
+      const result = await comicRepository.asyncGetById('id')
 
-      expect(database.asyncFindOne).toBeCalledWith('comic_info', {
+      expect(database.asyncFindOne).toBeCalledWith('comic', {
         id: 'id'
       })
 
-      expect(result.serialize()).toEqual(comicInfo.serialize())
+      expect(result.serialize()).toEqual(comic.serialize())
     })
 
     it('will get null when there is no comic info with the same id', async () => {
-      const comicInfoFactory = new ComicInfoFactory()
+      const comicFactory = new ComicFactory()
 
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
@@ -87,15 +87,15 @@ describe('ComicInfoRepository', () => {
         asyncFindOne: jest.fn(() => null),
       }
 
-      const comicInfoRepository = new ComicInfoRepository(
-        comicInfoFactory,
+      const comicRepository = new ComicRepository(
+        comicFactory,
         database
       )
 
-      await expect(comicInfoRepository.asyncGetById('id'))
+      await expect(comicRepository.asyncGetById('id'))
         .rejects.toThrow(new Error('Target comic info not found'))
 
-      expect(database.asyncFindOne).toBeCalledWith('comic_info', {
+      expect(database.asyncFindOne).toBeCalledWith('comic', {
         id: 'id'
       })
     })
@@ -103,9 +103,9 @@ describe('ComicInfoRepository', () => {
 
   describe('asyncGetAllBySearchTerm', () => {
     it('will get filtered comic info with search term', async () => {
-      const comicInfoFactory = new ComicInfoFactory()
+      const comicFactory = new ComicFactory()
 
-      const comicInfo = comicInfoFactory.createFromJson({
+      const comic = comicFactory.createFromJson({
         id: 'id',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
@@ -121,24 +121,24 @@ describe('ComicInfoRepository', () => {
 
       const database: IDatabase = {
         asyncSaveOrUpdate: jest.fn(),
-        asyncFind: jest.fn(() => [comicInfo.serialize()]),
+        asyncFind: jest.fn(() => [comic.serialize()]),
         asyncFindOne: jest.fn(),
       }
 
-      const comicInfoRepository = new ComicInfoRepository(
-        comicInfoFactory,
+      const comicRepository = new ComicRepository(
+        comicFactory,
         database
       )
 
-      const result = await comicInfoRepository.asyncGetAllBySearchTerm('searchTerm')
+      const result = await comicRepository.asyncGetAllBySearchTerm('searchTerm')
 
-      expect(database.asyncFind).toBeCalledWith('comic_info', {
+      expect(database.asyncFind).toBeCalledWith('comic', {
         name: {
           $regex: `.*searchTerm.*`,
         }
       })
 
-      expect(result).toEqual([comicInfo])
+      expect(result).toEqual([comic])
     })
   })
 })

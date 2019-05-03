@@ -2,9 +2,9 @@ import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
   ICollectionService,
-  IComicInfoDatabaseService,
-  IComicInfoFactory,
-  IComicInfoRepository,
+  IComicDatabaseService,
+  IComicFactory,
+  IComicRepository,
   IComicSourceFactory,
   IComicSourceSiteService,
   IDBAdapter,
@@ -23,7 +23,7 @@ import UserProfileRepository from '../infrastructure/domain/repositories/UserPro
 import types from '../domain/types'
 import DBAdapter from '../infrastructure/domain/adapters/DBAdapter'
 import Database from '../infrastructure/shared/database/Database'
-import ComicInfoRepository from '../infrastructure/domain/repositories/ComicInfoRepository'
+import ComicRepository from '../infrastructure/domain/repositories/ComicRepository'
 import NetAdapter from '../infrastructure/domain/adapters/NetAdapter'
 import IDatabase from '../infrastructure/shared/interfaces'
 import EventPublisher from '../domain/event/EventPublisher'
@@ -33,8 +33,8 @@ import UserProfileFactory from '../domain/factories/UserProfileFactory'
 import FileAdapter from '../infrastructure/domain/adapters/FileAdapter'
 import DownloadTaskFactory from '../domain/factories/DownloadTaskFactory'
 import DownloadComicService from '../domain/services/DownloadComicService'
-import ComicInfoFactory from '../domain/factories/ComicInfoFactory'
-import ComicInfoDatabaseService from '../domain/services/ComicInfoDatabaseService'
+import ComicFactory from '../domain/factories/ComicFactory'
+import ComicDatabaseService from '../domain/services/ComicDatabaseService'
 import FileService from '../domain/services/FileService'
 import DBService from '../domain/services/DBService'
 import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
@@ -57,10 +57,10 @@ injector.bind<INetAdapter>(types.NetAdapter).to(NetAdapter).inSingletonScope()
 injector.bind<ITimeAdapter>(types.TimeAdapter).to(TimeAdapter).inSingletonScope()
 
 // domain - library
-injector.bind<IComicInfoFactory>(types.ComicInfoFactory).to(ComicInfoFactory).inSingletonScope()
+injector.bind<IComicFactory>(types.ComicFactory).to(ComicFactory).inSingletonScope()
 injector.bind<IComicSourceFactory>(types.ComicSourceFactory).to(ComicSourceFactory).inSingletonScope()
-injector.bind<IComicInfoRepository>(types.ComicInfoRepository).to(ComicInfoRepository).inSingletonScope()
-injector.bind<IComicInfoDatabaseService>(types.ComicInfoDatabaseService).to(ComicInfoDatabaseService).inSingletonScope()
+injector.bind<IComicRepository>(types.ComicRepository).to(ComicRepository).inSingletonScope()
+injector.bind<IComicDatabaseService>(types.ComicDatabaseService).to(ComicDatabaseService).inSingletonScope()
 
 // domain - collection
 injector.bind<ICollectionService>(types.CollectionService).to(CollectionService).inSingletonScope()

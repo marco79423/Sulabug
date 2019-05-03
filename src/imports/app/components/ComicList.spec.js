@@ -15,7 +15,7 @@ describe('ComicList', () => {
                  }}
                  comics={[]}
                  addComicToCollection={() => {}}
-                 updateComicInfoDatabase={() => {}}/>
+                 updateComicDatabase={() => {}}/>
     )
     expect(component.toJSON()).toMatchSnapshot()
   })

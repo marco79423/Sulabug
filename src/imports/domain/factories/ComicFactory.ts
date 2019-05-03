@@ -1,14 +1,14 @@
 import 'reflect-metadata'
 
 import {inject, injectable} from 'inversify'
-import ComicInfo from '../entities/ComicInfo'
+import Comic from '../entities/Comic'
 import Chapter from '../entities/Chapter'
-import {IComicInfoFactory, IComicSourceFactory} from '../interfaces'
+import {IComicFactory, IComicSourceFactory} from '../interfaces'
 import types from '../types'
 
 
 @injectable()
-export default class ComicInfoFactory implements IComicInfoFactory {
+export default class ComicFactory implements IComicFactory {
   private readonly _comicSourceFactory: IComicSourceFactory
 
   public constructor(
@@ -34,8 +34,8 @@ export default class ComicInfoFactory implements IComicInfoFactory {
       name: string
       sourcePageUrl: string
     }[],
-  }): ComicInfo {
-    return new ComicInfo(
+  }): Comic {
+    return new Comic(
       json.id,
       json.name,
       json.coverDataUrl,

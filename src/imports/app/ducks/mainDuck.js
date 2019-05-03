@@ -9,20 +9,20 @@ export const ActionTypes = {
   WAIT_FOR_QUERYING_INIT_DATA_FROM_DB: 'WAIT_FOR_QUERYING_INIT_DATA_FROM_DB',
   SYNC_INIT_DATA_TO_STATE: 'SYNC_INIT_DATA_TO_STATE',
 
-  // update comic info database
-  UPDATE_COMIC_INFO_DATABASE: 'UPDATE_COMIC_INFO_DATABASE',
-  SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL',
-  WAIT_FOR_COMIC_INFO_DATABASE_UPDATE: 'WAIT_FOR_COMIC_INFO_DATABASE_UPDATE',
-  SYNC_COMIC_INFOS_TO_STATE: 'SYNC_COMIC_INFOS_TO_STATE',
-  SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL: 'SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL',
+  // update comic database
+  UPDATE_COMIC_DATABASE: 'UPDATE_COMIC_DATABASE',
+  SEND_COMIC_DATABASE_EMPTY_SIGNAL: 'SEND_COMIC_DATABASE_EMPTY_SIGNAL',
+  WAIT_FOR_COMIC_DATABASE_UPDATE: 'WAIT_FOR_COMIC_DATABASE_UPDATE',
+  SYNC_COMICS_TO_STATE: 'SYNC_COMICS_TO_STATE',
+  SEND_COMIC_DATABASE_UPDATED_SIGNAL: 'SEND_COMIC_DATABASE_UPDATED_SIGNAL',
 
   // search comic
   SEARCH_COMIC: 'SEARCH_COMIC',
-  WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB: 'WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB',
+  WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB: 'WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB',
 
-  // add comic info to collection
+  // add comic to collection
   ADD_COMIC_TO_COLLECTION: 'ADD_COMIC_TO_COLLECTION',
-  WAIT_FOR_ADDING_COMIC_INFO_COLLECTION: 'WAIT_FOR_ADDING_COMIC_INFO_COLLECTION',
+  WAIT_FOR_ADDING_COMIC_COLLECTION: 'WAIT_FOR_ADDING_COMIC_COLLECTION',
 
   // remove comic from collection
   REMOVE_COMIC_FROM_COLLECTION: 'REMOVE_COMIC_FROM_COLLECTION',
@@ -61,19 +61,19 @@ export const actions = {
   syncInitDataToState: createAction(ActionTypes.SYNC_INIT_DATA_TO_STATE),
 
   // auto update comic info database
-  sendComicInfoDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL),
-  updateComicInfoDatabase: createAction(ActionTypes.UPDATE_COMIC_INFO_DATABASE),
-  waitForComicInfoDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_INFO_DATABASE_UPDATE),
-  syncComicInfosToState: createAction(ActionTypes.SYNC_COMIC_INFOS_TO_STATE),
-  sendComicInfoDatabaseUpdatedSignal: createAction(ActionTypes.SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL),
+  sendComicDatabaseEmptySignal: createAction(ActionTypes.SEND_COMIC_DATABASE_EMPTY_SIGNAL),
+  updateComicDatabase: createAction(ActionTypes.UPDATE_COMIC_DATABASE),
+  waitForComicDatabaseUpdate: createAction(ActionTypes.WAIT_FOR_COMIC_DATABASE_UPDATE),
+  syncComicsToState: createAction(ActionTypes.SYNC_COMICS_TO_STATE),
+  sendComicDatabaseUpdatedSignal: createAction(ActionTypes.SEND_COMIC_DATABASE_UPDATED_SIGNAL),
 
   // search comic
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
-  waitForResultOfSearchingComicInfosFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB),
+  waitForResultOfSearchingComicsFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB),
 
   // add comic to collection
   addComicToCollection: createAction(ActionTypes.ADD_COMIC_TO_COLLECTION),
-  waitForAddingComicToCollections: createAction(ActionTypes.WAIT_FOR_ADDING_COMIC_INFO_COLLECTION),
+  waitForAddingComicToCollections: createAction(ActionTypes.WAIT_FOR_ADDING_COMIC_COLLECTION),
 
   // remove comic from collection
   removeComicFromCollection: createAction(ActionTypes.REMOVE_COMIC_FROM_COLLECTION),
@@ -105,7 +105,7 @@ export const actions = {
 
 export const defaultState = {
   userProfile: null,
-  comicInfo: {
+  comic: {
     loading: false,
     allIds: [],
     byId: {},
@@ -126,7 +126,7 @@ export const defaultState = {
 export const reducer = handleActions({
   [ActionTypes.WAIT_FOR_QUERYING_INIT_DATA_FROM_DB]: (state) => ({
     ...state,
-    comicInfo: {
+    comic: {
       loading: true,
       allIds: [],
       byId: {},
@@ -142,21 +142,21 @@ export const reducer = handleActions({
       byId: {},
     },
   }),
-  [ActionTypes.SYNC_INIT_DATA_TO_STATE]: (state, {payload: {userProfile, comicInfos, comics, downloadTasks}}) => ({
+  [ActionTypes.SYNC_INIT_DATA_TO_STATE]: (state, {payload: {userProfile, comics, collection, downloadTasks}}) => ({
     ...state,
     userProfile,
-    comicInfo: {
+    comic: {
       loading: false,
-      allIds: comicInfos.map(comicInfo => comicInfo.id),
-      byId: comicInfos.reduce((comicInfoMap, comicInfo) => ({
-        ...comicInfoMap,
-        [comicInfo.id]: comicInfo,
+      allIds: comics.map(comic => comic.id),
+      byId: comics.reduce((comicMap, comic) => ({
+        ...comicMap,
+        [comic.id]: comic,
       }), {}),
     },
     collection: {
       loading: false,
-      allIds: comics.map(comic => comic.id),
-      byId: comics.reduce((comicMap, comic) => ({
+      allIds: collection.map(comic => comic.id),
+      byId: collection.reduce((comicMap, comic) => ({
         ...comicMap,
         [comic.id]: comic,
       }), {}),
@@ -170,14 +170,14 @@ export const reducer = handleActions({
       }), {}),
     },
   }),
-  [ActionTypes.SYNC_COMIC_INFOS_TO_STATE]: (state, action) => ({
+  [ActionTypes.SYNC_COMICS_TO_STATE]: (state, action) => ({
     ...state,
-    comicInfo: {
+    comic: {
       loading: false,
-      allIds: action.payload.map(comicInfo => comicInfo.id),
-      byId: action.payload.reduce((comicInfoMap, comicInfo) => ({
-        ...comicInfoMap,
-        [comicInfo.id]: comicInfo,
+      allIds: action.payload.map(comic => comic.id),
+      byId: action.payload.reduce((comicMap, comic) => ({
+        ...comicMap,
+        [comic.id]: comic,
       }), {}),
     },
   }),
@@ -200,9 +200,9 @@ export const reducer = handleActions({
       }), {}),
     },
   }),
-  [ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMIC_INFOS_FROM_DB]: (state) => ({
+  [ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB]: (state) => ({
     ...state,
-    comicInfo: {
+    comic: {
       loading: true,
       allIds: [],
       byId: {},
@@ -252,9 +252,9 @@ const selectLoadingUserProfile = state => !state.userProfile
 
 const selectUserProfile = state => state.userProfile
 
-const selectLoadingComicInfos = state => state.comicInfo.loading
+const selectLoadingComics = state => state.comic.loading
 
-const selectComicInfos = state => state.comicInfo.allIds.map(id => state.comicInfo.byId[id])
+const selectComics = state => state.comic.allIds.map(id => state.comic.byId[id])
 
 const selectLoadingCollection = state => state.collection.loading
 
@@ -264,10 +264,10 @@ const selectLoadingDownloadTasks = state => state.downloadTask.loading
 
 const selectLoadingDownloadTaskInfos = createSelector(
   [
-    selectLoadingComicInfos,
+    selectLoadingComics,
     selectLoadingDownloadTasks,
   ],
-  (loadingComicInfos, loadingDownloadTask) => loadingComicInfos || loadingDownloadTask
+  (loadingComics, loadingDownloadTask) => loadingComics || loadingDownloadTask
 )
 
 const selectDownloadTasks = state => state.downloadTask.allIds.map(id => state.downloadTask.byId[id])
@@ -277,8 +277,8 @@ const selectComicImages = state => state.comicImages
 export const selectors = {
   selectLoadingUserProfile,
   selectUserProfile,
-  selectLoadingComicInfos,
-  selectComicInfos,
+  selectLoadingComics,
+  selectComics,
   selectLoadingCollection,
   selectCollection,
   selectLoadingDownloadTaskInfos,

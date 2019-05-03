@@ -103,7 +103,7 @@ class ReadingPage extends React.Component {
   state = {
     open: true,
     chapterIdx: 0,
-    comicInfoId: null,
+    comicId: null,
     comicImages: [],
   }
 
@@ -120,10 +120,10 @@ class ReadingPage extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.comicInfoId !== prevState.comicInfoId) {
-      nextProps.loadComicImagesFromCollection(nextProps.match.params.comicInfoId)
+    if (nextProps.match.params.comicId !== prevState.comicId) {
+      nextProps.loadComicImagesFromCollection(nextProps.match.params.comicId)
       return {
-        comicInfoId: nextProps.match.params.comicInfoId,
+        comicId: nextProps.match.params.comicId,
       }
     }
 

@@ -1,42 +1,42 @@
 import {inject, injectable} from 'inversify'
 
 import {
-  IComicInfoDatabaseService, IComicInfoFactory,
-  IComicInfoRepository,
+  IComicDatabaseService, IComicFactory,
+  IComicRepository,
   IComicSourceSiteService,
   ITimeAdapter,
   IUserProfileFactory,
   IUserProfileRepository
 } from '../interfaces'
 import types from '../types'
-import ComicInfo from '../entities/ComicInfo'
+import Comic from '../entities/Comic'
 
 @injectable()
-export default class ComicInfoDatabaseService implements IComicInfoDatabaseService {
+export default class ComicDatabaseService implements IComicDatabaseService {
   private readonly _sfComicSourceSiteService: IComicSourceSiteService
-  private readonly _comicInfoFactory: IComicInfoFactory
-  private readonly _comicInfoRepository: IComicInfoRepository
+  private readonly _comicFactory: IComicFactory
+  private readonly _comicRepository: IComicRepository
   private readonly _userProfileRepository: IUserProfileRepository
   private readonly _userProfileFactory: IUserProfileFactory
   private readonly _timeAdapter: ITimeAdapter
 
   constructor(
     @inject(types.SFComicSourceSiteService) sfComicSourceSiteService: IComicSourceSiteService,
-    @inject(types.ComicInfoFactory) comicInfoFactory: IComicInfoFactory,
-    @inject(types.ComicInfoRepository) comicInfoRepository: IComicInfoRepository,
+    @inject(types.ComicFactory) comicFactory: IComicFactory,
+    @inject(types.ComicRepository) comicRepository: IComicRepository,
     @inject(types.UserProfileRepository) userProfileRepository: IUserProfileRepository,
     @inject(types.UserProfileFactory) userProfileFactory: IUserProfileFactory,
     @inject(types.TimeAdapter) timeAdapter: ITimeAdapter,
   ) {
     this._sfComicSourceSiteService = sfComicSourceSiteService
-    this._comicInfoFactory = comicInfoFactory
-    this._comicInfoRepository = comicInfoRepository
+    this._comicFactory = comicFactory
+    this._comicRepository = comicRepository
     this._userProfileRepository = userProfileRepository
     this._userProfileFactory = userProfileFactory
     this._timeAdapter = timeAdapter
   }
 
-  asyncUpdateAndReturn = async (): Promise<ComicInfo[]> => {
+  asyncUpdateAndReturn = async (): Promise<Comic[]> => {
     const comicSources = await this._sfComicSourceSiteService.asyncGetAllComicSources()
     for (let comicSource of comicSources) {
       const coverDataUrl = await comicSource.asyncGetCoverDataUrl()
@@ -47,7 +47,7 @@ export default class ComicInfoDatabaseService implements IComicInfoDatabaseServi
       const summary = await comicSource.asyncGetSummary()
       const chapters = await comicSource.asyncGetChapters()
 
-      await this._comicInfoRepository.asyncSaveOrUpdate(this._comicInfoFactory.createFromJson({
+      await this._comicRepository.asyncSaveOrUpdate(this._comicFactory.createFromJson({
         id: comicSource.name,
         name: comicSource.name,
         coverDataUrl: coverDataUrl,
@@ -69,6 +69,6 @@ export default class ComicInfoDatabaseService implements IComicInfoDatabaseServi
     })
     await this._userProfileRepository.asyncSaveOrUpdate(newUserProfile)
 
-    return await this._comicInfoRepository.asyncGetAllBySearchTerm('')
+    return await this._comicRepository.asyncGetAllBySearchTerm('')
   }
 }

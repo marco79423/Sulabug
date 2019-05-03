@@ -1,10 +1,10 @@
 import DownloadTask from './entities/DownloadTask'
-import ComicInfo from './entities/ComicInfo'
+import Comic from './entities/Comic'
 import UserProfile from './entities/UserProfile'
 import ComicSource from './entities/ComicSource'
 
 
-export interface IComicInfoFactory {
+export interface IComicFactory {
   createFromJson(json: {
     id: string,
     name: string,
@@ -22,7 +22,7 @@ export interface IComicInfoFactory {
       name: string
       sourcePageUrl: string
     }[],
-  }): ComicInfo
+  }): Comic
 }
 
 export interface IComicSourceFactory {
@@ -37,7 +37,7 @@ export interface IComicSourceFactory {
 export interface IDownloadTaskFactory {
   createFromJson(json: {
     id: string,
-    comicInfoId: string,
+    comicId: string,
     name: string,
     coverDataUrl: string
   }): DownloadTask
@@ -82,19 +82,19 @@ export interface ITimeAdapter {
   getNow(): Date
 }
 
-export interface IComicInfoRepository {
+export interface IComicRepository {
 
-  asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
+  asyncSaveOrUpdate(comic: Comic): Promise<void>
 
-  asyncGetById(identity: string): Promise<ComicInfo>
+  asyncGetById(identity: string): Promise<Comic>
 
-  asyncGetAllBySearchTerm(searchTerm: string): Promise<ComicInfo[]>
+  asyncGetAllBySearchTerm(searchTerm: string): Promise<Comic[]>
 }
 
 export interface ICollectionService {
   asyncAddComicToCollection(identity: string): Promise<void>
 
-  asyncGetAllComicsFromCollection(): Promise<ComicInfo[]>
+  asyncGetAllComicsFromCollection(): Promise<Comic[]>
 
   asyncCheckCollection(identity: string): Promise<boolean>
 
@@ -127,8 +127,8 @@ export interface IUserProfileFactory {
   }): UserProfile
 }
 
-export interface IComicInfoDatabaseService {
-  asyncUpdateAndReturn(): Promise<ComicInfo[]>
+export interface IComicDatabaseService {
+  asyncUpdateAndReturn(): Promise<Comic[]>
 }
 
 export interface IDBService {

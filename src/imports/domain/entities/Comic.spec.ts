@@ -1,9 +1,9 @@
-import ComicInfoFactory from '../factories/ComicInfoFactory'
+import ComicFactory from '../factories/ComicFactory'
 
-describe('ComicInfo', () => {
+describe('Comic', () => {
 
   describe('serialize', () => {
-    it('will serialize the ComicInfo instance to json data', () => {
+    it('will serialize the Comic instance to json data', () => {
       const jsonData = {
         id: 'id',
         name: 'name',
@@ -25,9 +25,9 @@ describe('ComicInfo', () => {
         ]
       }
 
-      const comicInfoFactory = new ComicInfoFactory()
-      const comicInfo = comicInfoFactory.createFromJson(jsonData)
-      expect(comicInfo.serialize()).toEqual(jsonData)
+      const comicFactory = new ComicFactory()
+      const comic = comicFactory.createFromJson(jsonData)
+      expect(comic.serialize()).toEqual(jsonData)
     })
   })
 })

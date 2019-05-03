@@ -6,11 +6,11 @@ import {actions} from '../ducks/mainDuck'
 import {
   createDownloadTaskEpic,
   initializeDataFromDBWhenAppStartsEpic,
-  searchComicInfosEpic,
-  sendSignalWhenComicInfoDBIsEmptyEpic,
+  searchComicsEpic,
+  sendSignalWhenComicDBIsEmptyEpic,
   startToDownloadComicWhenNewDownloadTaskCreatedEpic,
   syncDownloadTasksToStateWhenDownloadStatusChanged,
-  transformDownloadTaskUpdatedEventToSignalEpic, updateComicInfoDatabaseEpic,
+  transformDownloadTaskUpdatedEventToSignalEpic, updateComicDatabaseEpic,
   updateUserProfileEpic
 } from './mainEpic'
 import {toArray} from 'rxjs/operators'
@@ -18,13 +18,13 @@ import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEven
 import UserProfile from '../../domain/entities/UserProfile'
 import UserProfileFactory from '../../domain/factories/UserProfileFactory'
 import {
-  IComicInfoDatabaseService,
-  IComicInfoRepository,
+  IComicDatabaseService,
+  IComicRepository,
   IDownloadComicService,
   IDownloadTaskRepository,
   IUserProfileRepository
 } from '../../domain/interfaces'
-import ComicInfoFactory from '../../domain/factories/ComicInfoFactory'
+import ComicFactory from '../../domain/factories/ComicFactory'
 import DownloadTaskFactory from '../../domain/factories/DownloadTaskFactory'
 
 describe('initializeDataFromDBWhenAppStartsEpic', () => {
@@ -41,9 +41,9 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
 
     userProfileRepository.asyncGet = jest.fn(() => Promise.resolve(userProfile))
 
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfos = [
-      comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comics = [
+      comicFactory.createFromJson({
         id: 'id-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
@@ -56,7 +56,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
         summary: 'summary-1',
         chapters: [],
       }),
-      comicInfoFactory.createFromJson({
+      comicFactory.createFromJson({
         id: 'id-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
@@ -71,14 +71,14 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
       })
     ]
 
-    const comicInfoInfoRepository = {
-      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
+    const comicRepository = {
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comics)),
     }
 
     const comicFactory = new ComicFactory()
     const comics = [
-      comicFactory.createFromJson({comicInfoIdentity: 'comicInfoIdentity-1'}),
-      comicFactory.createFromJson({comicInfoIdentity: 'comicInfoIdentity-2'}),
+      comicFactory.createFromJson({comicIdentity: 'comicIdentity-1'}),
+      comicFactory.createFromJson({comicIdentity: 'comicIdentity-2'}),
     ]
     const comicRepository = {
       asyncGetAll: jest.fn(() => Promise.resolve(comics))
@@ -95,13 +95,13 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
         id: 'id-1',
-        comicInfoId: 'comicInfoId-1',
+        comicId: 'comicId-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
       }),
       downloadTaskFactory.createFromJson({
         id: 'id-2',
-        comicInfoId: 'comicInfoId-2',
+        comicId: 'comicId-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
       }),
@@ -111,7 +111,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
     const actions$ = of(actions.sendAppStartSignal())
     const result = await initializeDataFromDBWhenAppStartsEpic(actions$, {}, {
       userProfileRepository,
-      comicInfoInfoRepository,
+      comicRepository: comicRepository,
       comicRepository,
       downloadTaskRepository,
     }).pipe(
@@ -122,7 +122,7 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
       actions.waitForQueryingInitDataFromDB(),
       actions.syncInitDataToState({
         userProfile: userProfile.serialize(),
-        comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
+        comics: comics.map(comic => comic.serialize()),
         comics: comics.map(comic => comic.serialize()),
         downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
       }),
@@ -131,10 +131,10 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
 })
 
 
-describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
+describe('sendSignalWhenComicDBIsEmptyEpic', () => {
   it('will do nothing when db is not empty', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfo = comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comic = comicFactory.createFromJson({
       id: 'id',
       name: 'name',
       coverDataUrl: 'coverDataUrl',
@@ -150,10 +150,10 @@ describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
 
     const actions$ = of(actions.syncInitDataToState({
       userProfile: {},
-      comicInfos: [comicInfo.serialize()],
+      comics: [comic.serialize()],
       downloadTasks: []
     }))
-    const result = await sendSignalWhenComicInfoDBIsEmptyEpic(actions$).pipe(
+    const result = await sendSignalWhenComicDBIsEmptyEpic(actions$).pipe(
       toArray(),
     ).toPromise()
 
@@ -161,22 +161,22 @@ describe('sendSignalWhenComicInfoDBIsEmptyEpic', () => {
   })
 
   it('will send signal when db is empty', async () => {
-    const actions$ = of(actions.syncInitDataToState({userProfile: {}, comicInfos: [], downloadTasks: []}))
-    const result = await sendSignalWhenComicInfoDBIsEmptyEpic(actions$).pipe(
+    const actions$ = of(actions.syncInitDataToState({userProfile: {}, comics: [], downloadTasks: []}))
+    const result = await sendSignalWhenComicDBIsEmptyEpic(actions$).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.sendComicInfoDatabaseEmptySignal()
+      actions.sendComicDatabaseEmptySignal()
     ])
   })
 })
 
-describe('updateComicInfoDatabaseEpic', () => {
+describe('updateComicDatabaseEpic', () => {
   it('will update database from network and sync to state when db is empty', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfos = [
-      comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comics = [
+      comicFactory.createFromJson({
         id: 'id-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
@@ -189,7 +189,7 @@ describe('updateComicInfoDatabaseEpic', () => {
         summary: 'summary-1',
         chapters: [],
       }),
-      comicInfoFactory.createFromJson({
+      comicFactory.createFromJson({
         id: 'id-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
@@ -204,26 +204,26 @@ describe('updateComicInfoDatabaseEpic', () => {
       })
     ]
 
-    const comicInfoDatabaseService: IComicInfoDatabaseService = {
-      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comicInfos)),
+    const comicDatabaseService: IComicDatabaseService = {
+      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comics)),
     }
 
-    const actions$ = of(actions.sendComicInfoDatabaseEmptySignal())
-    const result = await updateComicInfoDatabaseEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
+    const actions$ = of(actions.sendComicDatabaseEmptySignal())
+    const result = await updateComicDatabaseEpic(actions$, {}, {comicDatabaseService: comicDatabaseService}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.waitForComicInfoDatabaseUpdate(),
-      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
-      actions.sendComicInfoDatabaseUpdatedSignal(),
+      actions.waitForComicDatabaseUpdate(),
+      actions.syncComicsToState(comics.map(comic => comic.serialize())),
+      actions.sendComicDatabaseUpdatedSignal(),
     ])
   })
 
   it('will update database from network', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfos = [
-      comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comics = [
+      comicFactory.createFromJson({
         id: 'id-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
@@ -236,7 +236,7 @@ describe('updateComicInfoDatabaseEpic', () => {
         summary: 'summary-1',
         chapters: [],
       }),
-      comicInfoFactory.createFromJson({
+      comicFactory.createFromJson({
         id: 'id-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
@@ -251,28 +251,28 @@ describe('updateComicInfoDatabaseEpic', () => {
       })
     ]
 
-    const comicInfoDatabaseService: IComicInfoDatabaseService = {
-      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comicInfos)),
+    const comicDatabaseService: IComicDatabaseService = {
+      asyncUpdateAndReturn: jest.fn(() => Promise.resolve(comics)),
     }
 
-    const actions$ = of(actions.updateComicInfoDatabase())
-    const result = await updateComicInfoDatabaseEpic(actions$, {}, {comicInfoDatabaseService}).pipe(
+    const actions$ = of(actions.updateComicDatabase())
+    const result = await updateComicDatabaseEpic(actions$, {}, {comicDatabaseService: comicDatabaseService}).pipe(
       toArray(),
     ).toPromise()
 
     expect(result).toEqual([
-      actions.waitForComicInfoDatabaseUpdate(),
-      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
-      actions.sendComicInfoDatabaseUpdatedSignal(),
+      actions.waitForComicDatabaseUpdate(),
+      actions.syncComicsToState(comics.map(comic => comic.serialize())),
+      actions.sendComicDatabaseUpdatedSignal(),
     ])
   })
 })
 
-describe('searchComicInfosEpic', () => {
+describe('searchComicsEpic', () => {
   it('will search comic infos by search term from database', async () => {
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfos = [
-      comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comics = [
+      comicFactory.createFromJson({
         id: 'id-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
@@ -285,7 +285,7 @@ describe('searchComicInfosEpic', () => {
         summary: 'summary-1',
         chapters: [],
       }),
-      comicInfoFactory.createFromJson({
+      comicFactory.createFromJson({
         id: 'id-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
@@ -300,20 +300,20 @@ describe('searchComicInfosEpic', () => {
       })
     ]
 
-    const comicInfoInfoRepository = {
-      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comicInfos)),
+    const comicRepository = {
+      asyncGetAllBySearchTerm: jest.fn(() => Promise.resolve(comics)),
     }
 
     const actions$ = of(actions.searchComic('search term'))
-    const result = await searchComicInfosEpic(actions$, {}, {comicInfoInfoRepository}).pipe(
+    const result = await searchComicsEpic(actions$, {}, {comicRepository: comicRepository}).pipe(
       toArray(),
     ).toPromise()
 
-    expect(comicInfoInfoRepository.asyncGetAllBySearchTerm).toBeCalledWith('search term')
+    expect(comicRepository.asyncGetAllBySearchTerm).toBeCalledWith('search term')
 
     expect(result).toEqual([
-      actions.waitForResultOfSearchingComicInfosFromDB(),
-      actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())),
+      actions.waitForResultOfSearchingComicsFromDB(),
+      actions.syncComicsToState(comics.map(comic => comic.serialize())),
     ])
   })
 })
@@ -321,8 +321,8 @@ describe('searchComicInfosEpic', () => {
 describe('createDownloadTaskEpic', () => {
   it('will create download task by comic info id', async () => {
 
-    const comicInfoFactory = new ComicInfoFactory()
-    const comicInfo = comicInfoFactory.createFromJson({
+    const comicFactory = new ComicFactory()
+    const comic = comicFactory.createFromJson({
       id: 'id',
       name: 'name',
       coverDataUrl: 'coverDataUrl',
@@ -336,9 +336,9 @@ describe('createDownloadTaskEpic', () => {
       chapters: [],
     })
 
-    const comicInfoInfoRepository: IComicInfoRepository = {
+    const comicRepository: IComicRepository = {
       asyncSaveOrUpdate: jest.fn(),
-      asyncGetById: jest.fn(() => Promise.resolve(comicInfo)),
+      asyncGetById: jest.fn(() => Promise.resolve(comic)),
       asyncGetAllBySearchTerm: jest.fn(),
     }
 
@@ -352,22 +352,22 @@ describe('createDownloadTaskEpic', () => {
     const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTask = downloadTaskFactory.createFromJson({
-      id: comicInfo.identity,
-      comicInfoId: comicInfo.identity,
-      name: comicInfo.name,
-      coverDataUrl: comicInfo.coverDataUrl,
+      id: comic.identity,
+      comicId: comic.identity,
+      name: comic.name,
+      coverDataUrl: comic.coverDataUrl,
     })
 
-    const actions$ = of(actions.createDownloadTask(comicInfo.identity))
+    const actions$ = of(actions.createDownloadTask(comic.identity))
     const result = await createDownloadTaskEpic(actions$, {}, {
-      comicInfoInfoRepository,
+      comicRepository: comicRepository,
       downloadTaskFactory,
       downloadTaskRepository,
     }).pipe(
       toArray(),
     ).toPromise()
 
-    expect(comicInfoInfoRepository.asyncGetById).toBeCalledWith(comicInfo.identity)
+    expect(comicRepository.asyncGetById).toBeCalledWith(comic.identity)
     expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([
@@ -390,7 +390,7 @@ describe('startToDownloadComicWhenNewDownloadTaskCreatedEpic', () => {
 
     const downloadTask = downloadTaskFactory.createFromJson({
       id: 'id',
-      comicInfoId: 'comicInfoId',
+      comicId: 'comicId',
       name: 'name',
       coverDataUrl: 'coverDataUrl',
     })
@@ -429,13 +429,13 @@ describe('syncDownloadTasksToStateWhenDownloadStatusChanged', () => {
     const downloadTasks = [
       downloadTaskFactory.createFromJson({
         id: 'id-1',
-        comicInfoId: 'comicInfoId-1',
+        comicId: 'comicId-1',
         name: 'name-1',
         coverDataUrl: 'coverDataUrl-1',
       }),
       downloadTaskFactory.createFromJson({
         id: 'id-2',
-        comicInfoId: 'comicInfoId-2',
+        comicId: 'comicId-2',
         name: 'name-2',
         coverDataUrl: 'coverDataUrl-2',
       }),

@@ -48,7 +48,7 @@ export class ComicList extends React.Component {
         </ExpansionPanelDetails>
         <Divider/>
         <ExpansionPanelActions>
-          <Button variant="contained" onClick={this.props.updateComicInfoDatabase}>手動更新資料庫</Button>
+          <Button variant="contained" onClick={this.props.updateComicDatabase}>手動更新資料庫</Button>
         </ExpansionPanelActions>
       </ExpansionPanel>
     )

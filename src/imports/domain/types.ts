@@ -1,12 +1,12 @@
 export default {
   EventPublisher: Symbol('Domain/Downloader/EventPublisher'),
 
-  ComicInfoFactory: Symbol('Domain/Library/ComicInfoFactory'),
+  ComicFactory: Symbol('Domain/Library/ComicFactory'),
   ComicSourceFactory: Symbol('Domain/Library/ComicSourceFactory'),
   DownloadTaskFactory: Symbol('Domain/Downloader/DownloadTaskFactory'),
   UserProfileFactory: Symbol('Domain/General/UserProfileFactory'),
 
-  ComicInfoDatabaseService: Symbol('Domain/Library/ComicInfoDatabaseService'),
+  ComicDatabaseService: Symbol('Domain/Library/ComicDatabaseService'),
   DBService: Symbol('Domain/General/DBService'),
   DownloadComicService: Symbol('Domain/Downloader/DownloadComicService'),
   FileService: Symbol('Domain/General/FileService'),
@@ -15,7 +15,7 @@ export default {
   CollectionService: Symbol('Domain/Comic/CollectionService'),
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
   UserProfileRepository: Symbol('Domain/General/UserProfileRepository'),
-  ComicInfoRepository: Symbol('Domain/Library/ComicInfoRepository'),
+  ComicRepository: Symbol('Domain/Library/ComicRepository'),
 
   DBAdapter: Symbol('Domain/General/DBAdapter'),
   FileAdapter: Symbol('Domain/General/FileAdapter'),

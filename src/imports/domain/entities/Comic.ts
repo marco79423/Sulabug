@@ -3,7 +3,7 @@ import Chapter from './Chapter'
 import ComicSource from './ComicSource'
 import {IComicSourceFactory} from '../interfaces'
 
-export default class ComicInfo extends Entity {
+export default class Comic extends Entity {
   readonly name: string
   readonly coverDataUrl: string
   readonly source: string

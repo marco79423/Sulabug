@@ -50,11 +50,11 @@ if (!lock) {
     mainWindow = createMainWindow()
   })
 
-  ipcMain.on('open-reading-page', (event, comicInfoId) => {
+  ipcMain.on('open-reading-page', (event, comicId) => {
     if (readingWindow == null) {
-      readingWindow = createReadingWindow(comicInfoId)
+      readingWindow = createReadingWindow(comicId)
     } else {
-      readingWindow.send('comic-info-id-changed', comicInfoId)
+      readingWindow.send('comic-info-id-changed', comicId)
     }
   })
 }

@@ -12,9 +12,9 @@ class BrowsePage extends React.Component {
       <ComicList
         loading={this.props.loading}
         userProfile={this.props.userProfile}
-        comics={this.props.comicInfos}
+        comics={this.props.comics}
         collection={this.props.collection}
-        updateComicInfoDatabase={this.props.updateComicInfoDatabase}
+        updateComicDatabase={this.props.updateComicDatabase}
         addComicToCollection={this.props.addComicToCollection}
       />
     )
@@ -24,13 +24,13 @@ class BrowsePage extends React.Component {
 export default compose(
   connect(
     state => ({
-      loading:  selectors.selectLoadingUserProfile(state) || selectors.selectLoadingComicInfos(state) || selectors.selectLoadingCollection(state),
+      loading:  selectors.selectLoadingUserProfile(state) || selectors.selectLoadingComics(state) || selectors.selectLoadingCollection(state),
       userProfile: selectors.selectUserProfile(state),
-      comicInfos: selectors.selectComicInfos(state),
+      comics: selectors.selectComics(state),
       collection: selectors.selectCollection(state),
     }),
     dispatch => bindActionCreators({
-      updateComicInfoDatabase: actions.updateComicInfoDatabase,
+      updateComicDatabase: actions.updateComicDatabase,
       addComicToCollection: actions.addComicToCollection,
     }, dispatch)
   )

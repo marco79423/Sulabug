@@ -15,7 +15,7 @@ describe('DownloadTaskFactory', () => {
 
       const jsonData = {
         id: 'id',
-        comicInfoId: 'comicInfoId',
+        comicId: 'comicId',
         name: 'name',
         coverDataUrl: 'coverDataUrl',
         sourceUrl: 'sourceUrl',
@@ -24,7 +24,7 @@ describe('DownloadTaskFactory', () => {
       const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
       const downloadTask = downloadTaskFactory.createFromJson(jsonData)
       expect(downloadTask.identity).toBe(jsonData.id)
-      expect(downloadTask.comicInfoIdentity).toBe(jsonData.comicInfoId)
+      expect(downloadTask.comicIdentity).toBe(jsonData.comicId)
       expect(downloadTask.name).toBe(jsonData.name)
       expect(downloadTask.coverDataUrl).toEqual(jsonData.coverDataUrl)
     })
