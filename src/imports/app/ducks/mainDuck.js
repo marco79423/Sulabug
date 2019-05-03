@@ -22,12 +22,9 @@ export const ActionTypes = {
 
   // add comic to collection
   ADD_COMIC_TO_COLLECTION: 'ADD_COMIC_TO_COLLECTION',
-  WAIT_FOR_ADDING_COMIC_COLLECTION: 'WAIT_FOR_ADDING_COMIC_COLLECTION',
-
-  // remove comic from collection
   REMOVE_COMIC_FROM_COLLECTION: 'REMOVE_COMIC_FROM_COLLECTION',
-  WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION: 'WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION',
-
+  WAIT_FOR_UPDATING_COLLECTION: 'WAIT_FOR_UPDATING_COLLECTION',
+  
   // sync collection to state
   SEND_COLLECTION_CHANGED_SIGNAL: 'SEND_COLLECTION_CHANGED_SIGNAL',
   SYNC_COLLECTION_TO_STATE: 'SYNC_COLLECTION_TO_STATE',
@@ -71,13 +68,10 @@ export const actions = {
   searchComic: createAction(ActionTypes.SEARCH_COMIC),
   waitForResultOfSearchingComicsFromDB: createAction(ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB),
 
-  // add comic to collection
+  // add/remove comic to collection
   addComicToCollection: createAction(ActionTypes.ADD_COMIC_TO_COLLECTION),
-  waitForAddingComicToCollections: createAction(ActionTypes.WAIT_FOR_ADDING_COMIC_COLLECTION),
-
-  // remove comic from collection
   removeComicFromCollection: createAction(ActionTypes.REMOVE_COMIC_FROM_COLLECTION),
-  waitForRemovingComicFromCollection: createAction(ActionTypes.WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION),
+  waitForUpdatingCollection: createAction(ActionTypes.WAIT_FOR_UPDATING_COLLECTION),
 
   // sync collection to state
   sendCollectionChangedSignal: createAction(ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL),
@@ -110,11 +104,6 @@ export const defaultState = {
     allIds: [],
     byId: {},
   },
-  collection: {
-    loading: false,
-    allIds: [],
-    byId: {},
-  },
   downloadTask: {
     loading: false,
     allIds: [],
@@ -131,32 +120,19 @@ export const reducer = handleActions({
       allIds: [],
       byId: {},
     },
-    collection: {
-      loading: true,
-      allIds: [],
-      byId: {},
-    },
     downloadTask: {
       loading: true,
       allIds: [],
       byId: {},
     },
   }),
-  [ActionTypes.SYNC_INIT_DATA_TO_STATE]: (state, {payload: {userProfile, comics, collection, downloadTasks}}) => ({
+  [ActionTypes.SYNC_INIT_DATA_TO_STATE]: (state, {payload: {userProfile, comics, downloadTasks}}) => ({
     ...state,
     userProfile,
     comic: {
       loading: false,
       allIds: comics.map(comic => comic.id),
       byId: comics.reduce((comicMap, comic) => ({
-        ...comicMap,
-        [comic.id]: comic,
-      }), {}),
-    },
-    collection: {
-      loading: false,
-      allIds: collection.map(comic => comic.id),
-      byId: collection.reduce((comicMap, comic) => ({
         ...comicMap,
         [comic.id]: comic,
       }), {}),
@@ -181,23 +157,12 @@ export const reducer = handleActions({
       }), {}),
     },
   }),
-  [ActionTypes.WAIT_FOR_REMOVING_COMIC_FROM_COLLECTION]: (state) => ({
+  [ActionTypes.WAIT_FOR_UPDATING_COLLECTION]: (state) => ({
     ...state,
-    collection: {
+    comic: {
       loading: true,
       allIds: [],
       byId: {},
-    },
-  }),
-  [ActionTypes.SYNC_COLLECTION_TO_STATE]: (state, action) => ({
-    ...state,
-    collection: {
-      loading: false,
-      allIds: action.payload.map(comic => comic.id),
-      byId: action.payload.reduce((comicMap, comic) => ({
-        ...comicMap,
-        [comic.id]: comic,
-      }), {}),
     },
   }),
   [ActionTypes.WAIT_FOR_RESULT_OF_SEARCHING_COMICS_FROM_DB]: (state) => ({
@@ -256,9 +221,14 @@ const selectLoadingComics = state => state.comic.loading
 
 const selectComics = state => state.comic.allIds.map(id => state.comic.byId[id])
 
-const selectLoadingCollection = state => state.collection.loading
+const selectLoadingCollection = state => state.comic.loading
 
-const selectCollection = state => state.collection.allIds.map(id => state.collection.byId[id])
+const selectCollection = createSelector(
+  [
+    selectComics
+  ],
+  (comics) => comics.filter(comic => comic.inCollection)
+)
 
 const selectLoadingDownloadTasks = state => state.downloadTask.loading
 

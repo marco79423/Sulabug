@@ -32,4 +32,8 @@ export default class FileService implements IFileService {
   async asyncListFolder(targetPath: string): Promise<string[]> {
     return this._fileAdapter.asyncListFolder(targetPath)
   }
+
+  async asyncRemove(targetPath: string): Promise<void> {
+    this._fileAdapter.asyncRemove(targetPath)
+  }
 }

@@ -24,12 +24,12 @@ export default class ComicRepository implements IComicRepository {
     await this._database.asyncSaveOrUpdate('comic', comic.serialize())
   }
 
-  asyncGetById = async (id: string): Promise<Comic> => {
+  asyncGetById = async (id: string): Promise<Comic | null> => {
     const rawComic = await this._database.asyncFindOne('comic', {
       id: id
     })
     if (!rawComic) {
-      throw new Error('Target comic info not found')
+      return null
     }
     return this._comicFactory.createFromJson(rawComic)
   }

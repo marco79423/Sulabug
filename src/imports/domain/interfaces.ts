@@ -22,6 +22,7 @@ export interface IComicFactory {
       name: string
       sourcePageUrl: string
     }[],
+    inCollection: boolean,
   }): Comic
 }
 
@@ -86,19 +87,9 @@ export interface IComicRepository {
 
   asyncSaveOrUpdate(comic: Comic): Promise<void>
 
-  asyncGetById(id: string): Promise<Comic>
+  asyncGetById(id: string): Promise<Comic | null>
 
   asyncGetAllBySearchTerm(searchTerm: string): Promise<Comic[]>
-}
-
-export interface ICollectionService {
-  asyncAddComicToCollection(id: string): Promise<void>
-
-  asyncGetAllComicsFromCollection(): Promise<Comic[]>
-
-  asyncCheckCollection(id: string): Promise<boolean>
-
-  asyncRemoveComicFromCollection(id: string): Promise<void>
 }
 
 export interface IDownloadTaskRepository {
@@ -157,6 +148,8 @@ export interface IFileService {
   asyncPathExists(targetPath: string): Promise<boolean>
 
   asyncListFolder(targetPath: string): Promise<string[]>
+
+  asyncRemove(targetPath: string): Promise<void>
 }
 
 export interface IComicSourceSiteService {

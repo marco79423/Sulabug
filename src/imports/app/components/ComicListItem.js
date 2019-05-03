@@ -76,9 +76,7 @@ export class ComicListItem extends React.Component {
   }
 
   render() {
-    const {classes, comic, collection} = this.props
-
-    const inCollection = collection.filter(c => c.id === comic.id).length > 0
+    const {classes, comic} = this.props
 
     return (
       <ListItem className={classes.root}>
@@ -99,9 +97,9 @@ export class ComicListItem extends React.Component {
             <CardActions className={classes.actions}>
               <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon
                 className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
-              <Button size="small" variant="contained" color="primary" disabled={inCollection}
+              <Button size="small" variant="contained" color="primary" disabled={comic.inCollection}
                       onClick={this.addComicToCollection}><CollectionsIcon
-                className={classes.collectionsIcon}/>{inCollection ? '已收藏' : '收藏'}</Button>
+                className={classes.collectionsIcon}/>{comic.inCollection ? '已收藏' : '收藏'}</Button>
             </CardActions>
           </div>
         </Card>

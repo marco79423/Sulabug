@@ -12,7 +12,6 @@ export default {
   FileService: Symbol('Domain/General/FileService'),
   SFComicSourceSiteService: Symbol('Infrastructure/shared/SFComicSourceSiteService'),
 
-  CollectionService: Symbol('Domain/Comic/CollectionService'),
   DownloadTaskRepository: Symbol('Domain/Downloader/DownloadTaskRepository'),
   UserProfileRepository: Symbol('Domain/General/UserProfileRepository'),
   ComicRepository: Symbol('Domain/Library/ComicRepository'),

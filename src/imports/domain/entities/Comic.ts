@@ -14,6 +14,7 @@ export default class Comic extends Entity {
   readonly lastUpdatedTime: Date
   readonly summary: string
   readonly chapters: Chapter[]
+  inCollection: boolean
 
   readonly _comicSourceFactory: IComicSourceFactory
 
@@ -29,6 +30,7 @@ export default class Comic extends Entity {
     lastUpdatedTime: Date,
     summary: string,
     chapters: Chapter[],
+    inCollection: boolean,
     comicSourceFactory: IComicSourceFactory
   ) {
     super(id)
@@ -42,6 +44,7 @@ export default class Comic extends Entity {
     this.lastUpdatedTime = lastUpdatedTime
     this.summary = summary
     this.chapters = chapters
+    this.inCollection = inCollection
 
     this._comicSourceFactory = comicSourceFactory
   }
@@ -59,6 +62,7 @@ export default class Comic extends Entity {
       lastUpdatedTime: this.lastUpdatedTime.toISOString(),
       summary: this.summary,
       chapters: this.chapters.map(chapter => chapter.serialize()),
+      inCollection: this.inCollection,
     }
   }
 

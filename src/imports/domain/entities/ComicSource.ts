@@ -99,8 +99,6 @@ export default class ComicSource extends Entity {
 
     const targetComicFolderPath = path.join(downloadFolderPath, this.name)
 
-    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: this.id})
-
     totalProgress += progressUnit
     progressCallback(totalProgress, false)
     for (let index = 0; index < chapters.length; index++) {

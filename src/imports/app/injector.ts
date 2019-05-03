@@ -1,7 +1,6 @@
 import {Container} from 'inversify'
 import {makeLoggerMiddleware} from 'inversify-logger-middleware'
 import {
-  ICollectionService,
   IComicDatabaseService,
   IComicFactory,
   IComicRepository,
@@ -40,7 +39,6 @@ import DBService from '../domain/services/DBService'
 import TimeAdapter from '../infrastructure/domain/adapters/TimeAdapter'
 import SFComicSourceSiteService from '../domain/services/SFComicSourceSiteService'
 import ComicSourceFactory from '../domain/factories/ComicSourceFactory'
-import CollectionService from '../domain/services/CollectionService'
 
 
 // domain
@@ -61,9 +59,6 @@ injector.bind<IComicFactory>(types.ComicFactory).to(ComicFactory).inSingletonSco
 injector.bind<IComicSourceFactory>(types.ComicSourceFactory).to(ComicSourceFactory).inSingletonScope()
 injector.bind<IComicRepository>(types.ComicRepository).to(ComicRepository).inSingletonScope()
 injector.bind<IComicDatabaseService>(types.ComicDatabaseService).to(ComicDatabaseService).inSingletonScope()
-
-// domain - collection
-injector.bind<ICollectionService>(types.CollectionService).to(CollectionService).inSingletonScope()
 
 // domain - downloader
 injector.bind<EventPublisher>(types.EventPublisher).to(EventPublisher).inSingletonScope()

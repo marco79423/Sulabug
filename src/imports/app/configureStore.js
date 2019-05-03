@@ -17,8 +17,6 @@ export default function configureStore() {
       comicRepository: injector.get(types.ComicRepository),
       comicDatabaseService: injector.get(types.ComicDatabaseService),
 
-      collectionService: injector.get(types.CollectionService),
-
       downloadTaskFactory: injector.get(types.DownloadTaskFactory),
       downloadTaskRepository: injector.get(types.DownloadTaskRepository),
       downloadComicService: injector.get(types.DownloadComicService),

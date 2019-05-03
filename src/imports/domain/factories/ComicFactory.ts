@@ -34,6 +34,7 @@ export default class ComicFactory implements IComicFactory {
       name: string
       sourcePageUrl: string
     }[],
+    inCollection: boolean,
   }): Comic {
     return new Comic(
       json.id,
@@ -52,6 +53,7 @@ export default class ComicFactory implements IComicFactory {
         rawChapter.name,
         rawChapter.sourcePageUrl,
       )),
+      json.inCollection,
       this._comicSourceFactory,
     )
   }

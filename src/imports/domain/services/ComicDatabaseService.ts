@@ -39,6 +39,7 @@ export default class ComicDatabaseService implements IComicDatabaseService {
   asyncUpdateAndReturn = async (): Promise<Comic[]> => {
     const comicSources = await this._sfComicSourceSiteService.asyncGetAllComicSources()
     for (let comicSource of comicSources) {
+
       const coverDataUrl = await comicSource.asyncGetCoverDataUrl()
       const catalog = await comicSource.asyncGetCatalog()
       const author = await comicSource.asyncGetAuthor()
@@ -46,6 +47,12 @@ export default class ComicDatabaseService implements IComicDatabaseService {
       const lastUpdatedTime = await comicSource.asyncGetLastUpdatedTime()
       const summary = await comicSource.asyncGetSummary()
       const chapters = await comicSource.asyncGetChapters()
+
+      const comic = await this._comicRepository.asyncGetById(comicSource.id)
+      let inCollection = false
+      if (comic) {
+        inCollection = comic.inCollection
+      }
 
       await this._comicRepository.asyncSaveOrUpdate(this._comicFactory.createFromJson({
         id: comicSource.name,
@@ -58,7 +65,8 @@ export default class ComicDatabaseService implements IComicDatabaseService {
         lastUpdatedChapter: lastUpdatedChapter,
         lastUpdatedTime: lastUpdatedTime.toISOString(),
         summary: summary,
-        chapters: chapters.map(chapter => chapter.serialize())
+        chapters: chapters.map(chapter => chapter.serialize()),
+        inCollection: inCollection
       }))
     }
 

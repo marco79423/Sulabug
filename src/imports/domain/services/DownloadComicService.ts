@@ -29,6 +29,9 @@ export default class DownloadComicService implements IDownloadComicService {
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
 
     const comic = await this._comicRepository.asyncGetById(downloadTask.comicId)
+    if(comic === null) {
+      return
+    }
     const comicSource = comic.getAvailableSource()
     await comicSource.asyncDownload(downloadFolderPath, (progress, done) => {
       if (done) {
