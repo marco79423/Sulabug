@@ -21,14 +21,14 @@ export default class CollectionService implements ICollectionService {
     this._userProfileRepository = userProfileRepository
   }
 
-  asyncAddComicToCollection = async (identity: string): Promise<void> => {
-    const comic = await this._comicRepository.asyncGetById(identity)
+  asyncAddComicToCollection = async (id: string): Promise<void> => {
+    const comic = await this._comicRepository.asyncGetById(id)
 
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
 
     const targetComicFolderPath = path.join(downloadFolderPath, comic.name)
     await this._fileAdapter.asyncEnsureDir(targetComicFolderPath)
-    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: comic.identity})
+    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: comic.id})
   }
 
   asyncGetAllComicsFromCollection = async (): Promise<Comic[]> => {
@@ -51,7 +51,7 @@ export default class CollectionService implements ICollectionService {
     return comics
   }
 
-  asyncCheckCollection = async (identity: string): Promise<boolean> => {
+  asyncCheckCollection = async (id: string): Promise<boolean> => {
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
 
     await this._fileAdapter.asyncEnsureDir(downloadFolderPath)
@@ -63,7 +63,7 @@ export default class CollectionService implements ICollectionService {
         continue
       }
 
-      if (identity === comicMeta.id) {
+      if (id === comicMeta.id) {
         return true
       }
     }
@@ -71,8 +71,8 @@ export default class CollectionService implements ICollectionService {
     return false
   }
 
-  asyncRemoveComicFromCollection = async (identity: string): Promise<void> => {
-    const comic = await this._comicRepository.asyncGetById(identity)
+  asyncRemoveComicFromCollection = async (id: string): Promise<void> => {
+    const comic = await this._comicRepository.asyncGetById(id)
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
     await this._fileAdapter.asyncRemove(path.join(downloadFolderPath, comic.name))
   }

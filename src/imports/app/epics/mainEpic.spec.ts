@@ -77,8 +77,8 @@ describe('initializeDataFromDBWhenAppStartsEpic', () => {
 
     const comicFactory = new ComicFactory()
     const comics = [
-      comicFactory.createFromJson({comicIdentity: 'comicIdentity-1'}),
-      comicFactory.createFromJson({comicIdentity: 'comicIdentity-2'}),
+      comicFactory.createFromJson({comicId: 'comicId-1'}),
+      comicFactory.createFromJson({comicId: 'comicId-2'}),
     ]
     const comicRepository = {
       asyncGetAll: jest.fn(() => Promise.resolve(comics))
@@ -352,13 +352,13 @@ describe('createDownloadTaskEpic', () => {
     const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
 
     const downloadTask = downloadTaskFactory.createFromJson({
-      id: comic.identity,
-      comicId: comic.identity,
+      id: comic.id,
+      comicId: comic.id,
       name: comic.name,
       coverDataUrl: comic.coverDataUrl,
     })
 
-    const actions$ = of(actions.createDownloadTask(comic.identity))
+    const actions$ = of(actions.createDownloadTask(comic.id))
     const result = await createDownloadTaskEpic(actions$, {}, {
       comicRepository: comicRepository,
       downloadTaskFactory,
@@ -367,7 +367,7 @@ describe('createDownloadTaskEpic', () => {
       toArray(),
     ).toPromise()
 
-    expect(comicRepository.asyncGetById).toBeCalledWith(comic.identity)
+    expect(comicRepository.asyncGetById).toBeCalledWith(comic.id)
     expect(downloadTaskRepository.saveOrUpdate).toBeCalledWith(downloadTask)
 
     expect(result).toEqual([

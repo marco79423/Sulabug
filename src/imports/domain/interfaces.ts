@@ -86,30 +86,30 @@ export interface IComicRepository {
 
   asyncSaveOrUpdate(comic: Comic): Promise<void>
 
-  asyncGetById(identity: string): Promise<Comic>
+  asyncGetById(id: string): Promise<Comic>
 
   asyncGetAllBySearchTerm(searchTerm: string): Promise<Comic[]>
 }
 
 export interface ICollectionService {
-  asyncAddComicToCollection(identity: string): Promise<void>
+  asyncAddComicToCollection(id: string): Promise<void>
 
   asyncGetAllComicsFromCollection(): Promise<Comic[]>
 
-  asyncCheckCollection(identity: string): Promise<boolean>
+  asyncCheckCollection(id: string): Promise<boolean>
 
-  asyncRemoveComicFromCollection(identity: string): Promise<void>
+  asyncRemoveComicFromCollection(id: string): Promise<void>
 }
 
 export interface IDownloadTaskRepository {
 
   saveOrUpdate(downloadTask: DownloadTask): void
 
-  getById(identity: string): DownloadTask
+  getById(id: string): DownloadTask
 
   getAll(): DownloadTask[]
 
-  delete(identity: string): void
+  delete(id: string): void
 }
 
 

@@ -12,7 +12,7 @@ describe('UserProfileFactory', () => {
 
       const userProfileFactory = new UserProfileFactory()
       const userProfile = userProfileFactory.createFromJson(userProfileData)
-      expect(userProfile.identity).toBe(null)
+      expect(userProfile.id).toBe(null)
       expect(userProfile.downloadFolderPath).toBe(userProfileData.downloadFolderPath)
     })
   })

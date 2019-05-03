@@ -160,7 +160,7 @@ export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, stat
   ),
   flatMap(collectionService.asyncGetAllComicsFromCollection),
   flatMap(comics => from(comics)),
-  map(comic => actions.createDownloadTask(comic.identity)),
+  map(comic => actions.createDownloadTask(comic.id)),
 )
 
 export const createDownloadTaskEpic = (action$, state$, {comicRepository, downloadTaskFactory, downloadTaskRepository}) => action$.pipe(
@@ -172,8 +172,8 @@ export const createDownloadTaskEpic = (action$, state$, {comicRepository, downlo
     of(actions.waitForCreatingDownloadTask()),
     from(comicRepository.asyncGetById(comicId)).pipe(
       map(comic => downloadTaskFactory.createFromJson({
-        id: comic.identity,
-        comicId: comic.identity,
+        id: comic.id,
+        comicId: comic.id,
         name: comic.name,
         coverDataUrl: comic.coverDataUrl,
       })),

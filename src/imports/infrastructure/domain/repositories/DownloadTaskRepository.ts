@@ -20,23 +20,23 @@ export default class DownloadTaskRepository implements IDownloadTaskRepository {
   }
 
   saveOrUpdate = (downloadTask: DownloadTask): void => {
-    if (!this.downloadTaskIds.includes(downloadTask.identity)) {
-      this.downloadTaskIds.push(downloadTask.identity)
+    if (!this.downloadTaskIds.includes(downloadTask.id)) {
+      this.downloadTaskIds.push(downloadTask.id)
     }
-    this.downloadTaskMap[downloadTask.identity] = downloadTask
+    this.downloadTaskMap[downloadTask.id] = downloadTask
     this._eventPublisher.sendEvent(new DownloadTaskUpdatedEvent())
   }
 
-  getById = (identity: string): DownloadTask => {
-    return this.downloadTaskMap[identity]
+  getById = (id: string): DownloadTask => {
+    return this.downloadTaskMap[id]
   }
 
   getAll = (): DownloadTask[] => {
     return this.downloadTaskIds.map(downloadTaskId => this.downloadTaskMap[downloadTaskId])
   }
 
-  delete = (identity: string): void => {
-    this.downloadTaskIds = this.downloadTaskIds.filter(downloadTaskId => downloadTaskId !== identity)
-    delete this.downloadTaskMap[identity]
+  delete = (id: string): void => {
+    this.downloadTaskIds = this.downloadTaskIds.filter(downloadTaskId => downloadTaskId !== id)
+    delete this.downloadTaskMap[id]
   }
 }

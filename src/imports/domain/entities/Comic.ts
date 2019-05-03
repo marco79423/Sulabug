@@ -18,7 +18,7 @@ export default class Comic extends Entity {
   readonly _comicSourceFactory: IComicSourceFactory
 
   constructor(
-    identity: string,
+    id: string,
     name: string,
     coverDataUrl: string,
     source: string,
@@ -31,7 +31,7 @@ export default class Comic extends Entity {
     chapters: Chapter[],
     comicSourceFactory: IComicSourceFactory
   ) {
-    super(identity)
+    super(id)
     this.name = name
     this.coverDataUrl = coverDataUrl
     this.source = source
@@ -48,7 +48,7 @@ export default class Comic extends Entity {
 
   serialize() {
     return {
-      id: this.identity,
+      id: this.id,
       name: this.name,
       coverDataUrl: this.coverDataUrl,
       source: this.source,
@@ -64,7 +64,7 @@ export default class Comic extends Entity {
 
   getAvailableSource(): ComicSource {
     return this._comicSourceFactory.createFromJson({
-      id: this.identity,
+      id: this.id,
       name: this.name,
       source: this.source,
       pageUrl: this.pageUrl,

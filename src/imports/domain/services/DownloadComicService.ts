@@ -28,7 +28,7 @@ export default class DownloadComicService implements IDownloadComicService {
   asyncDownload = async (downloadTask: DownloadTask): Promise<void> => {
     const downloadFolderPath = await this._asyncGetDownloadFolderPath()
 
-    const comic = await this._comicRepository.asyncGetById(downloadTask.comicIdentity)
+    const comic = await this._comicRepository.asyncGetById(downloadTask.comicId)
     const comicSource = comic.getAvailableSource()
     await comicSource.asyncDownload(downloadFolderPath, (progress, done) => {
       if (done) {
@@ -37,7 +37,7 @@ export default class DownloadComicService implements IDownloadComicService {
       downloadTask.updateProgress(progress)
     })
 
-    await this._downloadTaskRepository.delete(downloadTask.identity)
+    await this._downloadTaskRepository.delete(downloadTask.id)
   }
 
   private async _asyncGetDownloadFolderPath() {

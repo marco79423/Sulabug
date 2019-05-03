@@ -31,7 +31,7 @@ describe('ComicFactory', () => {
 
       const factory = new ComicFactory(comicSourceFactory)
       const comic = factory.createFromJson(jsonData)
-      expect(comic.identity).toBe(jsonData.id)
+      expect(comic.id).toBe(jsonData.id)
       expect(comic.name).toBe(jsonData.name)
       expect(comic.coverDataUrl).toBe(jsonData.coverDataUrl)
       expect(comic.source).toBe(jsonData.source)
@@ -42,7 +42,7 @@ describe('ComicFactory', () => {
       expect(comic.lastUpdatedTime.toISOString()).toBe(jsonData.lastUpdatedTime)
       expect(comic.summary).toBe(jsonData.summary)
 
-      expect(comic.chapters[0].identity).toEqual(jsonData.chapters[0].id)
+      expect(comic.chapters[0].id).toEqual(jsonData.chapters[0].id)
       expect(comic.chapters[0].order).toEqual(jsonData.chapters[0].order)
       expect(comic.chapters[0].name).toEqual(jsonData.chapters[0].name)
       expect(comic.chapters[0].sourcePageUrl).toEqual(jsonData.chapters[0].sourcePageUrl)

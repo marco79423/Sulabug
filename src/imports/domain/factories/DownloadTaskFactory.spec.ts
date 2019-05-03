@@ -23,8 +23,8 @@ describe('DownloadTaskFactory', () => {
 
       const downloadTaskFactory = new DownloadTaskFactory(downloadTaskRepository)
       const downloadTask = downloadTaskFactory.createFromJson(jsonData)
-      expect(downloadTask.identity).toBe(jsonData.id)
-      expect(downloadTask.comicIdentity).toBe(jsonData.comicId)
+      expect(downloadTask.id).toBe(jsonData.id)
+      expect(downloadTask.comicId).toBe(jsonData.comicId)
       expect(downloadTask.name).toBe(jsonData.name)
       expect(downloadTask.coverDataUrl).toEqual(jsonData.coverDataUrl)
     })

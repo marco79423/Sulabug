@@ -19,14 +19,14 @@ export default class ComicSource extends Entity {
   private readonly _fileAdapter: IFileAdapter
 
   constructor(
-    identity: string,
+    id: string,
     name: string,
     source: string,
     pageUrl: string,
     netAdapter: INetAdapter,
     fileAdapter: IFileAdapter,
   ) {
-    super(identity)
+    super(id)
     this.name = name
     this.source = source
     this.pageUrl = pageUrl
@@ -36,7 +36,7 @@ export default class ComicSource extends Entity {
 
   serialize() {
     return {
-      id: this.identity,
+      id: this.id,
       name: this.name,
       source: this.source,
       pageUrl: this.pageUrl,
@@ -99,7 +99,7 @@ export default class ComicSource extends Entity {
 
     const targetComicFolderPath = path.join(downloadFolderPath, this.name)
 
-    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: this.identity})
+    await this._fileAdapter.asyncWriteJson(path.join(targetComicFolderPath, '.comic'), {id: this.id})
 
     totalProgress += progressUnit
     progressCallback(totalProgress, false)
