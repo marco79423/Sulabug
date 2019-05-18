@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, screen} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu, screen, Tray} from 'electron'
 import * as path from 'path'
 import {format as formatUrl} from 'url'
 
@@ -7,8 +7,9 @@ import * as config from './config'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
-let mainWindow
-let readingWindow
+let mainWindow = null
+let readingWindow = null
+let isQuiting = false
 
 const lock = app.requestSingleInstanceLock()
 
@@ -49,17 +50,18 @@ if (!lock) {
     mainWindow = createMainWindow()
   })
 
-  ipcMain.on('open-reading-page', (event, comicInfoId) => {
+  ipcMain.on('open-reading-page', (event, comicId) => {
     if (readingWindow == null) {
-      readingWindow = createReadingWindow(comicInfoId)
+      readingWindow = createReadingWindow(comicId)
     } else {
-      readingWindow.send('comic-info-id-changed', comicInfoId)
+      readingWindow.send('comic-info-id-changed', comicId)
     }
   })
 }
 
 function createMainWindow() {
   const window = new BrowserWindow({
+    title: config.APPLICATOIN_NAME,
     icon: path.join(__static, 'icon.ico'),
 
     width: config.WINDOW_WIDTH,
@@ -74,6 +76,23 @@ function createMainWindow() {
 
   window.setMenu(null)
 
+  const tray = new Tray(path.join(__static, 'icon.ico'))
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '開啟 Sulabug', click: function () {
+        window.show()
+      }
+    },
+    {
+      label: '關閉程式', click: function () {
+        isQuiting = true;
+        app.quit()
+      }
+    }
+  ])
+
+  tray.setContextMenu(contextMenu)
+
   if (isDevelopment) {
     window.webContents.openDevTools()
   }
@@ -87,6 +106,21 @@ function createMainWindow() {
       slashes: true
     }))
   }
+
+  window.on('close', function (event) {
+    if (!isQuiting) {
+      event.preventDefault()
+      window.hide()
+      tray.displayBalloon({
+        title: 'Sulabug',
+        content: 'Sulabug 仍在執行中'
+      })
+    }
+  })
+
+  window.on('show', function () {
+    tray.setHighlightMode('always')
+  })
 
   window.on('closed', () => {
     mainWindow = null
@@ -107,6 +141,7 @@ function createReadingWindow(comicInfId) {
   const {width, height} = screen.getPrimaryDisplay().workAreaSize
 
   const window = new BrowserWindow({
+    title: config.APPLICATOIN_NAME,
     icon: path.join(__static, 'icon.ico'),
 
     width: width,
@@ -115,7 +150,7 @@ function createReadingWindow(comicInfId) {
     webPreferences: {
       webSecurity: false, // for same-origin policy
       nodeIntegration: true,
-    }
+    },
   })
 
   window.setMenu(null)

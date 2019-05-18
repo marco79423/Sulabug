@@ -1,8 +1,8 @@
 export abstract class Entity {
-  readonly identity: string
+  readonly id: string
 
-  protected constructor(identity) {
-    this.identity = identity
+  protected constructor(id) {
+    this.id = id
   }
 
   abstract serialize()

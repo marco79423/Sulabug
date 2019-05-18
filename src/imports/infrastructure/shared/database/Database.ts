@@ -47,7 +47,7 @@ export default class Database implements IDatabase {
   private _initialize = async () => {
     await this._dbService.asyncCreate('sulabug', [
       'user_profile',
-      'comic_info',
+      'comic',
     ])
     this._created = true
   }

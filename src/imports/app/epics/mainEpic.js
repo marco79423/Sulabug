@@ -7,7 +7,7 @@ import {actions, ActionTypes} from '../ducks/mainDuck'
 import DownloadTaskUpdatedEvent from '../../domain/event/DownloadTaskUpdatedEvent'
 import * as path from 'path'
 
-export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProfileRepository, comicInfoInfoRepository, comicRepository, downloadTaskRepository}) => action$.pipe(
+export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProfileRepository, comicRepository, downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_APP_START_SIGNAL
   ),
@@ -15,13 +15,11 @@ export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProf
     of(actions.waitForQueryingInitDataFromDB()),
     from(Promise.all([
         userProfileRepository.asyncGet(),
-        comicInfoInfoRepository.asyncGetAllBySearchTerm(),
-        comicRepository.asyncGetAll(),
+        comicRepository.asyncGetAllBySearchTerm(),
         downloadTaskRepository.getAll()
-      ]).then(([userProfile, comicInfos, comics, downloadTasks]) => ({
+      ]).then(([userProfile, comics, downloadTasks]) => ({
         userProfile: userProfile.serialize(),
         comics: comics.map(comic => comic.serialize()),
-        comicInfos: comicInfos.map(comicInfo => comicInfo.serialize()),
         downloadTasks: downloadTasks.map(downloadTask => downloadTask.serialize()),
       }))
     ).pipe(
@@ -30,38 +28,38 @@ export const initializeDataFromDBWhenAppStartsEpic = (action$, state$, {userProf
   ))
 )
 
-export const sendSignalWhenComicInfoDBIsEmptyEpic = (action$) => action$.pipe(
+export const sendSignalWhenComicDBIsEmptyEpic = (action$) => action$.pipe(
   ofType(
     ActionTypes.SYNC_INIT_DATA_TO_STATE
   ),
-  map(action => action.payload.comicInfos),
-  filter(comicInfos => comicInfos.length === 0),
-  mapTo(actions.sendComicInfoDatabaseEmptySignal())
+  map(action => action.payload.comics),
+  filter(comics => comics.length === 0),
+  mapTo(actions.sendComicDatabaseEmptySignal())
 )
 
-export const updateComicInfoDatabaseEpic = (action$, state$, {comicInfoDatabaseService}) => action$.pipe(
+export const updateComicDatabaseEpic = (action$, state$, {comicDatabaseService}) => action$.pipe(
   ofType(
-    ActionTypes.SEND_COMIC_INFO_DATABASE_EMPTY_SIGNAL,
-    ActionTypes.UPDATE_COMIC_INFO_DATABASE,
+    ActionTypes.SEND_COMIC_DATABASE_EMPTY_SIGNAL,
+    ActionTypes.UPDATE_COMIC_DATABASE,
   ),
   flatMap(() => concat(
-    of(actions.waitForComicInfoDatabaseUpdate()),
-    from(comicInfoDatabaseService.asyncUpdateAndReturn()).pipe(
-      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize()))),
+    of(actions.waitForComicDatabaseUpdate()),
+    from(comicDatabaseService.asyncUpdateAndReturn()).pipe(
+      map(comics => actions.syncComicsToState(comics.map(comic => comic.serialize()))),
     ),
-    of(actions.sendComicInfoDatabaseUpdatedSignal())
+    of(actions.sendComicDatabaseUpdatedSignal())
   )),
 )
 
-export const searchComicInfosEpic = (action$, state$, {comicInfoInfoRepository}) => action$.pipe(
+export const searchComicsEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEARCH_COMIC
   ),
   map(action => action ? action.payload : ''),
   flatMap(searchTerm => concat(
-    of(actions.waitForResultOfSearchingComicInfosFromDB()),
-    from(comicInfoInfoRepository.asyncGetAllBySearchTerm(searchTerm)).pipe(
-      map(comicInfos => actions.syncComicInfosToState(comicInfos.map(comicInfo => comicInfo.serialize())))
+    of(actions.waitForResultOfSearchingComicsFromDB()),
+    from(comicRepository.asyncGetAllBySearchTerm(searchTerm)).pipe(
+      map(comics => actions.syncComicsToState(comics.map(comic => comic.serialize())))
     ),
   )),
 )
@@ -75,16 +73,39 @@ export const sendSignalWhenCollectionsIsNotEmptyEpic = (action$) => action$.pipe
   mapTo(actions.sendCollectionChangedSignal())
 )
 
-export const addComicToCollectionEpic = (action$, state$, {comicFactory, comicRepository}) => action$.pipe(
+export const addComicToCollectionEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.ADD_COMIC_TO_COLLECTION,
   ),
-  map(action => comicFactory.createFromJson({comicInfoIdentity: action.payload})),
-  flatMap(comic => concat(
-    of(actions.waitForAddingComicToCollections()),
-    from(comicRepository.asyncSaveOrUpdate(comic)).pipe(
-      mapTo(actions.sendCollectionChangedSignal())
-    )
+  map(action => action.payload),
+  flatMap(comicId => concat(
+    of(actions.waitForUpdatingCollection()),
+    from((async () => {
+      const comic = await comicRepository.asyncGetById(comicId)
+      comic.inCollection = true
+      await comicRepository.asyncSaveOrUpdate(comic)
+      return actions.sendCollectionChangedSignal()
+    })()),
+  ))
+)
+
+export const removeComicFromCollectionEpic = (action$, state$, {comicRepository, fileService, userProfileRepository}) => action$.pipe(
+  ofType(
+    ActionTypes.REMOVE_COMIC_FROM_COLLECTION,
+  ),
+  map(action => action.payload),
+  flatMap(comicId => concat(
+    of(actions.waitForUpdatingCollection()),
+    from((async () => {
+      const comic = await comicRepository.asyncGetById(comicId)
+      comic.inCollection = false
+      await comicRepository.asyncSaveOrUpdate(comic)
+
+      const userProfile = await userProfileRepository.asyncGet()
+      await fileService.asyncRemove(path.join(userProfile.downloadFolderPath, comic.name))
+
+      return actions.sendCollectionChangedSignal()
+    })()),
   ))
 )
 
@@ -92,9 +113,8 @@ export const syncCollectionToStateEpic = (action$, state$, {comicRepository}) =>
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
-  flatMap(() => from(comicRepository.asyncGetAll()).pipe(
-    map(comics => actions.syncCollectionToState(comics.map(comic => comic.serialize())))
-  ))
+  flatMap(() => comicRepository.asyncGetAllBySearchTerm('')),
+  map(comics => actions.syncComicsToState(comics.map(comic => comic.serialize()))),
 )
 
 export const openReadingPageEpic = (action$) => action$.pipe(
@@ -107,64 +127,59 @@ export const openReadingPageEpic = (action$) => action$.pipe(
   }),
 )
 
-export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService, userProfileRepository, comicInfoInfoRepository}) => action$.pipe(
+export const loadComicImagesFromCollectionEpic = (action$, state$, {fileService, userProfileRepository, comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.LOAD_COMIC_IMAGES_FROM_COLLECTION
   ),
   map(action => action.payload),
-  flatMap(async comicInfoId => {
-    const comicInfo = await comicInfoInfoRepository.asyncGetById(comicInfoId)
+  flatMap(async comicId => {
+    const comic = await comicRepository.asyncGetById(comicId)
 
     const userProfile = await userProfileRepository.asyncGet()
-    const possibleComicFolderPaths = await fileService.asyncListFolder(userProfile.downloadFolderPath)
-    for (const possibleComicFolderPath of possibleComicFolderPaths) {
-      const comicMeta = await fileService.asyncReadJson(path.join(possibleComicFolderPath, '.comic'), null)
-      if (comicMeta !== null && comicMeta.id === comicInfoId) {
-        const comicImages = []
-        for (const chapter of comicInfo.chapters) {
-          if (await fileService.asyncPathExists(path.join(possibleComicFolderPath, chapter.name, '.done'), null)) {
-            const imagePaths = await fileService.asyncListFolder(path.join(possibleComicFolderPath, chapter.name))
-            imagePaths.sort()
+    const comicPath = path.join(userProfile.downloadFolderPath, comic.name)
 
-            comicImages.push({
-              name: chapter.name,
-              images: imagePaths
-                .filter(imagePath => imagePath.endsWith('.jpg'))
-                .map(imagePath => path.resolve(imagePath)),
-            })
-          }
-        }
-        return actions.syncComicImagesToState(comicImages)
+    const comicImages = []
+    for (const chapter of comic.chapters) {
+      if (await fileService.asyncPathExists(path.join(comicPath, chapter.name, '.done'), null)) {
+        const imagePaths = await fileService.asyncListFolder(path.join(comicPath, chapter.name))
+        imagePaths.sort()
+
+        comicImages.push({
+          name: chapter.name,
+          images: imagePaths
+            .filter(imagePath => imagePath.endsWith('.jpg'))
+            .map(imagePath => path.resolve(imagePath)),
+        })
       }
     }
+    return actions.syncComicImagesToState(comicImages)
   })
 )
-
 
 export const createCreateDownloadTasksWhenCollectionChangedEpic = (action$, state$, {comicRepository}) => action$.pipe(
   ofType(
     ActionTypes.SEND_COLLECTION_CHANGED_SIGNAL,
   ),
-  flatMap(() => from(comicRepository.asyncGetAll()).pipe(
-    flatMap(comics => from(comics)))
-  ),
-  map(comic => comic.comicInfoIdentity),
-  map(comicInfoId => actions.createDownloadTask(comicInfoId)),
+  flatMap(() => comicRepository.asyncGetAllBySearchTerm('')),
+  flatMap(comics => from(comics)),
+  filter(comic => comic.inCollection),
+  map(comic => actions.createDownloadTask(comic.id)),
 )
 
-export const createDownloadTaskEpic = (action$, state$, {comicInfoInfoRepository, downloadTaskFactory, downloadTaskRepository}) => action$.pipe(
+
+export const createDownloadTaskEpic = (action$, state$, {comicRepository, downloadTaskFactory, downloadTaskRepository}) => action$.pipe(
   ofType(
     ActionTypes.CREATE_DOWNLOAD_TASK
   ),
   map(action => action.payload),
-  flatMap(comicInfoId => concat(
+  flatMap(comicId => concat(
     of(actions.waitForCreatingDownloadTask()),
-    from(comicInfoInfoRepository.asyncGetById(comicInfoId)).pipe(
-      map(comicInfo => downloadTaskFactory.createFromJson({
-        id: comicInfo.identity,
-        comicInfoId: comicInfo.identity,
-        name: comicInfo.name,
-        coverDataUrl: comicInfo.coverDataUrl,
+    from(comicRepository.asyncGetById(comicId)).pipe(
+      map(comic => downloadTaskFactory.createFromJson({
+        id: comic.id,
+        comicId: comic.id,
+        name: comic.name,
+        coverDataUrl: comic.coverDataUrl,
       })),
       tap(downloadTask => downloadTaskRepository.saveOrUpdate(downloadTask)),
       map(downloadTask => actions.addNewDownloadTaskToState(downloadTask.serialize())),
@@ -197,16 +212,16 @@ export const transformDownloadTaskUpdatedEventToSignalEpic = (action$, state$, {
   map(() => actions.sendDownloadStatusChangedSignal()),
 )
 
-export const autoUpdateUserProfileWhenComicInfoDatabaseUpdateEpic = (action$, state$, {userProfileRepository}) => action$.pipe(
+export const autoUpdateUserProfileWhenComicDatabaseUpdateEpic = (action$, state$, {userProfileRepository}) => action$.pipe(
   ofType(
-    ActionTypes.SEND_COMIC_INFO_DATABASE_UPDATED_SIGNAL,
+    ActionTypes.SEND_COMIC_DATABASE_UPDATED_SIGNAL,
   ),
   flatMap(() => concat(
     of(actions.waitForUpdatingUserProfile()),
     from(userProfileRepository.asyncGet()).pipe(
       map(userProfile => actions.syncUserProfileToState(userProfile.serialize())),
     ),
-)),
+  )),
 )
 
 export const updateUserProfileEpic = (action$, state$, {userProfileFactory, userProfileRepository}) => action$.pipe(
@@ -227,14 +242,15 @@ export default combineEpics(
   initializeDataFromDBWhenAppStartsEpic,
 
   // library
-  sendSignalWhenComicInfoDBIsEmptyEpic,
-  updateComicInfoDatabaseEpic,
-  searchComicInfosEpic,
-  autoUpdateUserProfileWhenComicInfoDatabaseUpdateEpic,
+  sendSignalWhenComicDBIsEmptyEpic,
+  updateComicDatabaseEpic,
+  searchComicsEpic,
+  autoUpdateUserProfileWhenComicDatabaseUpdateEpic,
 
   // collection
   sendSignalWhenCollectionsIsNotEmptyEpic,
   addComicToCollectionEpic,
+  removeComicFromCollectionEpic,
   syncCollectionToStateEpic,
   createCreateDownloadTasksWhenCollectionChangedEpic,
   openReadingPageEpic,

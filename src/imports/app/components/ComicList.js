@@ -48,7 +48,7 @@ export class ComicList extends React.Component {
         </ExpansionPanelDetails>
         <Divider/>
         <ExpansionPanelActions>
-          <Button variant="contained" onClick={this.props.updateComicInfoDatabase}>手動更新資料庫</Button>
+          <Button variant="contained" onClick={this.props.updateComicDatabase}>手動更新資料庫</Button>
         </ExpansionPanelActions>
       </ExpansionPanel>
     )
@@ -63,8 +63,7 @@ export class ComicList extends React.Component {
       <>
         {this.renderMetaSection()}
         <List className={classes.root}>
-          {comics.map((comic) => <ComicListItem key={comic.id} comic={comic}
-                                                addComicToCollection={addComicToCollection}/>)}
+          {comics.map((comic) => <ComicListItem key={comic.id} comic={comic} addComicToCollection={addComicToCollection}/>)}
         </List>
       </>
     )

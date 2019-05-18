@@ -6,12 +6,12 @@ export default class Chapter extends Entity {
   readonly sourcePageUrl: string
 
   constructor(
-    identity: string,
+    id: string,
     order: number,
     name: string,
     sourcePageUrl: string,
   ) {
-    super(identity)
+    super(id)
     this.order = order
     this.name = name
     this.sourcePageUrl = sourcePageUrl
@@ -19,7 +19,7 @@ export default class Chapter extends Entity {
 
   serialize() {
     return {
-      id: this.identity,
+      id: this.id,
       order: this.order,
       name: this.name,
       sourcePageUrl: this.sourcePageUrl,

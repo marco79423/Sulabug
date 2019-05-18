@@ -1,10 +1,10 @@
 import DownloadTask from './entities/DownloadTask'
-import ComicInfo from './entities/ComicInfo'
-import UserProfile from './entities/UserProfile'
 import Comic from './entities/Comic'
+import UserProfile from './entities/UserProfile'
+import ComicSource from './entities/ComicSource'
 
 
-export interface IComicInfoFactory {
+export interface IComicFactory {
   createFromJson(json: {
     id: string,
     name: string,
@@ -22,13 +22,23 @@ export interface IComicInfoFactory {
       name: string
       sourcePageUrl: string
     }[],
-  }): ComicInfo
+    inCollection: boolean,
+  }): Comic
+}
+
+export interface IComicSourceFactory {
+  createFromJson(json: {
+    id: string,
+    name: string,
+    source: string,
+    pageUrl: string,
+  }): ComicSource
 }
 
 export interface IDownloadTaskFactory {
   createFromJson(json: {
     id: string,
-    comicInfoId: string,
+    comicId: string,
     name: string,
     coverDataUrl: string
   }): DownloadTask
@@ -69,47 +79,28 @@ export interface INetAdapter {
   asyncGetBinaryBase64(targetUrl: string): Promise<string>
 }
 
-export interface ISFComicDownloadAdapter {
-  asyncDownload(downloadTask: DownloadTask): Promise<void>
-}
-
-export interface ISFComicInfoQueryAdapter {
-  asyncQueryComicInfos(): Promise<ComicInfo[]>
-}
-
-
 export interface ITimeAdapter {
   getNow(): Date
 }
 
-export interface IComicInfoRepository {
-
-  asyncSaveOrUpdate(comicInfo: ComicInfo): Promise<void>
-
-  asyncGetById(identity: string): Promise<ComicInfo>
-
-  asyncGetAllBySearchTerm(searchTerm: string): Promise<ComicInfo[]>
-}
-
 export interface IComicRepository {
-  asyncSaveOrUpdate(comic: Comic): void
 
-  asyncGetById(identity: string): Promise<Comic | null>
+  asyncSaveOrUpdate(comic: Comic): Promise<void>
 
-  asyncGetAll(): Promise<Comic[]>
+  asyncGetById(id: string): Promise<Comic | null>
 
-  asyncDelete(identity: string): Promise<void>
+  asyncGetAllBySearchTerm(searchTerm: string): Promise<Comic[]>
 }
 
 export interface IDownloadTaskRepository {
 
   saveOrUpdate(downloadTask: DownloadTask): void
 
-  getById(identity: string): DownloadTask
+  getById(id: string): DownloadTask
 
   getAll(): DownloadTask[]
 
-  delete(identity: string): void
+  delete(id: string): void
 }
 
 
@@ -120,13 +111,6 @@ export interface IUserProfileRepository {
   asyncGet(): Promise<UserProfile>
 }
 
-export interface IComicFactory {
-  createFromJson(json: {
-    comicInfoIdentity: string,
-  }): Comic
-}
-
-
 export interface IUserProfileFactory {
   createFromJson(json: {
     databaseUpdatedTime: string | null,
@@ -134,8 +118,8 @@ export interface IUserProfileFactory {
   }): UserProfile
 }
 
-export interface IComicInfoDatabaseService {
-  asyncUpdateAndReturn(): Promise<ComicInfo[]>
+export interface IComicDatabaseService {
+  asyncUpdateAndReturn(): Promise<Comic[]>
 }
 
 export interface IDBService {
@@ -164,13 +148,10 @@ export interface IFileService {
   asyncPathExists(targetPath: string): Promise<boolean>
 
   asyncListFolder(targetPath: string): Promise<string[]>
+
+  asyncRemove(targetPath: string): Promise<void>
 }
 
-export interface INetService {
-
-  asyncGetText(targetUrl: string): Promise<string>
-
-  asyncDownload(targetUrl: string, targetPath: string): Promise<void>
-
-  asyncGetBinaryBase64(targetUrl: string): Promise<string>
+export interface IComicSourceSiteService {
+  asyncGetAllComicSources(): Promise<ComicSource[]>
 }

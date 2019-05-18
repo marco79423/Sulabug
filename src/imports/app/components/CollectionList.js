@@ -4,9 +4,11 @@ import List from '@material-ui/core/List'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
+import {Link} from 'react-router-dom'
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 
 import CollectionListItem from './CollectionListItem'
-import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
+
 
 const styles = (theme) => createStyles({
   card: {
@@ -15,24 +17,29 @@ const styles = (theme) => createStyles({
   root: {
     padding: 0,
   },
-  progress: {
-    marginRight: theme.spacing.unit * 2
+  body: {
+    marginTop: theme.spacing.unit * 3,
+  },
+  link: {
+    textDecoration: 'none',
+    color: theme.palette.primary.main,
   }
 })
 
 export class CollectionList extends React.Component {
   render() {
-    const {classes, loading, collections, comicInfos} = this.props
+    const {classes, loading, comics} = this.props
     if (loading) {
       return <LinearProgress color="secondary" variant="query"/>
     }
 
-    if (collections.length === 0) {
+    if (comics.length === 0) {
       return (
         <Card className={classes.card}>
           <CardContent>
-            <Typography variant="h2" gutterBottom>報告老大！</Typography>
-            <Typography variant="body1">沒有收藏的漫畫</Typography>
+            <Typography variant="h2" gutterBottom>您的收藏是空的！</Typography>
+            <Typography classes={{body1: classes.body}} variant="body1">您可以在 <Link className={classes.link}
+                                                                                   to="/main/browse">瀏覽漫畫</Link> 選擇要收藏的漫畫</Typography>
           </CardContent>
         </Card>
       )
@@ -41,10 +48,10 @@ export class CollectionList extends React.Component {
     return (
       <div className={classes.root}>
         <List>
-          {collections.map((collection) => <CollectionListItem key={collection.id}
-                                                               collection={collection}
-                                                               comicInfos={comicInfos}
-                                                               openReadingPage={this.props.openReadingPage}/>)}
+          {comics.map((comic) => <CollectionListItem key={comic.id}
+                                                     comic={comic}
+                                                     removeComicFromCollection={this.props.removeComicFromCollection}
+                                                     openReadingPage={this.props.openReadingPage}/>)}
         </List>
       </div>
     )

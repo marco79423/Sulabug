@@ -8,14 +8,14 @@ import ReadingPage from '../pages/ReadingPage'
 
 class Reader extends React.Component {
   componentDidMount() {
-    require('electron').ipcRenderer.on('comic-info-id-changed', (event, comicInfoId) => {
-      this.props.history.push(`/reader/comics/${comicInfoId}`)
+    require('electron').ipcRenderer.on('comic-info-id-changed', (event, comicId) => {
+      this.props.history.push(`/reader/comics/${comicId}`)
     })
   }
 
   render() {
     return (
-      <Route exact path='/reader/comics/:comicInfoId' component={ReadingPage}/>
+      <Route exact path='/reader/comics/:comicId' component={ReadingPage}/>
     )
   }
 }

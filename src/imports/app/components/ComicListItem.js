@@ -77,6 +77,7 @@ export class ComicListItem extends React.Component {
 
   render() {
     const {classes, comic} = this.props
+
     return (
       <ListItem className={classes.root}>
         <Card className={classes.card}>
@@ -94,8 +95,11 @@ export class ComicListItem extends React.Component {
               <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
             </CardContent>
             <CardActions className={classes.actions}>
-              <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
-              <Button size="small" onClick={this.addComicToCollection}><CollectionsIcon className={classes.collectionsIcon}/><Typography variant="button">收藏</Typography></Button>
+              <Button size="small" onClick={this.openInBrowser}><OpenInBrowserIcon
+                className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
+              <Button size="small" variant="contained" color="primary" disabled={comic.inCollection}
+                      onClick={this.addComicToCollection}><CollectionsIcon
+                className={classes.collectionsIcon}/>{comic.inCollection ? '已收藏' : '收藏'}</Button>
             </CardActions>
           </div>
         </Card>
