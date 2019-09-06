@@ -1,0 +1,8 @@
+# generic
+/node_modules
+
+# IDE
+/.idea
+
+# project
+/lib
