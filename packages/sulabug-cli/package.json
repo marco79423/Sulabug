@@ -1,6 +1,6 @@
 {
   "name": "sulabug-cli",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha.0",
   "scripts": {
     "start": "node ./bin/sulabug.js",
     "dev": "ts-node src/index.ts",
@@ -15,7 +15,7 @@
     "@types/fs-extra": "^8.0.0",
     "@types/jsdom": "^12.2.4",
     "@types/node": "^12.0.8",
-    "sulabug-core": "^0.0.3",
+    "sulabug-core": "^0.0.4-alpha.0",
     "typescript": "^3.5.1"
   },
   "dependencies": {

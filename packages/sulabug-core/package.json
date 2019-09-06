@@ -1,6 +1,6 @@
 {
   "name": "sulabug-core",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha.0",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch"
