@@ -1,89 +1,11 @@
 {
   "name": "sulabug",
-  "version": "0.0.0",
-  "description": "Sulabug downloader",
-  "author": "Marco Li <marco79423@gmail.com>",
-  "scripts": {
-    "dev": "electron-webpack dev",
-    "test": "jest",
-    "test:coverage": "yarn test --coverage",
-    "compile": "electron-webpack",
-    "dist:win": "yarn compile && electron-builder --win",
-    "dist": "yarn dist:win"
-  },
-  "dependencies": {
-    "@material-ui/core": "^3.4.0",
-    "@material-ui/icons": "^3.0.1",
-    "classnames": "^2.2.6",
-    "dateformat": "^3.0.3",
-    "fs-extra": "^7.0.1",
-    "inversify": "^5.0.1",
-    "node-fetch": "^2.3.0",
-    "react": "^16.6.1",
-    "react-dom": "^16.6.1",
-    "react-redux": "^5.1.1",
-    "react-router": "^5.0.0",
-    "react-router-dom": "^5.0.0",
-    "redux": "^4.0.1",
-    "redux-actions": "^2.6.4",
-    "redux-observable": "^1.0.0",
-    "reflect-metadata": "^0.1.12",
-    "reselect": "^4.0.0",
-    "rxjs": "6",
-    "source-map-support": "^0.5.9",
-    "typeface-roboto": "^0.0.54"
-  },
+  "author": "marco79423 <marco79423@gmail.com>",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.2.1",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
-    "@babel/preset-react": "^7.0.0",
-    "@types/jest": "^23.3.9",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.4",
-    "electron": "4.0.1",
-    "electron-builder": "20.38.4",
-    "electron-devtools-installer": "^2.2.4",
-    "electron-webpack": "^2.6.2",
-    "electron-webpack-ts": "^3.0.0",
-    "identity-obj-proxy": "^3.0.0",
-    "inversify-logger-middleware": "^3.1.0",
-    "jest": "^23.6.0",
-    "react-test-renderer": "^16.6.3",
-    "ts-jest": "^23.10.5",
-    "typescript": "^3.1.6",
-    "webpack": "4.28.4"
-  },
-  "electronWebpack": {
-    "main": {
-      "sourceDirectory": "src/app/main"
-    },
-    "renderer": {
-      "sourceDirectory": "src/app/renderer"
-    }
-  },
-  "build": {
-    "productName": "Sulabug",
-    "appId": "net.marco79423.sulabug",
-    "copyright": "Copyright © 2018 ${author}",
-    "asar": true,
-    "win": {
-      "target": [
-        "zip",
-        "tar.xz",
-        "nsis",
-        "portable"
-      ],
-      "icon": "static/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  },
-  "engines": {
-    "node": ">=10.x"
+    "lerna": "^3.16.4"
   }
 }

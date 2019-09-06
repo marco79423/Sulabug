@@ -3,11 +3,11 @@
 exports[`ComicList will render comic list correctly 1`] = `
 Array [
   <div
-    className="MuiPaper-root-6 MuiPaper-elevation1-9 MuiExpansionPanel-root-3"
+    className="MuiPaper-root-7 MuiPaper-elevation1-10 MuiPaper-rounded-8 MuiExpansionPanel-root-3 MuiExpansionPanel-rounded-4"
   >
     <div
       aria-expanded={false}
-      className="MuiButtonBase-root-39 MuiExpansionPanelSummary-root-33"
+      className="MuiButtonBase-root-40 MuiExpansionPanelSummary-root-34"
       onBlur={[Function]}
       onClick={[Function]}
       onContextMenu={[Function]}
@@ -24,14 +24,14 @@ Array [
       tabIndex="0"
     >
       <div
-        className="MuiExpansionPanelSummary-content-37"
+        className="MuiExpansionPanelSummary-content-38"
       >
         <div
           className="ComicList-column-2"
         />
         <div>
           <p
-            className="MuiTypography-root-42 MuiTypography-body1-51 MuiTypography-inline-77"
+            className="MuiTypography-root-43 MuiTypography-body1-52 MuiTypography-inline-78"
           >
             更新時間： 
             2019/01/01 08:00
@@ -40,7 +40,7 @@ Array [
       </div>
       <div
         aria-hidden="true"
-        className="MuiButtonBase-root-39 MuiIconButton-root-78 MuiExpansionPanelSummary-expandIcon-38"
+        className="MuiButtonBase-root-40 MuiIconButton-root-79 MuiExpansionPanelSummary-expandIcon-39"
         onBlur={[Function]}
         onContextMenu={[Function]}
         onFocus={[Function]}
@@ -56,11 +56,11 @@ Array [
         tabIndex={-1}
       >
         <span
-          className="MuiIconButton-label-83"
+          className="MuiIconButton-label-84"
         >
           <svg
             aria-hidden="true"
-            className="MuiSvgIcon-root-84"
+            className="MuiSvgIcon-root-85"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"
@@ -75,13 +75,13 @@ Array [
           </svg>
         </span>
         <span
-          className="MuiTouchRipple-root-135"
+          className="MuiTouchRipple-root-136"
         />
       </div>
     </div>
     <div
       aria-hidden="true"
-      className="MuiCollapse-container-93"
+      className="MuiCollapse-container-94"
       style={
         Object {
           "minHeight": "0px",
@@ -89,28 +89,28 @@ Array [
       }
     >
       <div
-        className="MuiCollapse-wrapper-95"
+        className="MuiCollapse-wrapper-96"
       >
         <div
-          className="MuiCollapse-wrapperInner-96"
+          className="MuiCollapse-wrapperInner-97"
         >
           <div
-            className="MuiExpansionPanelDetails-root-97"
+            className="MuiExpansionPanelDetails-root-98"
           >
             <p
-              className="MuiTypography-root-42 MuiTypography-body1-51"
+              className="MuiTypography-root-43 MuiTypography-body1-52"
             >
               漫畫資料庫每天會自動更新一次，如果收藏的漫畫內容有更新會自動下載並通知。
             </p>
           </div>
           <hr
-            className="MuiDivider-root-98"
+            className="MuiDivider-root-99"
           />
           <div
-            className="MuiExpansionPanelActions-root-103"
+            className="MuiExpansionPanelActions-root-104"
           >
             <button
-              className="MuiButtonBase-root-39 MuiButton-root-105 MuiButton-contained-116 MuiButton-raised-119 MuiExpansionPanelActions-action-104"
+              className="MuiButtonBase-root-40 MuiButton-root-106 MuiButton-contained-117 MuiButton-raised-120 MuiExpansionPanelActions-action-105"
               disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
@@ -128,12 +128,12 @@ Array [
               type="button"
             >
               <span
-                className="MuiButton-label-106"
+                className="MuiButton-label-107"
               >
                 手動更新資料庫
               </span>
               <span
-                className="MuiTouchRipple-root-135"
+                className="MuiTouchRipple-root-136"
               />
             </button>
           </div>
@@ -142,22 +142,22 @@ Array [
     </div>
   </div>,
   <ul
-    className="MuiList-root-131 MuiList-padding-132 ComicList-root-1"
+    className="MuiList-root-132 MuiList-padding-133 ComicList-root-1"
   />,
 ]
 `;
 
 exports[`ComicList will render comic list correctly in loading state 1`] = `
 <div
-  className="MuiLinearProgress-root-142 MuiLinearProgress-colorSecondary-144 MuiLinearProgress-query-148"
+  className="MuiLinearProgress-root-143 MuiLinearProgress-colorSecondary-145 MuiLinearProgress-query-149"
   role="progressbar"
 >
   <div
-    className="MuiLinearProgress-bar-152 MuiLinearProgress-barColorSecondary-154 MuiLinearProgress-bar1Indeterminate-155"
+    className="MuiLinearProgress-bar-153 MuiLinearProgress-barColorSecondary-155 MuiLinearProgress-bar1Indeterminate-156"
     style={Object {}}
   />
   <div
-    className="MuiLinearProgress-bar-152 MuiLinearProgress-barColorSecondary-154 MuiLinearProgress-bar2Indeterminate-158"
+    className="MuiLinearProgress-bar-153 MuiLinearProgress-barColorSecondary-155 MuiLinearProgress-bar2Indeterminate-159"
     style={Object {}}
   />
 </div>

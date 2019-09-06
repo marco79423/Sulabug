@@ -1,0 +1,13 @@
+# generic
+.git
+.babelrc
+.npmignore
+node_modules
+
+# IDE
+/.idea
+
+# project
+/src
+
+
