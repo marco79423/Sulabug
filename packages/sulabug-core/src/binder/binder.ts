@@ -8,62 +8,36 @@ import {ComicDatabase} from '../domain/database'
 /*
  * Domain
  */
-let comicDatabase: IComicDatabase
-
 export function getComicDatabase(): IComicDatabase {
-  if (!comicDatabase) {
-    comicDatabase = new ComicDatabase(
-      getWebComicSourceRepository(),
-      getComicDAO(),
-      getComicDatabaseInfoDAO(),
-    )
-  }
-
-  return comicDatabase
+  return new ComicDatabase(
+    getWebComicSourceRepository(),
+    getComicDAO(),
+    getComicDatabaseInfoDAO(),
+  )
 }
 
-let comicDAO: IComicDAO
 
 export function getComicDAO(): IComicDAO {
-  if (!comicDAO) {
-    comicDAO = new ComicDAO(
-      getWebComicSourceRepository(),
-      getDatabaseAdapter()
-    )
-  }
-
-  return comicDAO
+  return new ComicDAO(
+    getWebComicSourceRepository(),
+    getDatabaseAdapter()
+  )
 }
-
-let comicDatabaseInfoDAO: IComicDatabaseInfoDAO
 
 export function getComicDatabaseInfoDAO(): IComicDatabaseInfoDAO {
-  if (!comicDatabaseInfoDAO) {
-    comicDatabaseInfoDAO = new ComicDatabaseInfoDAO(
-      getDatabaseAdapter()
-    )
-  }
-
-  return comicDatabaseInfoDAO
+  return new ComicDatabaseInfoDAO(
+    getDatabaseAdapter()
+  )
 }
 
-let databaseAdapter: IDatabaseAdapter
-
 export function getDatabaseAdapter(): IDatabaseAdapter {
-  if (!databaseAdapter) {
-    databaseAdapter = new DatabaseAdapter()
-  }
-  return databaseAdapter
+  return new DatabaseAdapter()
 }
 
 /*
  * Core
  */
-let webComicSourceRepository: IWebComicSourceRepository
 
 export function getWebComicSourceRepository(): IWebComicSourceRepository {
-  if (!webComicSourceRepository) {
-    webComicSourceRepository = new WebComicSourceRepository()
-  }
-  return webComicSourceRepository
+  return new WebComicSourceRepository()
 }
