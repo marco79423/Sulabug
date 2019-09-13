@@ -1,4 +1,4 @@
-import {getGetCommandHandler, getSearchCommandHandler} from './binder/binder'
+import {createGetCommandHandler, createSearchCommandHandler} from './binder/binder'
 import * as commander from 'commander'
 
 export function run() {
@@ -9,7 +9,7 @@ export function run() {
     .command('get <漫畫名稱>')
     .option('-v, --verbose', '顯示詳細資訊')
     .action(async (comicName: string, cmd) => {
-      const handler = getGetCommandHandler()
+      const handler = createGetCommandHandler()
       await handler.handle(comicName, {verbose: cmd.verbose})
     })
 
@@ -18,7 +18,7 @@ export function run() {
     .command('search <漫畫/作者>')
     .option('-v, --verbose', '顯示詳細資訊')
     .action(async (pattern: string, cmd) => {
-      const handler = getSearchCommandHandler()
+      const handler = createSearchCommandHandler()
       await handler.handle(pattern, {verbose: cmd.verbose})
     })
 

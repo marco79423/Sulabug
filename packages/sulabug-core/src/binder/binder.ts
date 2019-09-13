@@ -8,29 +8,29 @@ import {ComicDatabase} from '../domain/database'
 /*
  * Domain
  */
-export function getComicDatabase(): IComicDatabase {
+export function createComicDatabase(): IComicDatabase {
   return new ComicDatabase(
-    getWebComicSourceRepository(),
-    getComicDAO(),
-    getComicDatabaseInfoDAO(),
+    createWebComicSourceRepository(),
+    createComicDAO(),
+    createComicDatabaseInfoDAO(),
   )
 }
 
 
-export function getComicDAO(): IComicDAO {
+export function createComicDAO(): IComicDAO {
   return new ComicDAO(
-    getWebComicSourceRepository(),
-    getDatabaseAdapter()
+    createWebComicSourceRepository(),
+    createDatabaseAdapter()
   )
 }
 
-export function getComicDatabaseInfoDAO(): IComicDatabaseInfoDAO {
+export function createComicDatabaseInfoDAO(): IComicDatabaseInfoDAO {
   return new ComicDatabaseInfoDAO(
-    getDatabaseAdapter()
+    createDatabaseAdapter()
   )
 }
 
-export function getDatabaseAdapter(): IDatabaseAdapter {
+export function createDatabaseAdapter(): IDatabaseAdapter {
   return new DatabaseAdapter()
 }
 
@@ -38,6 +38,6 @@ export function getDatabaseAdapter(): IDatabaseAdapter {
  * Core
  */
 
-export function getWebComicSourceRepository(): IWebComicSourceRepository {
+export function createWebComicSourceRepository(): IWebComicSourceRepository {
   return new WebComicSourceRepository()
 }

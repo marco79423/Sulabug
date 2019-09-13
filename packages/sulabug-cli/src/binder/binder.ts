@@ -1,4 +1,4 @@
-import {getComicDatabase} from 'sulabug-core'
+import {createComicDatabase} from 'sulabug-core'
 
 import {ISearchCommandHandler, SearchCommandHandler} from '../command/search'
 import {GetCommandHandler, IGetCommandHandler} from '../command/get'
@@ -7,10 +7,10 @@ import {CoreService, ICoreService} from '../service/core'
 // command
 let searchCommandHandler: ISearchCommandHandler
 
-export function getSearchCommandHandler(): ISearchCommandHandler {
+export function createSearchCommandHandler(): ISearchCommandHandler {
   if (!searchCommandHandler) {
     searchCommandHandler = new SearchCommandHandler(
-      getCoreService()
+      createCoreService()
     )
   }
 
@@ -19,10 +19,10 @@ export function getSearchCommandHandler(): ISearchCommandHandler {
 
 let getCommandHandler: IGetCommandHandler
 
-export function getGetCommandHandler(): IGetCommandHandler {
+export function createGetCommandHandler(): IGetCommandHandler {
   if (!getCommandHandler) {
     getCommandHandler = new GetCommandHandler(
-      getCoreService()
+      createCoreService()
     )
   }
 
@@ -32,10 +32,10 @@ export function getGetCommandHandler(): IGetCommandHandler {
 // service
 let coreService: ICoreService
 
-export function getCoreService(): ICoreService {
+export function createCoreService(): ICoreService {
   if(!coreService) {
     coreService = new CoreService(
-      getComicDatabase()
+      createComicDatabase()
     )
   }
 
