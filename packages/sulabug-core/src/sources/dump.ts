@@ -1,12 +1,14 @@
 import {ITaskStatus, IWebComic, IWebComicBlueprint, IWebComicChapter, IWebComicSource} from '../interface'
-import {interval, Observable, of} from 'rxjs'
+import {interval, Observable} from 'rxjs'
 import {map, share, take} from 'rxjs/operators'
 
 export class DumpWebComicSource implements IWebComicSource {
   public readonly code: string
+  public readonly name: string
 
   constructor() {
     this.code = 'dump'
+    this.name = '假漫畫來源'
   }
 
   public createWebComicByBlueprint(blueprint:any): IWebComic {

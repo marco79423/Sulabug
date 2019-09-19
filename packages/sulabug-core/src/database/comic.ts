@@ -1,5 +1,5 @@
-import {IComic, IComicDAO} from './interface'
-import {ITaskStatus, IWebComic, IWebComicBlueprint, IWebComicSourceRepository} from '../core/interface'
+
+import {IComic, IComicDAO, ITaskStatus, IWebComic, IWebComicBlueprint, IWebComicSourceRepository} from '../interface'
 import {Observable} from 'rxjs'
 
 export class Comic implements IComic {

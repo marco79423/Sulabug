@@ -1,5 +1,5 @@
-import {IComic, IComicDatabase} from 'sulabug-core/src/domain/interface'
-import {differenceInDays} from "date-fns"
+import {differenceInDays} from 'date-fns'
+import {IComic, IComicDatabase} from 'sulabug-core'
 
 const ProgressBar = require('progress')
 const prompts = require('prompts')
@@ -8,8 +8,11 @@ const print = console.log
 
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
+
   updateComicDatabase(verbose)
+
   searchComics(pattern: string, verbose: boolean): Promise<IComic[]>
+
   downloadComic(comic: IComic, verbose: boolean)
 }
 
@@ -25,12 +28,12 @@ export class CoreService implements ICoreService {
 
     const UPDATE_FREQUENCY = 7
 
-    const sourceCodes = await this._comicDatabase.fetchAllComicSourceCodes()
+    const webComicSources = await this._comicDatabase.fetchAllWebComicSources()
 
     // 取得漫畫資料庫最後更新時間
     const lastUpdatedTimes = []
-    for (const sourceCode of sourceCodes) {
-      const lastUpdatedTime = await this._comicDatabase.fetchLastUpdatedTime(sourceCode)
+    for (const webComicSource of webComicSources) {
+      const lastUpdatedTime = await this._comicDatabase.fetchLastUpdatedTime(webComicSource)
       lastUpdatedTimes.push(lastUpdatedTime)
     }
 
@@ -60,14 +63,14 @@ export class CoreService implements ICoreService {
 
   public async updateComicDatabase(verbose) {
     print(`更新漫畫資料庫 ...`)
-    const comicSourceCodes = await this._comicDatabase.fetchAllComicSourceCodes()
+    const webComicSources = await this._comicDatabase.fetchAllWebComicSources()
 
-    for (const comicSourceCode of comicSourceCodes) {
-      print(`更新漫畫來源： ${comicSourceCode}`)
+    for (const webComicSource of webComicSources) {
+      print(`更新漫畫來源： ${webComicSource.name}`)
 
       await new Promise(resolve => {
         let progressBar
-        this._comicDatabase.startUpdateTask(comicSourceCode).subscribe(taskStatus => {
+        this._comicDatabase.startUpdateTask(webComicSource).subscribe(taskStatus => {
           if (!progressBar) {
             progressBar = new ProgressBar('更新中 [:bar] :current/:total :percent 預估剩餘時間：:eta 秒', {
               width: 30,
@@ -82,7 +85,7 @@ export class CoreService implements ICoreService {
           }
 
           if (taskStatus.completed) {
-            print(`${comicSourceCode} 更新完成`)
+            print(`${webComicSource.name} 更新完成`)
             resolve()
           }
         })

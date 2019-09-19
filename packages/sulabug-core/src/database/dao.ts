@@ -1,61 +1,6 @@
-import * as sqlite3 from 'sqlite3'
-import {IWebComicSourceRepository} from '../core/interface'
-import {IComic, IComicDAO, IComicDatabaseInfoDAO} from './interface'
+import {IComic, IComicDAO, IComicDatabaseInfoDAO, IDatabaseAdapter, IWebComicSourceRepository} from '../interface'
 import {Comic} from './comic'
 
-
-export interface IDatabaseAdapter {
-  queryOne(sql: string, params?: any): Promise<any>
-
-  queryAll(sql: string, params?: any): Promise<any[]>
-
-  run(sql: string, params?: any): Promise<void>
-}
-
-
-export class DatabaseAdapter implements IDatabaseAdapter {
-  private _database: sqlite3.Database
-
-  constructor() {
-    this._database = new sqlite3.Database('sulabug.db')
-  }
-
-  public async queryOne(sql: string, params?: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this._database.get(sql, params, (err, row) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(row)
-        }
-      })
-    })
-  }
-
-  public async queryAll(sql: string, params?: any): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      this._database.all(sql, params, (err, rows) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(rows)
-        }
-      })
-    })
-  }
-
-  public async run(sql: string, params?: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this._database.run(sql, params, err => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve()
-        }
-      })
-    })
-  }
-}
 
 export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
   private readonly _databaseAdapter: IDatabaseAdapter

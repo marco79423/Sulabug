@@ -1,8 +1,15 @@
 import {Observable} from 'rxjs'
 import {share} from 'rxjs/operators'
 
-import {ITaskStatus, IWebComic, IWebComicSourceRepository} from '../core/interface'
-import {IComic, IComicDAO, IComicDatabase, IComicDatabaseInfoDAO} from './interface'
+import {
+  IComic,
+  IComicDAO,
+  IComicDatabase,
+  IComicDatabaseInfoDAO,
+  ITaskStatus,
+  IWebComic, IWebComicSource,
+  IWebComicSourceRepository
+} from '../interface'
 import {Comic} from './comic'
 
 export class ComicDatabase implements IComicDatabase {
@@ -20,24 +27,19 @@ export class ComicDatabase implements IComicDatabase {
   /**
    * 抓取漫畫資料庫最後更新的時間
    */
-  public async fetchLastUpdatedTime(sourceCode: string): Promise<Date | null> {
-    return await this._comicDatabaseInfoDAO.queryLastUpdatedTime(sourceCode)
+  public async fetchLastUpdatedTime(webComicSource: IWebComicSource): Promise<Date | null> {
+    return await this._comicDatabaseInfoDAO.queryLastUpdatedTime(webComicSource.code)
   }
 
-  public async fetchAllComicSourceCodes(): Promise<string[]> {
-    return this._webComicSourceRepository.getAll().map(webComicSource => webComicSource.code)
+  public async fetchAllWebComicSources(): Promise<IWebComicSource[]> {
+    return this._webComicSourceRepository.getAll()
   }
 
   /**
    *  更新資料庫
    */
-  public startUpdateTask(sourceCode: string): Observable<ITaskStatus> {
+  public startUpdateTask(webComicSource: IWebComicSource): Observable<ITaskStatus> {
     return new Observable<ITaskStatus>(subscriber => {
-      const webComicSource = this._webComicSourceRepository.get(sourceCode)
-      if (!webComicSource) {
-        throw new Error(`target webComicSource with code "${sourceCode}" not found`)
-      }
-
       webComicSource.collectAllWebComics().subscribe(async (taskStatus) => {
         try {
           if (taskStatus.completed) {
@@ -46,7 +48,7 @@ export class ComicDatabase implements IComicDatabase {
               await this._insertOrUpdateToDatabase(webComic)
             }
 
-            await this._comicDatabaseInfoDAO.updateLastUpdatedTime(sourceCode, new Date())
+            await this._comicDatabaseInfoDAO.updateLastUpdatedTime(webComicSource.code, new Date())
             subscriber.next(taskStatus)
             subscriber.complete()
           } else {

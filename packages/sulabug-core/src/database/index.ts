@@ -1,13 +1,10 @@
-import {IComicDAO, IComicDatabase, IComicDatabaseInfoDAO} from '../domain/interface'
-import {ComicDAO, ComicDatabaseInfoDAO, DatabaseAdapter, IDatabaseAdapter} from '../domain/adapters'
-import {IWebComicSourceRepository} from '../core/interface'
-import {WebComicSourceRepository} from '../core/repository'
-import {ComicDatabase} from '../domain/database'
+import {IComicDAO, IComicDatabase, IComicDatabaseInfoDAO, IWebComicSourceRepository} from '../interface'
+import {WebComicSourceRepository} from './repository'
+import {ComicDAO, ComicDatabaseInfoDAO} from './dao'
+import {ComicDatabase} from './database'
+import {createDatabaseAdapter} from '../adapters'
+import {createDumpWebComicSource, createSFWebComicSource} from '../sources'
 
-
-/*
- * Domain
- */
 export function createComicDatabase(): IComicDatabase {
   return new ComicDatabase(
     createWebComicSourceRepository(),
@@ -15,7 +12,6 @@ export function createComicDatabase(): IComicDatabase {
     createComicDatabaseInfoDAO(),
   )
 }
-
 
 export function createComicDAO(): IComicDAO {
   return new ComicDAO(
@@ -30,14 +26,11 @@ export function createComicDatabaseInfoDAO(): IComicDatabaseInfoDAO {
   )
 }
 
-export function createDatabaseAdapter(): IDatabaseAdapter {
-  return new DatabaseAdapter()
-}
-
-/*
- * Core
- */
-
 export function createWebComicSourceRepository(): IWebComicSourceRepository {
-  return new WebComicSourceRepository()
+  const webComicSources = [
+    createDumpWebComicSource(),
+    createSFWebComicSource(),
+  ]
+
+  return new WebComicSourceRepository(webComicSources)
 }

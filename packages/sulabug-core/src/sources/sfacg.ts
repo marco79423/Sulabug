@@ -44,9 +44,11 @@ async function downloadFile(targetUrl: string, targetPath: string) {
 
 export class SFWebComicSource implements IWebComicSource {
   public readonly code: string
+  public readonly name: string
 
   constructor() {
     this.code = 'sfacg'
+    this.name = 'SF互动传媒网'
   }
 
   public createWebComicByBlueprint(blueprint: IWebComicBlueprint): IWebComic {
