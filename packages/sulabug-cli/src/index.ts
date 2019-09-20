@@ -22,7 +22,17 @@ export function run() {
       await handler.handle(pattern, {verbose: cmd.verbose})
     })
 
+  program
+    .on('command:*', () => {
+      console.error('我太笨，看不懂您的指令 %s，可以試試 --help 了解一下我能看懂啥。', program.args.join(' '))
+      process.exit(1)
+    })
+
   program.parse(process.argv)
+
+  if (process.argv.length === 2) {
+    program.help()
+  }
 }
 
 run()
