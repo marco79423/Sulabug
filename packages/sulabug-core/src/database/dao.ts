@@ -1,4 +1,11 @@
-import {IComic, IComicDAO, IComicDatabaseInfoDAO, IDatabaseAdapter, IWebComicSourceRepository} from '../interface'
+import {
+  IComic,
+  IComicDAO,
+  IComicDatabaseInfoDAO,
+  IDatabaseAdapter,
+  IWebComicBlueprint,
+  IWebComicSourceRepository
+} from '../interface'
 import {Comic} from './comic'
 
 
@@ -73,9 +80,7 @@ export class ComicDAO implements IComicDAO {
       return row
     } else {
       const {name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint} = row
-      return new Comic(
-        this._webComicSourceRepository,
-        this,
+      return this._createComic(
         name,
         source,
         sourcePageUrl,
@@ -95,9 +100,7 @@ export class ComicDAO implements IComicDAO {
 
     const rows = await this._databaseAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
-      return new Comic(
-        this._webComicSourceRepository,
-        this,
+      return this._createComic(
         name,
         source,
         sourcePageUrl,
@@ -128,5 +131,22 @@ export class ComicDAO implements IComicDAO {
     );`)
 
     await this._databaseAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS source_comic on comic (name, author);')
+  }
+
+  private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
+    return new Comic(
+      this._webComicSourceRepository,
+      this,
+      name,
+      source,
+      sourcePageUrl,
+      coverUrl,
+      author,
+      summary,
+      catalog,
+      lastUpdatedChapter,
+      lastUpdatedTime,
+      blueprint,
+    )
   }
 }
