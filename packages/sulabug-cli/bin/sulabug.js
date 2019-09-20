@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('sulabug-core')
+require('../lib')
