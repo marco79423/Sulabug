@@ -4,62 +4,35 @@ import {
   IWebComicChapter,
   IWebComicImage,
   IWebComicSource,
-  IWebComicBlueprint
+  IWebComicBlueprint, INetAdapter
 } from '../interface'
 import {Observable} from 'rxjs'
 import {JSDOM} from 'jsdom'
-import axios from 'axios'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-
-const sleep = (m: number) => new Promise(r => setTimeout(r, m))
-
-async function fetchText(targetUrl: string): Promise<string> {
-  try {
-    const response = await axios.get(targetUrl, {
-      responseType: 'document',
-    })
-    return await response.data
-  } catch (e) {
-    await sleep(5000)
-    return await fetchText(targetUrl)
-  }
-}
-
-async function downloadFile(targetUrl: string, targetPath: string) {
-  try {
-    const res = await axios.get(targetUrl, {responseType: 'stream'})
-    await new Promise(resolve => {
-      res.data.pipe(fs.createWriteStream(targetPath))
-      res.data.on('end', () => {
-        resolve()
-      })
-    })
-  } catch (e) {
-    await sleep(5000)
-    await downloadFile(targetUrl, targetPath)
-  }
-}
-
 
 export class SFWebComicSource implements IWebComicSource {
   public readonly code: string
   public readonly name: string
 
-  constructor() {
+  private readonly _netAdapter: INetAdapter
+
+  constructor(netAdapter: INetAdapter) {
     this.code = 'sfacg'
     this.name = 'SF互动传媒网'
+
+    this._netAdapter = netAdapter
   }
 
   public createWebComicByBlueprint(blueprint: IWebComicBlueprint): IWebComic {
     const {name, pageUrl} = blueprint
-    return new SFWebComic(name, pageUrl)
+    return new SFWebComic(name, pageUrl, this._netAdapter)
   }
 
   collectAllWebComics(): Observable<ITaskStatus> {
     // @ts-ignore
     return new Observable(async subscriber => {
-      const comicListPageHtml = await fetchText('https://manhua.sfacg.com/catalog/default.aspx')
+      const comicListPageHtml = await this._netAdapter.fetchText('https://manhua.sfacg.com/catalog/default.aspx')
       const {document} = new JSDOM(comicListPageHtml).window
 
       // @ts-ignore
@@ -72,7 +45,7 @@ export class SFWebComicSource implements IWebComicSource {
       const webComics: SFWebComic[] = []
 
       for (const [index, comicListPageUrl] of comicListPageUrls.entries()) {
-        const comicListPageHtml = await fetchText(comicListPageUrl)
+        const comicListPageHtml = await this._netAdapter.fetchText(comicListPageUrl)
         const {document} = new JSDOM(comicListPageHtml).window
 
         const nodes = document.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
@@ -85,7 +58,7 @@ export class SFWebComicSource implements IWebComicSource {
           // @ts-ignore
           const pageUrl = 'https:' + node.href
 
-          webComics.push(new SFWebComic(name, pageUrl))
+          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter))
         }
 
         subscriber.next({
@@ -108,6 +81,7 @@ export class SFWebComic implements IWebComic {
   public readonly name: string
   public readonly sourcePageUrl: string
   public readonly blueprint: IWebComicBlueprint
+  private readonly _netAdapter: INetAdapter
 
   private _updated: boolean
   private _coverUrl: string
@@ -118,10 +92,11 @@ export class SFWebComic implements IWebComic {
   private _lastUpdatedTime: Date
   private _chapters: SFWebComicChapter[]
 
-  constructor(name: string, sourcePageUrl: string) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter) {
     this.source = 'sfacg'
     this.name = name
     this.sourcePageUrl = sourcePageUrl
+    this._netAdapter = netAdapter
 
     this.blueprint = {
       name: this.name,
@@ -132,7 +107,7 @@ export class SFWebComic implements IWebComic {
   }
 
   public async updateInfo() {
-    const {document} = new JSDOM(await fetchText(this.sourcePageUrl)).window
+    const {document} = new JSDOM(await this._netAdapter.fetchText(this.sourcePageUrl)).window
 
     // @ts-ignore
     this._coverUrl = document.querySelector('body > div:nth-child(6) > div.plate_top > ul.synopsises_font > li.cover > img').src
@@ -161,6 +136,7 @@ export class SFWebComic implements IWebComic {
       this._chapters.push(new SFWebComicChapter(
         node.textContent,
         'https://manhua.sfacg.com' + node.getAttribute('href'),
+        this._netAdapter,
       ))
     }
 
@@ -262,19 +238,22 @@ export class SFWebComic implements IWebComic {
 class SFWebComicChapter implements IWebComicChapter {
   public readonly name: string
   public readonly sourcePageUrl: string
+  private readonly _netAdapter: INetAdapter
 
   private _updated: boolean
   private _images: IWebComicImage[]
 
-  constructor(name: string, sourcePageUrl: string) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter) {
     this.name = name
     this.sourcePageUrl = sourcePageUrl
+    this._netAdapter = netAdapter
+
     this._updated = false
     this._images = []
   }
 
   public async updateInfo() {
-    const {document} = new JSDOM(await fetchText(this.sourcePageUrl)).window
+    const {document} = new JSDOM(await this._netAdapter.fetchText(this.sourcePageUrl)).window
 
     // @ts-ignore
     const text = await fetchText('https:' + document.querySelector('head > script:nth-child(7)').src)
@@ -327,7 +306,7 @@ class SFWebComicChapter implements IWebComicChapter {
       // @ts-ignore
       for (const [index, image] of images.entries()) {
         const imagePath = path.join(chapterDir, image.name)
-        await downloadFile(image.imageUrl, imagePath)
+        await this._netAdapter.downloadFile(image.imageUrl, imagePath)
         subscriber.next({
           completed: index === images.length - 1,
           progress: {

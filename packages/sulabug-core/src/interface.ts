@@ -128,14 +128,6 @@ export interface IWebComicImage {
   readonly imageUrl: string
 }
 
-export interface IDatabaseAdapter {
-  queryOne(sql: string, params?: any): Promise<any>
-
-  queryAll(sql: string, params?: any): Promise<any[]>
-
-  run(sql: string, params?: any): Promise<void>
-}
-
 
 /**
  * 漫畫 DAO
@@ -155,4 +147,24 @@ export interface IComicDatabaseInfoDAO {
   updateLastUpdatedTime(sourceCode: string, lastUpdatedTime: Date): Promise<void>
 
   queryLastUpdatedTime(sourceCode: string): Promise<Date | null>
+}
+
+/**
+ * 資料庫 Adapter
+ */
+export interface IDatabaseAdapter {
+  queryOne(sql: string, params?: any): Promise<any>
+
+  queryAll(sql: string, params?: any): Promise<any[]>
+
+  run(sql: string, params?: any): Promise<void>
+}
+
+/**
+ * 網路 Adapter
+ */
+export interface INetAdapter {
+  fetchText(targetUrl: string): Promise<string>
+
+  downloadFile(resourceUrl: string, targetPath: string): Promise<void>
 }
