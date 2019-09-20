@@ -3,8 +3,10 @@
     "target": "es5",
     "strict": true,
     "declaration": true,
+    "sourceMap": true,
     "declarationDir": "lib",
     "outDir": "lib",
+    "downlevelIteration": true,
     "strictPropertyInitialization": false
   },
   "include": [

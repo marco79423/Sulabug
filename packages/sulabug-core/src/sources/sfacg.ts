@@ -59,24 +59,21 @@ export class SFWebComicSource implements IWebComicSource {
   collectAllWebComics(): Observable<ITaskStatus> {
     // @ts-ignore
     return new Observable(async subscriber => {
-      const url = `https://manhua.sfacg.com/catalog/default.aspx`
-
-      const {document} = new JSDOM(await fetchText(url)).window
+      const comicListPageHtml = await fetchText('https://manhua.sfacg.com/catalog/default.aspx')
+      const {document} = new JSDOM(comicListPageHtml).window
 
       // @ts-ignore
       const lastPageIndex = +document.querySelector('.pagebarNext').previousSibling.textContent + 1
       const comicListPageUrls: string[] = []
       for (let pageIndex = 1; pageIndex <= lastPageIndex; pageIndex++) {
         comicListPageUrls.push(`https://manhua.sfacg.com/catalog/default.aspx?PageIndex=${pageIndex}`)
-        break // TODO
       }
 
       const webComics: SFWebComic[] = []
 
-      // @ts-ignore
       for (const [index, comicListPageUrl] of comicListPageUrls.entries()) {
-        const text = await fetchText(comicListPageUrl)
-        const {document} = new JSDOM(text).window
+        const comicListPageHtml = await fetchText(comicListPageUrl)
+        const {document} = new JSDOM(comicListPageHtml).window
 
         const nodes = document.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
 
@@ -89,8 +86,6 @@ export class SFWebComicSource implements IWebComicSource {
           const pageUrl = 'https:' + node.href
 
           webComics.push(new SFWebComic(name, pageUrl))
-
-          break // TODO
         }
 
         subscriber.next({

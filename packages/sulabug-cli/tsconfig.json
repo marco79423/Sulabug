@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "allowJs": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "downlevelIteration": true
   },
   "include": [
     "src"
