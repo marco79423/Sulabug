@@ -1,7 +1,7 @@
 import * as sqlite3 from 'sqlite3'
-import {IDatabaseAdapter} from '../interface'
+import {IDBAdapter} from '../interface'
 
-export class DatabaseAdapter implements IDatabaseAdapter {
+export class DBAdapter implements IDBAdapter {
   private _database: sqlite3.Database
 
   constructor() {

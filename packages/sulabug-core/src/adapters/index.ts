@@ -1,10 +1,10 @@
-import {DatabaseAdapter} from './database'
-import {IDatabaseAdapter, INetAdapter} from '../interface'
+import {DBAdapter} from './db'
+import {IDBAdapter, INetAdapter} from '../interface'
 import {NetAdapter} from './net'
 
 
-export function createDatabaseAdapter(): IDatabaseAdapter {
-  return new DatabaseAdapter()
+export function createDBAdapter(): IDBAdapter {
+  return new DBAdapter()
 }
 
 export function createNetAdapter(): INetAdapter {

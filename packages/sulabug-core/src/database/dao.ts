@@ -2,7 +2,7 @@ import {
   IComic,
   IComicDAO,
   IComicDatabaseInfoDAO,
-  IDatabaseAdapter,
+  IDBAdapter,
   IWebComicBlueprint,
   IWebComicSourceRepository
 } from '../interface'
@@ -10,15 +10,15 @@ import {Comic} from './comic'
 
 
 export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
-  private readonly _databaseAdapter: IDatabaseAdapter
+  private readonly _dbAdapter: IDBAdapter
 
-  constructor(databaseAdapter: IDatabaseAdapter) {
-    this._databaseAdapter = databaseAdapter
+  constructor(dbAdapter: IDBAdapter) {
+    this._dbAdapter = dbAdapter
   }
 
   public async updateLastUpdatedTime(sourceCode: string, lastUpdatedTime: Date): Promise<void> {
     await this._createTableIfNotExists()
-    await this._databaseAdapter.run(`INSERT OR REPLACE INTO comic_database_info (source, last_updated_time) VALUES ($source, $lastUpdatedTime)`, {
+    await this._dbAdapter.run(`INSERT OR REPLACE INTO comic_database_info (source, last_updated_time) VALUES ($source, $lastUpdatedTime)`, {
       $source: sourceCode,
       $lastUpdatedTime: lastUpdatedTime,
     })
@@ -26,7 +26,7 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
 
   public async queryLastUpdatedTime(sourceCode: string): Promise<Date | null> {
     await this._createTableIfNotExists()
-    const row = await this._databaseAdapter.queryOne('SELECT last_updated_time as lastUpdatedTime from comic_database_info WHERE source=$source', {$source: sourceCode})
+    const row = await this._dbAdapter.queryOne('SELECT last_updated_time as lastUpdatedTime from comic_database_info WHERE source=$source', {$source: sourceCode})
     if (row) {
       return row.lastUpdatedTime
     } else {
@@ -35,7 +35,7 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
   }
 
   private async _createTableIfNotExists() {
-    await this._databaseAdapter.run(`
+    await this._dbAdapter.run(`
       CREATE TABLE IF NOT EXISTS comic_database_info (
         source            VARCHAR NOT NULL PRIMARY KEY,
         last_updated_time DATE
@@ -45,17 +45,17 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
 
 export class ComicDAO implements IComicDAO {
   private readonly _webComicSourceRepository: IWebComicSourceRepository
-  private readonly _databaseAdapter: IDatabaseAdapter
+  private readonly _dbAdapter: IDBAdapter
 
-  constructor(webComicSourceRepository: IWebComicSourceRepository, databaseAdapter: IDatabaseAdapter) {
+  constructor(webComicSourceRepository: IWebComicSourceRepository, dbAdapter: IDBAdapter) {
     this._webComicSourceRepository = webComicSourceRepository
-    this._databaseAdapter = databaseAdapter
+    this._dbAdapter = dbAdapter
   }
 
   public async insertOrUpdate(comic: IComic): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._databaseAdapter.run(`
+    await this._dbAdapter.run(`
       INSERT OR REPLACE INTO comic (name, cover_url, source, source_page_url, catalog, author, last_updated_chapter, last_updated_time, summary, blueprint)
       VALUES ($name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime, $summary, $blueprint)
     `, {
@@ -75,7 +75,7 @@ export class ComicDAO implements IComicDAO {
   public async queryOne(name: string): Promise<IComic> {
     await this._createTableIfNotExists()
 
-    const row = await this._databaseAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
+    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
     if (!row) {
       return row
     } else {
@@ -98,7 +98,7 @@ export class ComicDAO implements IComicDAO {
   public async queryAll(name: string): Promise<IComic[]> {
     await this._createTableIfNotExists()
 
-    const rows = await this._databaseAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
+    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(
         name,
@@ -116,7 +116,7 @@ export class ComicDAO implements IComicDAO {
   }
 
   private async _createTableIfNotExists() {
-    await this._databaseAdapter.run(`
+    await this._dbAdapter.run(`
       CREATE TABLE IF NOT EXISTS comic (
         name                 VARCHAR NOT NULL,
         cover_url            VARCHAR NOT NULL,
@@ -130,7 +130,7 @@ export class ComicDAO implements IComicDAO {
         blueprint            TEXT    NOT NULL
     );`)
 
-    await this._databaseAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS source_comic on comic (name, author);')
+    await this._dbAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS source_comic on comic (name, author);')
   }
 
   private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {

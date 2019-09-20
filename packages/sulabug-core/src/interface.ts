@@ -152,7 +152,7 @@ export interface IComicDatabaseInfoDAO {
 /**
  * 資料庫 Adapter
  */
-export interface IDatabaseAdapter {
+export interface IDBAdapter {
   queryOne(sql: string, params?: any): Promise<any>
 
   queryAll(sql: string, params?: any): Promise<any[]>

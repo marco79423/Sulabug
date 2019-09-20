@@ -2,7 +2,7 @@ import {IComicDAO, IComicDatabase, IComicDatabaseInfoDAO, IWebComicSourceReposit
 import {WebComicSourceRepository} from './repository'
 import {ComicDAO, ComicDatabaseInfoDAO} from './dao'
 import {ComicDatabase} from './database'
-import {createDatabaseAdapter} from '../adapters'
+import {createDBAdapter} from '../adapters'
 import {createDumpWebComicSource, createSFWebComicSource} from '../sources'
 
 export function createComicDatabase(): IComicDatabase {
@@ -16,13 +16,13 @@ export function createComicDatabase(): IComicDatabase {
 export function createComicDAO(): IComicDAO {
   return new ComicDAO(
     createWebComicSourceRepository(),
-    createDatabaseAdapter()
+    createDBAdapter()
   )
 }
 
 export function createComicDatabaseInfoDAO(): IComicDatabaseInfoDAO {
   return new ComicDatabaseInfoDAO(
-    createDatabaseAdapter()
+    createDBAdapter()
   )
 }
 
