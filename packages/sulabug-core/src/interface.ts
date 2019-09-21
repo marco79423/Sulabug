@@ -166,6 +166,8 @@ export interface IDBAdapter {
 export interface INetAdapter {
   fetchText(targetUrl: string): Promise<string>
 
+  fetchBinaryData(targetUrl: string): Promise<Buffer>
+
   downloadFile(resourceUrl: string, targetPath: string): Promise<void>
 }
 
@@ -179,9 +181,18 @@ export interface IFileAdapter {
 
   writeJson(targetPath: string, json: any): Promise<void>
 
+  writeData(targetPath: string, data: Buffer): Promise<void>
+
   pathExists(targetPath: string): Promise<boolean>
 
   listFolder(targetPath: string): Promise<string[]>
 
   remove(targetPath: string): Promise<void>
+}
+
+/**
+ * Hash Adapter
+ */
+export interface IHashAdapter {
+  encodeWithMD5(source: string | Buffer): Promise<string>
 }

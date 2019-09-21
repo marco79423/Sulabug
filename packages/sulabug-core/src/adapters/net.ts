@@ -20,6 +20,18 @@ export class NetAdapter implements INetAdapter {
     }
   }
 
+  async fetchBinaryData(targetUrl: string): Promise<Buffer> {
+    try {
+      const response = await axios.get(targetUrl, {
+        responseType: 'arraybuffer',
+      })
+      return Buffer.from(response.data)
+    } catch (e) {
+      await sleep(5000)
+      return await this.fetchBinaryData(targetUrl)
+    }
+  }
+
   async downloadFile(targetUrl: string, targetPath: string) {
     try {
       const res = await axios.get(targetUrl, {responseType: 'stream'})

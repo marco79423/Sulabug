@@ -5,21 +5,28 @@ import {
   IComic,
   IComicDAO,
   IComicDatabase,
-  IComicDatabaseInfoDAO,
+  IComicDatabaseInfoDAO, IFileAdapter, IHashAdapter, INetAdapter,
   ITaskStatus,
   IWebComic, IWebComicSource,
   IWebComicSourceRepository
 } from '../interface'
 import {Comic} from './comic'
+import * as path from "path"
 
 export class ComicDatabase implements IComicDatabase {
 
   private readonly _webComicSourceRepository: IWebComicSourceRepository
+  private readonly _hashAdapter: IHashAdapter
+  private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
   private readonly _comicDAO: IComicDAO
   private readonly _comicDatabaseInfoDAO: IComicDatabaseInfoDAO
 
-  constructor(webComicSourceRepository: IWebComicSourceRepository, comicDAO: IComicDAO, comicDatabaseInfoDAO: IComicDatabaseInfoDAO) {
+  constructor(webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, comicDatabaseInfoDAO: IComicDatabaseInfoDAO) {
     this._webComicSourceRepository = webComicSourceRepository
+    this._hashAdapter = hashAdapter
+    this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
     this._comicDAO = comicDAO
     this._comicDatabaseInfoDAO = comicDatabaseInfoDAO
   }
@@ -110,11 +117,14 @@ export class ComicDatabase implements IComicDatabase {
 
       await this._comicDAO.insertOrUpdate(new Comic(
         this._webComicSourceRepository,
+        this._hashAdapter,
+        this._netAdapter,
+        this._fileAdapter,
         this._comicDAO,
         webComic.name,
         webComic.source,
         webComic.sourcePageUrl,
-        coverUrl,
+        await this._saveCoverAndReturnFileUrl(coverUrl),
         author,
         summary,
         catalog,
@@ -123,6 +133,19 @@ export class ComicDatabase implements IComicDatabase {
         webComic.blueprint
       ))
     }
+  }
+
+  private async _saveCoverAndReturnFileUrl(coverUrl: string): Promise<string> {
+    const databaseFolder = '.'
+
+    const data = await this._netAdapter.fetchBinaryData(coverUrl)
+
+    const hash = await this._hashAdapter.encodeWithMD5(data)
+    const targetPath = path.join(databaseFolder, 'imgs', `${hash}.jpg`)
+
+    await this._fileAdapter.writeData(targetPath, data)
+
+    return require('file-url')(targetPath)
   }
 }
 

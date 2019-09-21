@@ -1,7 +1,8 @@
 import {DBAdapter} from './db'
-import {IDBAdapter, IFileAdapter, INetAdapter} from '../interface'
+import {IDBAdapter, IFileAdapter, IHashAdapter, INetAdapter} from '../interface'
 import {NetAdapter} from './net'
 import FileAdapter from './file'
+import {HashAdapter} from './hash'
 
 
 export function createDBAdapter(): IDBAdapter {
@@ -10,6 +11,10 @@ export function createDBAdapter(): IDBAdapter {
 
 export function createFileAdapter(): IFileAdapter {
   return new FileAdapter()
+}
+
+export function createHashAdapter(): IHashAdapter {
+  return new HashAdapter()
 }
 
 export function createNetAdapter(): INetAdapter {

@@ -17,7 +17,13 @@ export default class FileAdapter implements IFileAdapter {
   }
 
   async writeJson(targetPath: string, json: any): Promise<void> {
+    await this.ensureDir(path.dirname(targetPath))
     await fs.writeJson(targetPath, json)
+  }
+
+  async writeData(targetPath: string, data: Buffer): Promise<void> {
+    await this.ensureDir(path.dirname(targetPath))
+    await fs.writeFile(targetPath, data)
   }
 
   async pathExists(targetPath: string): Promise<boolean> {

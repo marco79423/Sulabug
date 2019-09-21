@@ -1,5 +1,14 @@
+import * as path from 'path'
 
-import {IComic, IComicDAO, ITaskStatus, IWebComic, IWebComicBlueprint, IWebComicSourceRepository} from '../interface'
+import {
+  IComic,
+  IComicDAO, IFileAdapter,
+  IHashAdapter, INetAdapter,
+  ITaskStatus,
+  IWebComic,
+  IWebComicBlueprint,
+  IWebComicSourceRepository
+} from '../interface'
 import {Observable} from 'rxjs'
 
 export class Comic implements IComic {
@@ -16,6 +25,9 @@ export class Comic implements IComic {
   private _lastUpdatedTime: Date
 
   private readonly _webComicSourceRepository: IWebComicSourceRepository
+  private readonly _hashAdapter: IHashAdapter
+  private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
   private readonly _comicDAO: IComicDAO
 
   get coverUrl(): string {
@@ -42,7 +54,7 @@ export class Comic implements IComic {
     return this._lastUpdatedTime
   }
 
-  constructor(webComicSourceRepository: IWebComicSourceRepository, comicDAO: IComicDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
+  constructor(webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
     this.name = name
     this.source = source
     this.sourcePageUrl = sourcePageUrl
@@ -56,6 +68,9 @@ export class Comic implements IComic {
     this._lastUpdatedTime = lastUpdatedTime
 
     this._webComicSourceRepository = webComicSourceRepository
+    this._hashAdapter = hashAdapter
+    this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
     this._comicDAO = comicDAO
   }
 
@@ -71,7 +86,7 @@ export class Comic implements IComic {
       ]
     )
 
-    this._coverUrl = coverUrl
+    this._coverUrl = await this._saveCoverAndReturnFileUrl(coverUrl)
     this._author = author
     this._summary = summary
     this._catalog = catalog
@@ -88,5 +103,18 @@ export class Comic implements IComic {
     }
     const webComic = webComicSource.createWebComicByBlueprint(this.blueprint)
     return webComic.startDownloadTask(targetDir)
+  }
+
+  private async _saveCoverAndReturnFileUrl(coverUrl: string): Promise<string> {
+    const databaseFolder = '.'
+
+    const data = await this._netAdapter.fetchBinaryData(coverUrl)
+
+    const hash = await this._hashAdapter.encodeWithMD5(data)
+    const targetPath = path.join(databaseFolder, 'imgs', `${hash}.jpg`)
+
+    await this._fileAdapter.writeData(targetPath, data)
+
+    return require('file-url')(targetPath)
   }
 }
