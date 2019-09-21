@@ -37,6 +37,13 @@ export interface IComic {
 }
 
 /**
+ * 設定
+ */
+export interface IConfig {
+  readonly databaseDirPath: string
+}
+
+/**
  * 漫畫資料庫
  */
 export interface IComicDatabase {

@@ -35,7 +35,9 @@ let coreService: ICoreService
 export function createCoreService(): ICoreService {
   if(!coreService) {
     coreService = new CoreService(
-      createComicDatabase()
+      createComicDatabase({
+        databaseDirPath: '.sulabug',
+      })
     )
   }
 

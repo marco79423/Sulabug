@@ -1,7 +1,7 @@
 import {
   IComic,
   IComicDAO,
-  IComicDatabaseInfoDAO,
+  IComicDatabaseInfoDAO, IConfig,
   IDBAdapter, IFileAdapter, IHashAdapter, INetAdapter,
   IWebComicBlueprint,
   IWebComicSourceRepository
@@ -44,13 +44,15 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
 }
 
 export class ComicDAO implements IComicDAO {
+  private readonly _config: IConfig
   private readonly _webComicSourceRepository: IWebComicSourceRepository
   private readonly _dbAdapter: IDBAdapter
   private readonly _hashAdapter: IHashAdapter
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
 
-  constructor(webComicSourceRepository: IWebComicSourceRepository, dbAdapter: IDBAdapter, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, dbAdapter: IDBAdapter, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+    this._config = config
     this._webComicSourceRepository = webComicSourceRepository
     this._dbAdapter = dbAdapter
     this._hashAdapter = hashAdapter
@@ -141,6 +143,7 @@ export class ComicDAO implements IComicDAO {
 
   private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
     return new Comic(
+      this._config,
       this._webComicSourceRepository,
       this._hashAdapter,
       this._netAdapter,

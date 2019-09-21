@@ -2,7 +2,7 @@ import * as path from 'path'
 
 import {
   IComic,
-  IComicDAO, IFileAdapter,
+  IComicDAO, IConfig, IFileAdapter,
   IHashAdapter, INetAdapter,
   ITaskStatus,
   IWebComic,
@@ -24,6 +24,7 @@ export class Comic implements IComic {
   private _lastUpdatedChapter: string
   private _lastUpdatedTime: Date
 
+  public readonly _config: IConfig
   private readonly _webComicSourceRepository: IWebComicSourceRepository
   private readonly _hashAdapter: IHashAdapter
   private readonly _netAdapter: INetAdapter
@@ -54,7 +55,7 @@ export class Comic implements IComic {
     return this._lastUpdatedTime
   }
 
-  constructor(webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
     this.name = name
     this.source = source
     this.sourcePageUrl = sourcePageUrl
@@ -67,6 +68,7 @@ export class Comic implements IComic {
     this._lastUpdatedChapter = lastUpdatedChapter
     this._lastUpdatedTime = lastUpdatedTime
 
+    this._config = config
     this._webComicSourceRepository = webComicSourceRepository
     this._hashAdapter = hashAdapter
     this._netAdapter = netAdapter
@@ -106,12 +108,10 @@ export class Comic implements IComic {
   }
 
   private async _saveCoverAndReturnFileUrl(coverUrl: string): Promise<string> {
-    const databaseFolder = '.'
-
     const data = await this._netAdapter.fetchBinaryData(coverUrl)
 
     const hash = await this._hashAdapter.encodeWithMD5(data)
-    const targetPath = path.join(databaseFolder, 'imgs', `${hash}.jpg`)
+    const targetPath = path.join(this._config.databaseDirPath, 'imgs', `${hash}.jpg`)
 
     await this._fileAdapter.writeData(targetPath, data)
 
