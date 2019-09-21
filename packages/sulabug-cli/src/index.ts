@@ -1,5 +1,5 @@
-import {createGetCommandHandler, createSearchCommandHandler} from './binder/binder'
 import * as commander from 'commander'
+import {createGetCommandHandler, createSearchCommandHandler} from './command'
 
 export function run() {
   const program = new commander.Command()
