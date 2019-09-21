@@ -168,3 +168,20 @@ export interface INetAdapter {
 
   downloadFile(resourceUrl: string, targetPath: string): Promise<void>
 }
+
+/**
+ * 檔案 Adapter
+ */
+export interface IFileAdapter {
+  ensureDir(targetDirPath: string): Promise<void>
+
+  readJson(targetPath: string, defaultJson?: any): Promise<any>
+
+  writeJson(targetPath: string, json: any): Promise<void>
+
+  pathExists(targetPath: string): Promise<boolean>
+
+  listFolder(targetPath: string): Promise<string[]>
+
+  remove(targetPath: string): Promise<void>
+}

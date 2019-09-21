@@ -4,29 +4,30 @@ import {
   IWebComicChapter,
   IWebComicImage,
   IWebComicSource,
-  IWebComicBlueprint, INetAdapter
+  IWebComicBlueprint, INetAdapter, IFileAdapter
 } from '../interface'
 import {Observable} from 'rxjs'
 import {JSDOM} from 'jsdom'
 import * as path from 'path'
-import * as fs from 'fs-extra'
 
 export class SFWebComicSource implements IWebComicSource {
   public readonly code: string
   public readonly name: string
 
   private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
 
-  constructor(netAdapter: INetAdapter) {
+  constructor(netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
     this.code = 'sfacg'
     this.name = 'SF互动传媒网'
 
     this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
   }
 
   public createWebComicByBlueprint(blueprint: IWebComicBlueprint): IWebComic {
     const {name, pageUrl} = blueprint
-    return new SFWebComic(name, pageUrl, this._netAdapter)
+    return new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter)
   }
 
   collectAllWebComics(): Observable<ITaskStatus> {
@@ -58,7 +59,7 @@ export class SFWebComicSource implements IWebComicSource {
           // @ts-ignore
           const pageUrl = 'https:' + node.href
 
-          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter))
+          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter))
         }
 
         subscriber.next({
@@ -82,6 +83,7 @@ export class SFWebComic implements IWebComic {
   public readonly sourcePageUrl: string
   public readonly blueprint: IWebComicBlueprint
   private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
 
   private _updated: boolean
   private _coverUrl: string
@@ -92,11 +94,12 @@ export class SFWebComic implements IWebComic {
   private _lastUpdatedTime: Date
   private _chapters: SFWebComicChapter[]
 
-  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
     this.source = 'sfacg'
     this.name = name
     this.sourcePageUrl = sourcePageUrl
     this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
 
     this.blueprint = {
       name: this.name,
@@ -137,6 +140,7 @@ export class SFWebComic implements IWebComic {
         node.textContent,
         'https://manhua.sfacg.com' + node.getAttribute('href'),
         this._netAdapter,
+        this._fileAdapter,
       ))
     }
 
@@ -239,11 +243,12 @@ class SFWebComicChapter implements IWebComicChapter {
   public readonly name: string
   public readonly sourcePageUrl: string
   private readonly _netAdapter: INetAdapter
+  private readonly _fileAdapter: IFileAdapter
 
   private _updated: boolean
   private _images: IWebComicImage[]
 
-  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
     this.name = name
     this.sourcePageUrl = sourcePageUrl
     this._netAdapter = netAdapter
@@ -289,7 +294,7 @@ class SFWebComicChapter implements IWebComicChapter {
 
       const images = await this.fetchImages()
 
-      if (await fs.pathExists(path.join(chapterDir, '.done'))) {
+      if (await this._fileAdapter.pathExists(path.join(chapterDir, '.done'))) {
         subscriber.next({
           completed: true,
           progress: {
@@ -302,8 +307,7 @@ class SFWebComicChapter implements IWebComicChapter {
         return
       }
 
-      await fs.ensureDir(chapterDir)
-      // @ts-ignore
+      await this._fileAdapter.ensureDir(chapterDir)
       for (const [index, image] of images.entries()) {
         const imagePath = path.join(chapterDir, image.name)
         await this._netAdapter.downloadFile(image.imageUrl, imagePath)
@@ -317,7 +321,7 @@ class SFWebComicChapter implements IWebComicChapter {
         })
       }
 
-      await fs.writeJson(targetDir + '/.done', null)
+      await this._fileAdapter.writeJson(targetDir + '/.done', null)
       subscriber.complete()
     })
   }
