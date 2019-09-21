@@ -1,14 +1,13 @@
 import {CoreService, ICoreService} from './core'
-import {createComicDatabase} from 'sulabug-core'
+import {createFileAdapter, createComicDatabase} from 'sulabug-core'
 
 let coreService: ICoreService
 
 export function createCoreService(): ICoreService {
-  if(!coreService) {
+  if (!coreService) {
     coreService = new CoreService(
-      createComicDatabase({
-        databaseDirPath: '.sulabug',
-      })
+      createFileAdapter(),
+      createComicDatabase,
     )
   }
 

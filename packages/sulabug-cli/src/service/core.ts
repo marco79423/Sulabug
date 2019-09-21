@@ -1,5 +1,6 @@
+import * as path from 'path'
 import {differenceInDays} from 'date-fns'
-import {IComic, IComicDatabase} from 'sulabug-core'
+import {IComic, IComicDatabase, IFileAdapter} from 'sulabug-core'
 
 const ProgressBar = require('progress')
 const prompts = require('prompts')
@@ -17,10 +18,13 @@ export interface ICoreService {
 }
 
 export class CoreService implements ICoreService {
-  private readonly _comicDatabase: IComicDatabase
+  private readonly _createComicDatabaseFunc
+  private readonly _fileAdapter: IFileAdapter
+  private _comicDatabase: IComicDatabase
 
-  constructor(comicDatabase: IComicDatabase) {
-    this._comicDatabase = comicDatabase
+  constructor(fileAdapter: IFileAdapter, createComicDatabaseFunc) {
+    this._fileAdapter = fileAdapter
+    this._createComicDatabaseFunc = createComicDatabaseFunc
   }
 
   public async checkIfComicDatabaseUpdateRequired(): Promise<boolean> {
@@ -28,12 +32,13 @@ export class CoreService implements ICoreService {
 
     const UPDATE_FREQUENCY = 7
 
-    const webComicSources = await this._comicDatabase.fetchAllWebComicSources()
+    const comicDatabase = await this._createComicDatabase()
+    const webComicSources = await comicDatabase.fetchAllWebComicSources()
 
     // 取得漫畫資料庫最後更新時間
     const lastUpdatedTimes = []
     for (const webComicSource of webComicSources) {
-      const lastUpdatedTime = await this._comicDatabase.fetchLastUpdatedTime(webComicSource)
+      const lastUpdatedTime = await comicDatabase.fetchLastUpdatedTime(webComicSource)
       lastUpdatedTimes.push(lastUpdatedTime)
     }
 
@@ -63,14 +68,16 @@ export class CoreService implements ICoreService {
 
   public async updateComicDatabase(verbose) {
     print(`更新漫畫資料庫 ...`)
-    const webComicSources = await this._comicDatabase.fetchAllWebComicSources()
+
+    const comicDatabase = await this._createComicDatabase()
+    const webComicSources = await comicDatabase.fetchAllWebComicSources()
 
     for (const webComicSource of webComicSources) {
       print(`更新漫畫來源： ${webComicSource.name}`)
 
       await new Promise(resolve => {
         let progressBar
-        this._comicDatabase.startUpdateTask(webComicSource).subscribe(taskStatus => {
+        comicDatabase.startUpdateTask(webComicSource).subscribe(taskStatus => {
           if (!progressBar) {
             progressBar = new ProgressBar('更新中 [:bar] :current/:total :percent 預估剩餘時間：:eta 秒', {
               width: 30,
@@ -98,9 +105,10 @@ export class CoreService implements ICoreService {
   public async searchComics(pattern: string, verbose: boolean): Promise<IComic[]> {
     print(`搜尋漫畫資料庫 ...`)
 
+    const comicDatabase = await this._createComicDatabase()
     return await new Promise<IComic[]>(resolve => {
       let progressBar
-      this._comicDatabase.startQueryComicsTask(pattern).subscribe(taskStatus => {
+      comicDatabase.startQueryComicsTask(pattern).subscribe(taskStatus => {
         if (!progressBar) {
           progressBar = new ProgressBar('搜尋中 [:bar] :current/:total :percent 預估剩餘時間：:eta 秒', {
             width: 30,
@@ -149,5 +157,21 @@ export class CoreService implements ICoreService {
     })
 
     console.log('漫畫下載完畢')
+  }
+
+  private async _createComicDatabase(): Promise<IComicDatabase> {
+    if (!this._comicDatabase) {
+      const profilePath = path.join('.sulabug', 'profile.json')
+      if (!await this._fileAdapter.pathExists(profilePath)) {
+        this._fileAdapter.writeJson(profilePath, {
+          databaseDirPath: './sulabug',
+        })
+      }
+
+      const profileJson = await this._fileAdapter.readJson(profilePath)
+      this._comicDatabase = this._createComicDatabaseFunc(profileJson)
+    }
+
+    return this._comicDatabase
   }
 }
