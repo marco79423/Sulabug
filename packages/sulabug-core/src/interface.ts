@@ -40,6 +40,7 @@ export interface IComic {
  * 設定
  */
 export interface IConfig {
+  readonly useFakeWebSource: boolean
   readonly databaseDirPath: string
 }
 

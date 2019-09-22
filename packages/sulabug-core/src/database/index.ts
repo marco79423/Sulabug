@@ -8,7 +8,7 @@ import {createDumpWebComicSource, createSFWebComicSource} from '../sources'
 export function createComicDatabase(config: IConfig): IComicDatabase {
   return new ComicDatabase(
     config,
-    createWebComicSourceRepository(),
+    createWebComicSourceRepository(config),
     createHashAdapter(),
     createNetAdapter(),
     createFileAdapter(),
@@ -20,7 +20,7 @@ export function createComicDatabase(config: IConfig): IComicDatabase {
 export function createComicDAO(config: IConfig): IComicDAO {
   return new ComicDAO(
     config,
-    createWebComicSourceRepository(),
+    createWebComicSourceRepository(config),
     createDBAdapter(config),
     createHashAdapter(),
     createNetAdapter(),
@@ -34,11 +34,14 @@ export function createComicDatabaseInfoDAO(config: IConfig): IComicDatabaseInfoD
   )
 }
 
-export function createWebComicSourceRepository(): IWebComicSourceRepository {
-  const webComicSources = [
-    createDumpWebComicSource(),
-    createSFWebComicSource(),
-  ]
+export function createWebComicSourceRepository(config: IConfig): IWebComicSourceRepository {
+  if (config.useFakeWebSource) {
+    return new WebComicSourceRepository([
+      createDumpWebComicSource(),
+    ])
+  }
 
-  return new WebComicSourceRepository(webComicSources)
+  return new WebComicSourceRepository([
+    createSFWebComicSource(),
+  ])
 }

@@ -1,5 +1,5 @@
 import {differenceInDays} from 'date-fns'
-import {IComic, IComicDatabase, IFileAdapter, IPathAdapter} from 'sulabug-core'
+import {IComic, IComicDatabase, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 const ProgressBar = require('progress')
 const prompts = require('prompts')
@@ -164,9 +164,7 @@ export class CoreService implements ICoreService {
     if (!this._comicDatabase) {
       const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
       if (!await this._fileAdapter.pathExists(profilePath)) {
-        await this._fileAdapter.writeJson(profilePath, {
-          databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
-        })
+        await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
       }
 
       const profileJson = await this._fileAdapter.readJson(profilePath)
@@ -174,5 +172,12 @@ export class CoreService implements ICoreService {
     }
 
     return this._comicDatabase
+  }
+
+  private _getDefaultProfile(): IConfig {
+    return {
+      databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
+      useFakeWebSource: false,
+    }
   }
 }
