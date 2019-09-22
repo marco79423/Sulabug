@@ -1,3 +1,3 @@
 export * from './interface'
 export {createComicDatabase} from './database'
-export {createFileAdapter} from './adapters'
+export {createFileAdapter, createPathAdapter} from './adapters'

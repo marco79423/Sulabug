@@ -203,3 +203,14 @@ export interface IFileAdapter {
 export interface IHashAdapter {
   encodeWithMD5(source: string | Buffer): Promise<string>
 }
+
+/**
+ * 路徑 Adapter
+ */
+export interface IPathAdapter {
+  getHomeDir(): string
+
+  joinPaths(...paths: string[]): string
+
+  pathToFileUrl(filePath: string): string
+}

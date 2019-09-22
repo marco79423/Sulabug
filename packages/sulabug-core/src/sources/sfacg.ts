@@ -1,14 +1,17 @@
 import {
+  IFileAdapter,
+  INetAdapter,
+  IPathAdapter,
   ITaskStatus,
   IWebComic,
+  IWebComicBlueprint,
   IWebComicChapter,
   IWebComicImage,
-  IWebComicSource,
-  IWebComicBlueprint, INetAdapter, IFileAdapter
+  IWebComicSource
 } from '../interface'
 import {Observable} from 'rxjs'
 import {JSDOM} from 'jsdom'
-import * as path from 'path'
+import {PathAdapter} from '../adapters/path'
 
 export class SFWebComicSource implements IWebComicSource {
   public readonly code: string
@@ -16,18 +19,20 @@ export class SFWebComicSource implements IWebComicSource {
 
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
+  private readonly _pathAdapter: IPathAdapter
 
-  constructor(netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+  constructor(netAdapter: INetAdapter, fileAdapter: IFileAdapter, pathAdapter: PathAdapter) {
     this.code = 'sfacg'
     this.name = 'SF互动传媒网'
 
     this._netAdapter = netAdapter
     this._fileAdapter = fileAdapter
+    this._pathAdapter = pathAdapter
   }
 
   public createWebComicByBlueprint(blueprint: IWebComicBlueprint): IWebComic {
     const {name, pageUrl} = blueprint
-    return new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter)
+    return new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter)
   }
 
   collectAllWebComics(): Observable<ITaskStatus> {
@@ -59,7 +64,7 @@ export class SFWebComicSource implements IWebComicSource {
           // @ts-ignore
           const pageUrl = 'https:' + node.href
 
-          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter))
+          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter))
         }
 
         subscriber.next({
@@ -84,6 +89,7 @@ export class SFWebComic implements IWebComic {
   public readonly blueprint: IWebComicBlueprint
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
+  private readonly _pathAdapter: IPathAdapter
 
   private _updated: boolean
   private _coverUrl: string
@@ -94,12 +100,13 @@ export class SFWebComic implements IWebComic {
   private _lastUpdatedTime: Date
   private _chapters: SFWebComicChapter[]
 
-  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter, pathAdapter: IPathAdapter) {
     this.source = 'sfacg'
     this.name = name
     this.sourcePageUrl = sourcePageUrl
     this._netAdapter = netAdapter
     this._fileAdapter = fileAdapter
+    this._pathAdapter = pathAdapter
 
     this.blueprint = {
       name: this.name,
@@ -141,6 +148,7 @@ export class SFWebComic implements IWebComic {
         'https://manhua.sfacg.com' + node.getAttribute('href'),
         this._netAdapter,
         this._fileAdapter,
+        this._pathAdapter,
       ))
     }
 
@@ -215,7 +223,7 @@ export class SFWebComic implements IWebComic {
       }
       let current = 0
 
-      const targetComicFolderPath = path.join(targetDir, this.name)
+      const targetComicFolderPath = this._pathAdapter.joinPaths(targetDir, this.name)
       for (const chapter of chapters) {
         await new Promise(resolve => {
           chapter.startDownloadTask(targetComicFolderPath).subscribe(downloadStatus => {
@@ -244,14 +252,17 @@ class SFWebComicChapter implements IWebComicChapter {
   public readonly sourcePageUrl: string
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
+  private readonly _pathAdapter: IPathAdapter
 
   private _updated: boolean
   private _images: IWebComicImage[]
 
-  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+  constructor(name: string, sourcePageUrl: string, netAdapter: INetAdapter, fileAdapter: IFileAdapter, pathAdapter: IPathAdapter) {
     this.name = name
     this.sourcePageUrl = sourcePageUrl
     this._netAdapter = netAdapter
+    this._fileAdapter = fileAdapter
+    this._pathAdapter = pathAdapter
 
     this._updated = false
     this._images = []
@@ -290,11 +301,11 @@ class SFWebComicChapter implements IWebComicChapter {
   public startDownloadTask(targetDir: string): Observable<ITaskStatus> {
     // @ts-ignore
     return new Observable(async subscriber => {
-      const chapterDir = path.join(targetDir, this.name)
+      const chapterDir = this._pathAdapter.joinPaths(targetDir, this.name)
 
       const images = await this.fetchImages()
 
-      if (await this._fileAdapter.pathExists(path.join(chapterDir, '.done'))) {
+      if (await this._fileAdapter.pathExists(this._pathAdapter.joinPaths(chapterDir, '.done'))) {
         subscriber.next({
           completed: true,
           progress: {
@@ -309,7 +320,7 @@ class SFWebComicChapter implements IWebComicChapter {
 
       await this._fileAdapter.ensureDir(chapterDir)
       for (const [index, image] of images.entries()) {
-        const imagePath = path.join(chapterDir, image.name)
+        const imagePath = this._pathAdapter.joinPaths(chapterDir, image.name)
         await this._netAdapter.downloadFile(image.imageUrl, imagePath)
         subscriber.next({
           completed: index === images.length - 1,

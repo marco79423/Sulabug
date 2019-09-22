@@ -1,6 +1,5 @@
-import * as path from 'path'
 import {differenceInDays} from 'date-fns'
-import {IComic, IComicDatabase, IFileAdapter} from 'sulabug-core'
+import {IComic, IComicDatabase, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 const ProgressBar = require('progress')
 const prompts = require('prompts')
@@ -20,10 +19,12 @@ export interface ICoreService {
 export class CoreService implements ICoreService {
   private readonly _createComicDatabaseFunc
   private readonly _fileAdapter: IFileAdapter
+  private readonly _pathAdapter: IPathAdapter
   private _comicDatabase: IComicDatabase
 
-  constructor(fileAdapter: IFileAdapter, createComicDatabaseFunc) {
+  constructor(fileAdapter: IFileAdapter, pathAdapter: IPathAdapter, createComicDatabaseFunc) {
     this._fileAdapter = fileAdapter
+    this._pathAdapter = pathAdapter
     this._createComicDatabaseFunc = createComicDatabaseFunc
   }
 
@@ -161,10 +162,10 @@ export class CoreService implements ICoreService {
 
   private async _createComicDatabase(): Promise<IComicDatabase> {
     if (!this._comicDatabase) {
-      const profilePath = path.join('.sulabug', 'profile.json')
+      const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
       if (!await this._fileAdapter.pathExists(profilePath)) {
         this._fileAdapter.writeJson(profilePath, {
-          databaseDirPath: './sulabug',
+          databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
         })
       }
 

@@ -2,7 +2,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import {IFileAdapter} from '../interface'
 
-export default class FileAdapter implements IFileAdapter {
+export class FileAdapter implements IFileAdapter {
 
   async ensureDir(targetDirPath: string): Promise<void> {
     await fs.ensureDir(targetDirPath)
