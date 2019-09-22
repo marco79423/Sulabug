@@ -52,7 +52,7 @@ export interface IDBAdapter {
 
   asyncFind(collectionName: string, filter): Promise<any[]>
 
-  asyncFindOne(collectionName: string, filter): Promise<any>
+  asyncFindOne(collectionName: string, filter): Promise<any | null>
 }
 
 export interface IFileAdapter {

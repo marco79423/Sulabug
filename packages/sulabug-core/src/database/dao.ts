@@ -1,8 +1,12 @@
 import {
   IComic,
   IComicDAO,
-  IComicDatabaseInfoDAO, IConfig,
-  IDBAdapter, IFileAdapter, IHashAdapter, INetAdapter,
+  IComicDatabaseInfoDAO,
+  IConfig,
+  IDBAdapter,
+  IFileAdapter,
+  IHashAdapter,
+  INetAdapter,
   IWebComicBlueprint,
   IWebComicSourceRepository
 } from '../interface'
@@ -80,33 +84,33 @@ export class ComicDAO implements IComicDAO {
     })
   }
 
-  public async queryOne(name: string): Promise<IComic> {
+  public async queryOne(pattern: string): Promise<IComic | null> {
     await this._createTableIfNotExists()
 
-    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
+    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${pattern}%`})
     if (!row) {
-      return row
-    } else {
-      const {name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint} = row
-      return this._createComic(
-        name,
-        source,
-        sourcePageUrl,
-        coverUrl,
-        author,
-        summary,
-        catalog,
-        lastUpdatedChapter,
-        lastUpdatedTime,
-        JSON.parse(blueprint)
-      )
+      return null
     }
+
+    const {name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint} = row
+    return this._createComic(
+      name,
+      source,
+      sourcePageUrl,
+      coverUrl,
+      author,
+      summary,
+      catalog,
+      lastUpdatedChapter,
+      lastUpdatedTime,
+      JSON.parse(blueprint)
+    )
   }
 
-  public async queryAll(name: string): Promise<IComic[]> {
+  public async queryAll(pattern: string): Promise<IComic[]> {
     await this._createTableIfNotExists()
 
-    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${name}%`})
+    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${pattern}%`})
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(
         name,

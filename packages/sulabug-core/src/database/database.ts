@@ -1,13 +1,17 @@
 import {Observable} from 'rxjs'
-import {share} from 'rxjs/operators'
 
 import {
   IComic,
   IComicDAO,
   IComicDatabase,
-  IComicDatabaseInfoDAO, IConfig, IFileAdapter, IHashAdapter, INetAdapter,
+  IComicDatabaseInfoDAO,
+  IConfig,
+  IFileAdapter,
+  IHashAdapter,
+  INetAdapter,
   ITaskStatus,
-  IWebComic, IWebComicSource,
+  IWebComic,
+  IWebComicSource,
   IWebComicSourceRepository
 } from '../interface'
 import {Comic} from './comic'
@@ -47,26 +51,21 @@ export class ComicDatabase implements IComicDatabase {
    *  更新資料庫
    */
   public startUpdateTask(webComicSource: IWebComicSource): Observable<ITaskStatus> {
-    return new Observable<ITaskStatus>(subscriber => {
+    return new Observable<ITaskStatus<IComic[]>>(subscriber => {
       webComicSource.collectAllWebComics().subscribe(async (taskStatus) => {
-        try {
-          if (taskStatus.completed) {
-            const webComics = taskStatus.result as IWebComic[]
-            for (const webComic of webComics) {
-              await this._insertOrUpdateToDatabase(webComic)
-            }
-
-            await this._comicDatabaseInfoDAO.updateLastUpdatedTime(webComicSource.code, new Date())
-            subscriber.next(taskStatus)
-            subscriber.complete()
-          } else {
-            subscriber.next(taskStatus)
+        if (taskStatus.completed) {
+          const webComics = taskStatus.result as IWebComic[]
+          for (const webComic of webComics) {
+            await this._insertOrUpdateToDatabase(webComic)
           }
-        } catch (e) {
-          subscriber.error(e)
+          await this._comicDatabaseInfoDAO.updateLastUpdatedTime(webComicSource.code, new Date())
+          subscriber.next(taskStatus)
+          subscriber.complete()
+        } else {
+          subscriber.next(taskStatus)
         }
       })
-    }).pipe(share())
+    })
   }
 
   /**
@@ -102,7 +101,7 @@ export class ComicDatabase implements IComicDatabase {
 
   private async _insertOrUpdateToDatabase(webComic: IWebComic) {
     const comic = await this._comicDAO.queryOne(webComic.name)
-    if (comic != null) {
+    if (comic !== null) {
       await comic.updateInfoByWebComic(webComic)
     } else {
       const [coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime] = await Promise.all(

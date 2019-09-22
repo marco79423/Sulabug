@@ -142,9 +142,9 @@ export interface IWebComicImage {
 export interface IComicDAO {
   insertOrUpdate(comic: IComic): Promise<void>
 
-  queryOne(name: string): Promise<IComic>
+  queryOne(pattern: string): Promise<IComic | null>
 
-  queryAll(name: string): Promise<IComic[]>
+  queryAll(pattern: string): Promise<IComic[]>
 }
 
 /**
@@ -160,7 +160,7 @@ export interface IComicDatabaseInfoDAO {
  * 資料庫 Adapter
  */
 export interface IDBAdapter {
-  queryOne(sql: string, params?: any): Promise<any>
+  queryOne(sql: string, params?: any): Promise<any | null>
 
   queryAll(sql: string, params?: any): Promise<any[]>
 

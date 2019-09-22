@@ -1,6 +1,6 @@
 import {ITaskStatus, IWebComic, IWebComicBlueprint, IWebComicChapter, IWebComicSource} from '../interface'
 import {interval, Observable} from 'rxjs'
-import {map, share, take} from 'rxjs/operators'
+import {map, take} from 'rxjs/operators'
 
 export class DumpWebComicSource implements IWebComicSource {
   public readonly code: string
@@ -19,6 +19,7 @@ export class DumpWebComicSource implements IWebComicSource {
   public collectAllWebComics(): Observable<ITaskStatus> {
     const total = 100
     return interval(10).pipe(
+      take(total),
       map(i => i + 1),
       map(current => ({
         result: current === total ? [
@@ -31,10 +32,7 @@ export class DumpWebComicSource implements IWebComicSource {
           current,
           total,
           status: `現在狀態是 ${current}`,
-        }
-      })),
-      take(total),
-      share(),
+        }}))
     )
   }
 }
@@ -54,9 +52,8 @@ export class DumpWebComic implements IWebComic {
     }
   }
 
-
   public async fetchCoverUrl(): Promise<string> {
-    return 'coverUrl'
+    return 'https://marco79423.net/img/logo.png'
   }
 
   public async fetchAuthor(): Promise<string> {
@@ -97,7 +94,6 @@ export class DumpWebComic implements IWebComic {
         }
       })),
       take(total),
-      share(),
     )
   }
 }

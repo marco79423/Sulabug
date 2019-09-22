@@ -42,9 +42,9 @@ export default class DBAdapter implements IDBAdapter {
       .filter(item => item && this._checkItemByFilter(item, filter))
   }
 
-  asyncFindOne = async (collectionName: string, filter): Promise<any> => {
+  asyncFindOne = async (collectionName: string, filter): Promise<any | null> => {
     const items = await this.asyncFind(collectionName, filter)
-    return items[0]
+    return items[0] ? items[0] : null
   }
 
   _checkItemByFilter = (item, filter = {}) => {

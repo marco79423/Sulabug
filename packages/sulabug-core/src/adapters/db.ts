@@ -14,14 +14,14 @@ export class DBAdapter implements IDBAdapter {
     this._fileAdapter = fileAdapter
   }
 
-  public async queryOne(sql: string, params?: any): Promise<any> {
+  public async queryOne(sql: string, params?: any): Promise<any | null> {
     const database = await this._createDatabase()
     return new Promise((resolve, reject) => {
       database.get(sql, params, (err, row) => {
         if (err) {
           reject(err)
         } else {
-          resolve(row)
+          resolve(row ? row : null)
         }
       })
     })
