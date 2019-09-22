@@ -164,7 +164,7 @@ export class CoreService implements ICoreService {
     if (!this._comicDatabase) {
       const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
       if (!await this._fileAdapter.pathExists(profilePath)) {
-        this._fileAdapter.writeJson(profilePath, {
+        await this._fileAdapter.writeJson(profilePath, {
           databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
         })
       }
