@@ -3,7 +3,7 @@
   "version": "0.0.4-alpha.0",
   "scripts": {
     "start": "node bin/sulabug.js",
-    "dev": "LOCAL_DEBUG=1 ts-node bin/sulabug.js",
+    "dev": "cross-env LOCAL_DEBUG=1 ts-node bin/sulabug.js",
     "build": "tsc",
     "build:watch": "yarn build --watch"
   },
@@ -15,6 +15,7 @@
     "@types/fs-extra": "^8.0.0",
     "@types/jsdom": "^12.2.4",
     "@types/node": "^12.0.8",
+    "cross-env": "^6.0.0",
     "sulabug-core": "^0.0.4-alpha.0",
     "typescript": "^3.5.1"
   },
