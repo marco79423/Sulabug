@@ -18,7 +18,7 @@ export class FileAdapter implements IFileAdapter {
 
   async writeJson(targetPath: string, json: any): Promise<void> {
     await this.ensureDir(path.dirname(targetPath))
-    await fs.writeJson(targetPath, json)
+    await fs.writeJson(targetPath, json, {spaces: 4})
   }
 
   async writeData(targetPath: string, data: Buffer): Promise<void> {
