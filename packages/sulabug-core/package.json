@@ -5,7 +5,7 @@
     "build": "rollup -c rollup.config.js",
     "build:watch": "yarn build --watch"
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^12.0.8",

@@ -2,13 +2,13 @@
   "name": "sulabug-cli",
   "version": "0.0.4-alpha.0",
   "scripts": {
-    "start": "node ./bin/sulabug.js",
-    "dev": "ts-node src/index.ts",
+    "start": "node bin/sulabug.js",
+    "dev": "LOCAL_DEBUG=1 ts-node bin/sulabug.js",
     "build": "tsc",
     "build:watch": "yarn build --watch"
   },
   "bin": {
-    "sulabug": "./bin/sulabug.js"
+    "sulabug": "bin/sulabug.js"
   },
   "license": "MIT",
   "devDependencies": {

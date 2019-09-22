@@ -1,3 +1,6 @@
 #!/usr/bin/env node
-
-require('../lib')
+if (process.env.LOCAL_DEBUG) {
+  require('../src')
+} else {
+  require('../lib')
+}
