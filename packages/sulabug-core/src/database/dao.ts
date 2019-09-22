@@ -84,6 +84,26 @@ export class ComicDAO implements IComicDAO {
     })
   }
 
+  public async insertOrUpdateMany(comics: IComic[]): Promise<void> {
+    await this._createTableIfNotExists()
+
+    await this._dbAdapter.runMany(`
+      INSERT OR REPLACE INTO comic (name, cover_url, source, source_page_url, catalog, author, last_updated_chapter, last_updated_time, summary, blueprint)
+      VALUES ($name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime, $summary, $blueprint)
+    `, comics.map(comic => ({
+      $name: comic.name,
+      $coverUrl: comic.coverUrl,
+      $source: comic.source,
+      $sourcePageRrl: comic.sourcePageUrl,
+      $catalog: comic.catalog,
+      $author: comic.author,
+      $lastUpdatedChapter: comic.lastUpdatedChapter,
+      $lastUpdatedTime: comic.lastUpdatedTime,
+      $summary: comic.summary,
+      $blueprint: JSON.stringify(comic.blueprint),
+    })))
+  }
+
   public async queryOne(pattern: string): Promise<IComic | null> {
     await this._createTableIfNotExists()
 

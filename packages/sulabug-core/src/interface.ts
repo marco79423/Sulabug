@@ -142,6 +142,8 @@ export interface IWebComicImage {
 export interface IComicDAO {
   insertOrUpdate(comic: IComic): Promise<void>
 
+  insertOrUpdateMany(comics: IComic[]): Promise<void>
+
   queryOne(pattern: string): Promise<IComic | null>
 
   queryAll(pattern: string): Promise<IComic[]>
@@ -165,6 +167,8 @@ export interface IDBAdapter {
   queryAll(sql: string, params?: any): Promise<any[]>
 
   run(sql: string, params?: any): Promise<void>
+
+  runMany(sql: string, paramsArray: any[]): Promise<void>
 }
 
 /**

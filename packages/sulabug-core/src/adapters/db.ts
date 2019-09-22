@@ -53,6 +53,20 @@ export class DBAdapter implements IDBAdapter {
     })
   }
 
+  public async runMany(sql: string, paramsArray: any[]): Promise<void> {
+    const database = await this._createDatabase()
+    return new Promise(resolve => {
+      database.serialize(() => {
+        const stmt = database.prepare(sql)
+        for(const params of paramsArray) {
+          stmt.run(params)
+        }
+        stmt.finalize()
+        resolve()
+      })
+    })
+  }
+
   private async _createDatabase(): Promise<sqlite3.Database> {
     if (!this._database) {
       await this._fileAdapter.ensureDir(this._config.databaseDirPath)

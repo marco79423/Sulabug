@@ -55,9 +55,7 @@ export class ComicDatabase implements IComicDatabase {
       webComicSource.collectAllWebComics().subscribe(async (taskStatus) => {
         if (taskStatus.completed) {
           const webComics = taskStatus.result as IWebComic[]
-          for (const webComic of webComics) {
-            await this._insertOrUpdateToDatabase(webComic)
-          }
+          await this._insertOrUpdateWebComicsToDatabase(webComics)
           await this._comicDatabaseInfoDAO.updateLastUpdatedTime(webComicSource.code, new Date())
           subscriber.next(taskStatus)
           subscriber.complete()
@@ -99,11 +97,9 @@ export class ComicDatabase implements IComicDatabase {
   }
 
 
-  private async _insertOrUpdateToDatabase(webComic: IWebComic) {
-    const comic = await this._comicDAO.queryOne(webComic.name)
-    if (comic !== null) {
-      await comic.updateInfoByWebComic(webComic)
-    } else {
+  private async _insertOrUpdateWebComicsToDatabase(webComics: IWebComic[]) {
+    const comics = []
+    for (const webComic of webComics) {
       const [coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime] = await Promise.all(
         [
           webComic.fetchCoverUrl(),
@@ -115,7 +111,7 @@ export class ComicDatabase implements IComicDatabase {
         ]
       )
 
-      await this._comicDAO.insertOrUpdate(new Comic(
+      comics.push(new Comic(
         this._config,
         this._webComicSourceRepository,
         this._hashAdapter,
@@ -134,6 +130,8 @@ export class ComicDatabase implements IComicDatabase {
         webComic.blueprint
       ))
     }
+
+    await this._comicDAO.insertOrUpdateMany(comics)
   }
 
   private async _saveCoverAndReturnFileUrl(coverUrl: string): Promise<string> {
