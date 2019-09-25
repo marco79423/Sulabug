@@ -6,6 +6,8 @@ const prompts = require('prompts')
 
 const print = console.log
 
+export type CreateComicDatabaseFunc = (config : IConfig) => IComicDatabase
+
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
 
@@ -17,12 +19,12 @@ export interface ICoreService {
 }
 
 export class CoreService implements ICoreService {
-  private readonly _createComicDatabaseFunc
+  private readonly _createComicDatabaseFunc: CreateComicDatabaseFunc
   private readonly _fileAdapter: IFileAdapter
   private readonly _pathAdapter: IPathAdapter
   private _comicDatabase: IComicDatabase
 
-  constructor(fileAdapter: IFileAdapter, pathAdapter: IPathAdapter, createComicDatabaseFunc) {
+  constructor(fileAdapter: IFileAdapter, pathAdapter: IPathAdapter, createComicDatabaseFunc: CreateComicDatabaseFunc) {
     this._fileAdapter = fileAdapter
     this._pathAdapter = pathAdapter
     this._createComicDatabaseFunc = createComicDatabaseFunc

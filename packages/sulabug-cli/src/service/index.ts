@@ -1,5 +1,5 @@
 import {CoreService, ICoreService} from './core'
-import {createFileAdapter, createPathAdapter, createComicDatabase} from 'sulabug-core'
+import {createComicDatabase, createFileAdapter, createPathAdapter} from 'sulabug-core'
 
 let coreService: ICoreService
 
