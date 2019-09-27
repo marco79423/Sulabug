@@ -56,6 +56,8 @@ export class SFWebComicSource implements IWebComicSource {
 
         const nodes = document.querySelectorAll('.Comic_Pic_List>li:nth-child(2)>strong>a')
 
+        const changed: SFWebComic[] = []
+
         // @ts-ignore
         for (const node of nodes) {
           // @ts-ignore
@@ -64,11 +66,14 @@ export class SFWebComicSource implements IWebComicSource {
           // @ts-ignore
           const pageUrl = 'https:' + node.href
 
-          webComics.push(new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter))
+          changed.push(new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter))
         }
+
+        webComics.push(...changed)
 
         subscriber.next({
           result: webComics,
+          changed: changed,
           completed: index === comicListPageUrls.length - 1,
           progress: {
             current: index + 1,

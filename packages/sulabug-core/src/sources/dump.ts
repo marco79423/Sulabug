@@ -11,28 +11,31 @@ export class DumpWebComicSource implements IWebComicSource {
     this.name = '假漫畫來源'
   }
 
-  public createWebComicByBlueprint(blueprint:any): IWebComic {
+  public createWebComicByBlueprint(blueprint: any): IWebComic {
     const {name} = blueprint
     return new DumpWebComic(name, 'sourcePageUrl')
   }
 
   public collectAllWebComics(): Observable<ITaskStatus> {
     const total = 100
+    const results: IWebComic[] = []
+    for (let i = 0; i < total; i++) {
+      results.push(this.createWebComicByBlueprint({name: `漫畫 ${i}`}))
+    }
+
     return interval(10).pipe(
       take(total),
       map(i => i + 1),
       map(current => ({
-        result: current === total ? [
-          this.createWebComicByBlueprint({name: '漫畫 1'}),
-          this.createWebComicByBlueprint({name: '漫畫 2'}),
-          this.createWebComicByBlueprint({name: '漫畫 3'}),
-        ] : undefined,
+        result: current === total ? results : undefined,
+        changed: results.slice(current - 1, current),
         completed: current === total,
         progress: {
           current,
           total,
           status: `現在狀態是 ${current}`,
-        }}))
+        }
+      }))
     )
   }
 }

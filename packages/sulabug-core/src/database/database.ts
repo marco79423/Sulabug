@@ -53,14 +53,13 @@ export class ComicDatabase implements IComicDatabase {
   public startUpdateTask(webComicSource: IWebComicSource): Observable<ITaskStatus> {
     return new Observable<ITaskStatus<IComic[]>>(subscriber => {
       webComicSource.collectAllWebComics().subscribe(async (taskStatus) => {
+        const webComics = taskStatus.changed as IWebComic[]
+        await this._insertOrUpdateWebComicsToDatabase(webComics)
+        subscriber.next(taskStatus)
+
         if (taskStatus.completed) {
-          const webComics = taskStatus.result as IWebComic[]
-          await this._insertOrUpdateWebComicsToDatabase(webComics)
           await this._comicDatabaseInfoDAO.updateLastUpdatedTime(webComicSource.code, new Date())
-          subscriber.next(taskStatus)
           subscriber.complete()
-        } else {
-          subscriber.next(taskStatus)
         }
       })
     })
@@ -138,7 +137,8 @@ export class ComicDatabase implements IComicDatabase {
     const data = await this._netAdapter.fetchBinaryData(coverUrl)
 
     const hash = await this._hashAdapter.encodeWithMD5(data)
-    const targetPath = path.join(this._config.databaseDirPath, 'imgs', `${hash}.jpg`)
+    const ext = coverUrl.substr(coverUrl.lastIndexOf('.') + 1)
+    const targetPath = path.join(this._config.databaseDirPath, 'imgs', `${hash}.${ext}`)
 
     await this._fileAdapter.writeData(targetPath, data)
 

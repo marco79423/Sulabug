@@ -12,6 +12,7 @@ export interface IProgress {
 
 export interface ITaskStatus<T = any> {
   readonly result?: T | undefined
+  readonly changed?: T | undefined
   readonly completed: boolean
   readonly progress: IProgress
 }
