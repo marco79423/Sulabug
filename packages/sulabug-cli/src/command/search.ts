@@ -1,12 +1,17 @@
-import { format } from 'date-fns'
+import {format} from 'date-fns'
 
 import {ICoreService} from '../service/core'
 
 const print = console.log
 
 
+export interface SearchCommandOptions {
+  update: boolean
+  verbose: boolean
+}
+
 export interface ISearchCommandHandler {
-  handle(pattern: string, {verbose}: { verbose: boolean })
+  handle(pattern: string, options: SearchCommandOptions)
 }
 
 export class SearchCommandHandler implements ISearchCommandHandler {
@@ -16,7 +21,7 @@ export class SearchCommandHandler implements ISearchCommandHandler {
     this._coreService = coreService
   }
 
-  async handle(pattern: string, {verbose}: { verbose: boolean }) {
+  async handle(pattern: string, options: SearchCommandOptions) {
     /*
     1. 檢查漫畫資料庫
       1. 如果不存在，自動更新
@@ -26,13 +31,13 @@ export class SearchCommandHandler implements ISearchCommandHandler {
     */
 
     // 步驟 1: 檢查漫畫資料庫
-    const isUpdateRequired = await this._coreService.checkIfComicDatabaseUpdateRequired()
+    const isUpdateRequired = options.update || await this._coreService.checkIfComicDatabaseUpdateRequired()
     if (isUpdateRequired) {
-      await this._coreService.updateComicDatabase(verbose)
+      await this._coreService.updateComicDatabase(options.verbose)
     }
 
     // 步驟 2: 搜尋漫畫資料庫
-    const comics = await this._coreService.searchComics(pattern, verbose)
+    const comics = await this._coreService.searchComics(pattern, options.verbose)
 
     // 步驟 3: 顯示漫畫
     if (comics.length > 0) {
