@@ -7,10 +7,14 @@ export function run() {
   // 下載
   program
     .command('get <漫畫名稱>')
+    .option('-u, --update', '強制更新漫畫資料庫')
     .option('-v, --verbose', '顯示詳細資訊')
     .action(async (comicName: string, cmd) => {
       const handler = createGetCommandHandler()
-      await handler.handle(comicName, {verbose: cmd.verbose})
+      await handler.handle(comicName, {
+        update: cmd.update,
+        verbose: cmd.verbose,
+      })
     })
 
   // 搜尋

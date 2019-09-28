@@ -6,8 +6,13 @@ const prompts = require('prompts')
 const print = console.log
 
 
+export interface GetCommandOptions {
+  update: boolean
+  verbose: boolean
+}
+
 export interface IGetCommandHandler {
-  handle(pattern: string, {verbose}: { verbose: boolean })
+  handle(pattern: string, {update, verbose}: GetCommandOptions)
 }
 
 export class GetCommandHandler implements IGetCommandHandler {
@@ -18,7 +23,7 @@ export class GetCommandHandler implements IGetCommandHandler {
     this._coreService = coreService
   }
 
-  async handle(pattern: string, {verbose}: { verbose: boolean }) {
+  async handle(pattern: string, options: GetCommandOptions) {
     /*
     1. 檢查漫畫資料庫
       1. 如果不存在，自動更新
@@ -30,14 +35,14 @@ export class GetCommandHandler implements IGetCommandHandler {
     */
 
     // 步驟 1: 檢查漫畫資料庫
-    const isUpdateRequired = await this._coreService.checkIfComicDatabaseUpdateRequired()
+    const isUpdateRequired = options.update || await this._coreService.checkIfComicDatabaseUpdateRequired()
     if (isUpdateRequired) {
-      await this._coreService.updateComicDatabase(verbose)
+      await this._coreService.updateComicDatabase(options.verbose)
     }
 
     // 步驟 2: 搜尋漫畫資料庫
     let targetComic: IComic
-    const comics = await this._coreService.searchComics(pattern, verbose)
+    const comics = await this._coreService.searchComics(pattern, options.verbose)
 
 
     if (comics.length == 0) {
@@ -64,6 +69,6 @@ export class GetCommandHandler implements IGetCommandHandler {
       targetComic = comics[0]
     }
 
-    await this._coreService.downloadComic(targetComic, verbose)
+    await this._coreService.downloadComic(targetComic, options.verbose)
   }
 }
