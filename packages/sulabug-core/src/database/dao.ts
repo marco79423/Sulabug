@@ -1,7 +1,7 @@
 import {
   IComic,
   IComicDAO,
-  IComicDatabaseInfoDAO,
+  IComicDatabaseInfoDAO, IComicFilter,
   IConfig,
   IDBAdapter,
   IFileAdapter,
@@ -104,10 +104,10 @@ export class ComicDAO implements IComicDAO {
     })))
   }
 
-  public async queryOne(pattern: string): Promise<IComic | null> {
+  public async queryOne(filter: IComicFilter): Promise<IComic | null> {
     await this._createTableIfNotExists()
 
-    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${pattern}%`})
+    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${filter.pattern}%`})
     if (!row) {
       return null
     }
@@ -127,10 +127,10 @@ export class ComicDAO implements IComicDAO {
     )
   }
 
-  public async queryAll(pattern: string): Promise<IComic[]> {
+  public async queryAll(filter: IComicFilter): Promise<IComic[]> {
     await this._createTableIfNotExists()
 
-    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${pattern}%`})
+    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${filter.pattern}%`})
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(
         name,

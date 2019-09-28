@@ -5,6 +5,7 @@ import {
   IComicDAO,
   IComicDatabase,
   IComicDatabaseInfoDAO,
+  IComicFilter,
   IConfig,
   IFileAdapter,
   IHashAdapter,
@@ -68,7 +69,7 @@ export class ComicDatabase implements IComicDatabase {
   /**
    *  搜尋資料庫
    */
-  public startQueryComicsTask(name: string): Observable<ITaskStatus<IComic[]>> {
+  public startQueryComicsTask(filter: IComicFilter): Observable<ITaskStatus<IComic[]>> {
     return new Observable<ITaskStatus<IComic[]>>(subscriber => {
       subscriber.next({
         completed: false,
@@ -79,7 +80,7 @@ export class ComicDatabase implements IComicDatabase {
         }
       })
 
-      this._comicDAO.queryAll(name)
+      this._comicDAO.queryAll(filter)
         .then(comics => {
           subscriber.next({
             result: comics,

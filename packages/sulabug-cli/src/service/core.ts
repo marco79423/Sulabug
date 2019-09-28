@@ -1,5 +1,5 @@
 import {differenceInDays} from 'date-fns'
-import {IComic, IComicDatabase, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
+import {IComic, IComicDatabase, IComicFilter, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 const ProgressBar = require('progress')
 const prompts = require('prompts')
@@ -13,7 +13,7 @@ export interface ICoreService {
 
   updateComicDatabase(verbose)
 
-  searchComics(pattern: string, verbose: boolean): Promise<IComic[]>
+  searchComics(filter: IComicFilter, verbose: boolean): Promise<IComic[]>
 
   downloadComic(comic: IComic, verbose: boolean)
 
@@ -107,13 +107,13 @@ export class CoreService implements ICoreService {
     print(`漫畫資料庫更新完成`)
   }
 
-  public async searchComics(pattern: string, verbose: boolean): Promise<IComic[]> {
+  public async searchComics(filter: IComicFilter, verbose: boolean): Promise<IComic[]> {
     print(`搜尋漫畫資料庫 ...`)
 
     const comicDatabase = await this._createComicDatabase()
     return await new Promise<IComic[]>(resolve => {
       let progressBar
-      comicDatabase.startQueryComicsTask(pattern).subscribe(taskStatus => {
+      comicDatabase.startQueryComicsTask(filter).subscribe(taskStatus => {
         if (!progressBar) {
           progressBar = new ProgressBar('搜尋中 [:bar] :current/:total :percent 預估剩餘時間：:eta 秒', {
             width: 30,

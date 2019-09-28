@@ -46,6 +46,13 @@ export interface IConfig {
 }
 
 /**
+ * 漫畫篩選
+ */
+export interface IComicFilter {
+  readonly pattern: string
+}
+
+/**
  * 漫畫資料庫
  */
 export interface IComicDatabase {
@@ -67,7 +74,7 @@ export interface IComicDatabase {
   /**
    *  搜尋漫畫資料庫
    */
-  startQueryComicsTask(name: string): Observable<ITaskStatus<IComic[]>>
+  startQueryComicsTask(filter: IComicFilter): Observable<ITaskStatus<IComic[]>>
 }
 
 
@@ -146,9 +153,9 @@ export interface IComicDAO {
 
   insertOrUpdateMany(comics: IComic[]): Promise<void>
 
-  queryOne(pattern: string): Promise<IComic | null>
+  queryOne(filter: IComicFilter): Promise<IComic | null>
 
-  queryAll(pattern: string): Promise<IComic[]>
+  queryAll(filter: IComicFilter): Promise<IComic[]>
 }
 
 /**
@@ -219,6 +226,6 @@ export interface IPathAdapter {
   joinPaths(...paths: string[]): string
 
   convertToAbsolutePath(filepath: string): string
-  
+
   pathToFileUrl(filePath: string): string
 }
