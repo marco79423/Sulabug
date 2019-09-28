@@ -6,7 +6,7 @@ const prompts = require('prompts')
 
 const print = console.log
 
-export type CreateComicDatabaseFunc = (config : IConfig) => IComicDatabase
+export type CreateComicDatabaseFunc = (config: IConfig) => IComicDatabase
 
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
@@ -16,6 +16,8 @@ export interface ICoreService {
   searchComics(pattern: string, verbose: boolean): Promise<IComic[]>
 
   downloadComic(comic: IComic, verbose: boolean)
+
+  updateConfig(attrName: string, attrValue: string)
 }
 
 export class CoreService implements ICoreService {
@@ -162,18 +164,36 @@ export class CoreService implements ICoreService {
     console.log('漫畫下載完畢')
   }
 
+  public async updateConfig(attrName: string, attrValue: string) {
+    const profileJson = await this._fetchConfig()
+
+    switch (attrName) {
+      case 'database-dir-path':
+        profileJson.databaseDirPath = this._pathAdapter.convertToAbsolutePath(attrValue)
+        break
+      default:
+        print(`抱歉！ ${attrName} 不是合法的設定欄位`)
+    }
+
+    const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
+    await this._fileAdapter.writeJson(profilePath, profileJson)
+  }
+
   private async _createComicDatabase(): Promise<IComicDatabase> {
     if (!this._comicDatabase) {
-      const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
-      if (!await this._fileAdapter.pathExists(profilePath)) {
-        await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
-      }
-
-      const profileJson = await this._fileAdapter.readJson(profilePath)
+      const profileJson = await this._fetchConfig()
       this._comicDatabase = this._createComicDatabaseFunc(profileJson)
     }
 
     return this._comicDatabase
+  }
+
+  private async _fetchConfig(): IConfig {
+    const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
+    if (!await this._fileAdapter.pathExists(profilePath)) {
+      await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
+    }
+    return await this._fileAdapter.readJson(profilePath)
   }
 
   private _getDefaultProfile(): IConfig {

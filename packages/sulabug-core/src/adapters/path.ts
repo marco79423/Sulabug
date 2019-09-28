@@ -7,8 +7,12 @@ export class PathAdapter implements IPathAdapter {
     return os.homedir()
   }
 
-  public joinPaths(...paths: string[]): string {
-    return path.join(...paths)
+  public joinPaths(...filepaths: string[]): string {
+    return path.join(...filepaths)
+  }
+
+  public convertToAbsolutePath(filepath: string): string {
+    return path.resolve(filepath)
   }
 
   public pathToFileUrl(filePath: string): string {

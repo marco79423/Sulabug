@@ -218,5 +218,7 @@ export interface IPathAdapter {
 
   joinPaths(...paths: string[]): string
 
+  convertToAbsolutePath(filepath: string): string
+  
   pathToFileUrl(filePath: string): string
 }

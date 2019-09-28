@@ -1,5 +1,5 @@
 import * as commander from 'commander'
-import {createGetCommandHandler, createSearchCommandHandler} from './command'
+import {createConfigCommandHandler, createGetCommandHandler, createSearchCommandHandler} from './command'
 
 export function run() {
   const program = new commander.Command()
@@ -24,6 +24,14 @@ export function run() {
     .action(async (pattern: string, cmd) => {
       const handler = createSearchCommandHandler()
       await handler.handle(pattern, {verbose: cmd.verbose})
+    })
+
+  // 設定
+  program
+    .command('config <屬性> <值>')
+    .action(async (attrName: string, attrValue: string) => {
+      const handler = createConfigCommandHandler()
+      await handler.handle(attrName, attrValue)
     })
 
   program
