@@ -24,7 +24,7 @@ export class Comic implements IComic {
   private _lastUpdatedChapter: string
   private _lastUpdatedTime: Date
 
-  public readonly _config: IConfig
+  private readonly _config: IConfig
   private readonly _webComicSourceRepository: IWebComicSourceRepository
   private readonly _hashAdapter: IHashAdapter
   private readonly _netAdapter: INetAdapter
