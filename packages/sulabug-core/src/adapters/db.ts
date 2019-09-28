@@ -70,7 +70,9 @@ export class DBAdapter implements IDBAdapter {
   private async _createDatabase(): Promise<sqlite3.Database> {
     if (!this._database) {
       await this._fileAdapter.ensureDir(this._config.databaseDirPath)
-      this._database = new sqlite3.Database(path.join(this._config.databaseDirPath, 'comic.db'))
+
+      const databaseName = this._config.useFakeWebSource ? 'fake-comic.db' : 'comic.db'
+      this._database = new sqlite3.Database(path.join(this._config.databaseDirPath, databaseName))
     }
     return this._database
   }
