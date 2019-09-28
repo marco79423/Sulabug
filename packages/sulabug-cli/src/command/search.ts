@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 import {ICoreService} from '../service/core'
 
 const print = console.log
@@ -35,7 +37,7 @@ export class SearchCommandHandler implements ISearchCommandHandler {
     // 步驟 3: 顯示漫畫
     if (comics.length > 0) {
       for (const comic of comics) {
-        print(`${comic.name} 作者： ${comic.author} 最新章節： ${comic.lastUpdatedChapter} 更新時間： ${comic.lastUpdatedTime}`)
+        print(`${comic.name} 作者： ${comic.author} 最新章節： ${comic.lastUpdatedChapter} 更新時間： ${format(comic.lastUpdatedTime, 'yyyy/MM/dd')}`)
       }
     } else {
       print('抱歉，沒有搜尋到任何結果')
