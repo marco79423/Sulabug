@@ -159,6 +159,18 @@ export interface IComicDAO {
 }
 
 /**
+ * 收藏 DAO
+ */
+export interface ICollectionDAO {
+  add(comic: IComic): Promise<void>
+
+  remove(comic: IComic): Promise<void>
+
+  has(comic: IComic): Promise<boolean>
+}
+
+
+/**
  * 漫畫資料庫 DAO
  */
 export interface IComicDatabaseInfoDAO {
@@ -166,6 +178,7 @@ export interface IComicDatabaseInfoDAO {
 
   queryLastUpdatedTime(sourceCode: string): Promise<Date | null>
 }
+
 
 /**
  * 資料庫 Adapter

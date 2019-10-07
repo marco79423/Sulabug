@@ -1,7 +1,9 @@
 import {
+  ICollectionDAO,
   IComic,
   IComicDAO,
-  IComicDatabaseInfoDAO, IComicFilter,
+  IComicDatabaseInfoDAO,
+  IComicFilter,
   IConfig,
   IDBAdapter,
   IFileAdapter,
@@ -47,6 +49,7 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
   }
 }
 
+
 export class ComicDAO implements IComicDAO {
   private readonly _config: IConfig
   private readonly _webComicSourceRepository: IWebComicSourceRepository
@@ -54,14 +57,16 @@ export class ComicDAO implements IComicDAO {
   private readonly _hashAdapter: IHashAdapter
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
+  private readonly _collectionDAO: ICollectionDAO
 
-  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, dbAdapter: IDBAdapter, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, dbAdapter: IDBAdapter, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, collectionDAO: ICollectionDAO) {
     this._config = config
     this._webComicSourceRepository = webComicSourceRepository
     this._dbAdapter = dbAdapter
     this._hashAdapter = hashAdapter
     this._netAdapter = netAdapter
     this._fileAdapter = fileAdapter
+    this._collectionDAO = collectionDAO
   }
 
   public async insertOrUpdate(comic: IComic): Promise<void> {
@@ -173,6 +178,7 @@ export class ComicDAO implements IComicDAO {
       this._netAdapter,
       this._fileAdapter,
       this,
+      this._collectionDAO,
       name,
       source,
       sourcePageUrl,
@@ -185,4 +191,51 @@ export class ComicDAO implements IComicDAO {
       blueprint,
     )
   }
+}
+
+export class CollectionDAO implements ICollectionDAO {
+  private readonly _dbAdapter: IDBAdapter
+
+  constructor(dbAdapter: IDBAdapter) {
+    this._dbAdapter = dbAdapter
+  }
+
+  public async add(comic: IComic): Promise<void> {
+    await this._createTableIfNotExists()
+
+    await this._dbAdapter.run('INSERT OR REPLACE INTO collection (name, author) VALUES ($name, $author);', {
+      $name: comic.name,
+      $author: comic.author,
+    })
+  }
+
+  public async remove(comic: IComic): Promise<void> {
+    await this._createTableIfNotExists()
+
+    await this._dbAdapter.run('DELETE FROM collection WHERE name=$name, author=$author;', {
+      $name: comic.name,
+      $author: comic.author,
+    })
+  }
+
+  public async has(comic: IComic): Promise<boolean> {
+    await this._createTableIfNotExists()
+
+    const row = await this._dbAdapter.queryOne('SELECT * FROM comic WHERE name=$name, author=$author;', {
+      $name: comic.name,
+      $author: comic.author,
+    })
+    return !!row
+  }
+
+  private async _createTableIfNotExists() {
+    await this._dbAdapter.run(`
+      CREATE TABLE IF NOT EXISTS collection (
+        name                 VARCHAR NOT NULL,
+        author               VARCHAR
+    );`)
+
+    await this._dbAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS collection_index on collection (name, author);')
+  }
+
 }

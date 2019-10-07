@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs'
 
 import {
+  ICollectionDAO,
   IComic,
   IComicDAO,
   IComicDatabase,
@@ -25,15 +26,17 @@ export class ComicDatabase implements IComicDatabase {
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
   private readonly _comicDAO: IComicDAO
+  private readonly _collectionDAO: ICollectionDAO
   private readonly _comicDatabaseInfoDAO: IComicDatabaseInfoDAO
 
-  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, comicDatabaseInfoDAO: IComicDatabaseInfoDAO) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, collectionDAO: ICollectionDAO, comicDatabaseInfoDAO: IComicDatabaseInfoDAO) {
     this._config = config
     this._webComicSourceRepository = webComicSourceRepository
     this._hashAdapter = hashAdapter
     this._netAdapter = netAdapter
     this._fileAdapter = fileAdapter
     this._comicDAO = comicDAO
+    this._collectionDAO = collectionDAO
     this._comicDatabaseInfoDAO = comicDatabaseInfoDAO
   }
 
@@ -118,6 +121,7 @@ export class ComicDatabase implements IComicDatabase {
         this._netAdapter,
         this._fileAdapter,
         this._comicDAO,
+        this._collectionDAO,
         webComic.name,
         webComic.source,
         webComic.sourcePageUrl,

@@ -1,5 +1,10 @@
 import * as commander from 'commander'
-import {createConfigCommandHandler, createGetCommandHandler, createSearchCommandHandler} from './command'
+import {
+  createConfigCommandHandler,
+  createGetCommandHandler,
+  createMarkCommandHandler,
+  createSearchCommandHandler
+} from './command'
 
 export function run() {
   const program = new commander.Command()
@@ -29,6 +34,20 @@ export function run() {
         verbose: cmd.verbose,
       })
     })
+
+  // 收藏
+  program
+    .command('mark <add/remove/sync> <漫畫>')
+    .option('-u, --update', '強制更新漫畫資料庫')
+    .option('-v, --verbose', '顯示詳細資訊')
+    .action(async (operation: string, pattern: string, cmd) => {
+      const handler = createMarkCommandHandler()
+      await handler.handle(operation, pattern, {
+        update: cmd.update,
+        verbose: cmd.verbose,
+      })
+    })
+
 
   // 設定
   program

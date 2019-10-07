@@ -1,6 +1,13 @@
-import {IComicDAO, IComicDatabase, IComicDatabaseInfoDAO, IConfig, IWebComicSourceRepository} from '../interface'
+import {
+  ICollectionDAO,
+  IComicDAO,
+  IComicDatabase,
+  IComicDatabaseInfoDAO,
+  IConfig,
+  IWebComicSourceRepository
+} from '../interface'
 import {WebComicSourceRepository} from './repository'
-import {ComicDAO, ComicDatabaseInfoDAO} from './dao'
+import {CollectionDAO, ComicDAO, ComicDatabaseInfoDAO} from './dao'
 import {ComicDatabase} from './database'
 import {createDBAdapter, createFileAdapter, createHashAdapter, createNetAdapter} from '../adapters'
 import {createDumpWebComicSource, createSFWebComicSource} from '../sources'
@@ -13,6 +20,7 @@ export function createComicDatabase(config: IConfig): IComicDatabase {
     createNetAdapter(),
     createFileAdapter(),
     createComicDAO(config),
+    createCollectionDAO(config),
     createComicDatabaseInfoDAO(config),
   )
 }
@@ -25,6 +33,13 @@ export function createComicDAO(config: IConfig): IComicDAO {
     createHashAdapter(),
     createNetAdapter(),
     createFileAdapter(),
+    createCollectionDAO(config),
+  )
+}
+
+export function createCollectionDAO(config: IConfig): ICollectionDAO {
+  return new CollectionDAO(
+    createDBAdapter(config),
   )
 }
 

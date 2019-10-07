@@ -2,6 +2,7 @@ import {ISearchCommandHandler, SearchCommandHandler} from './search'
 import {GetCommandHandler, IGetCommandHandler} from './get'
 import {ConfigCommandHandler, IConfigCommandHandler} from './config'
 import {createCoreService} from '../service'
+import {IMarkCommandHandler, MarkCommandHandler} from './mark'
 
 
 export function createSearchCommandHandler(): ISearchCommandHandler {
@@ -15,6 +16,13 @@ export function createGetCommandHandler(): IGetCommandHandler {
     createCoreService()
   )
 }
+
+export function createMarkCommandHandler(): IMarkCommandHandler {
+  return new MarkCommandHandler(
+    createCoreService()
+  )
+}
+
 
 export function createConfigCommandHandler(): IConfigCommandHandler {
   return new ConfigCommandHandler(

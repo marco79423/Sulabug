@@ -1,6 +1,7 @@
 import * as path from 'path'
 
 import {
+  ICollectionDAO,
   IComic,
   IComicDAO, IConfig, IFileAdapter,
   IHashAdapter, INetAdapter,
@@ -30,6 +31,7 @@ export class Comic implements IComic {
   private readonly _netAdapter: INetAdapter
   private readonly _fileAdapter: IFileAdapter
   private readonly _comicDAO: IComicDAO
+  private readonly _collectionDAO: ICollectionDAO
 
   get coverUrl(): string {
     return this._coverUrl
@@ -55,7 +57,7 @@ export class Comic implements IComic {
     return this._lastUpdatedTime
   }
 
-  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, collectionDAO: ICollectionDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
     this.name = name
     this.source = source
     this.sourcePageUrl = sourcePageUrl
@@ -74,6 +76,7 @@ export class Comic implements IComic {
     this._netAdapter = netAdapter
     this._fileAdapter = fileAdapter
     this._comicDAO = comicDAO
+    this._collectionDAO = collectionDAO
   }
 
   public async updateInfoByWebComic(webComic: IWebComic): Promise<void> {
@@ -96,6 +99,14 @@ export class Comic implements IComic {
     this._lastUpdatedTime = lastUpdatedTime
 
     await this._comicDAO.insertOrUpdate(this)
+  }
+
+  public async mark(): Promise<void> {
+    await this._collectionDAO.add(this)
+  }
+
+  public async unmark(): Promise<void> {
+    await this._collectionDAO.remove(this)
   }
 
   public startDownloadTask(targetDir: string): Observable<ITaskStatus> {

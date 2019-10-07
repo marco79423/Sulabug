@@ -135,6 +135,15 @@ export class CoreService implements ICoreService {
     })
   }
 
+  public async mark(filter: IComicFilter, verbose: boolean) {
+    const comics = await this.searchComics(filter, verbose)
+
+  }
+
+  public async unmark(filter: IComicFilter, verbose: boolean) {
+
+  }
+
   public async downloadComic(comic: IComic, verbose: boolean) {
     console.log(`開始下載 ${comic.name} ...`)
 
