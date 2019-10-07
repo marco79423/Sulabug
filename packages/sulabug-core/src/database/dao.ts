@@ -212,7 +212,7 @@ export class CollectionDAO implements ICollectionDAO {
   public async remove(comic: IComic): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._dbAdapter.run('DELETE FROM collection WHERE name=$name, author=$author;', {
+    await this._dbAdapter.run('DELETE FROM collection WHERE name=$name AND author=$author;', {
       $name: comic.name,
       $author: comic.author,
     })
@@ -221,7 +221,7 @@ export class CollectionDAO implements ICollectionDAO {
   public async has(comic: IComic): Promise<boolean> {
     await this._createTableIfNotExists()
 
-    const row = await this._dbAdapter.queryOne('SELECT * FROM comic WHERE name=$name, author=$author;', {
+    const row = await this._dbAdapter.queryOne('SELECT * FROM comic WHERE name=$name AND author=$author;', {
       $name: comic.name,
       $author: comic.author,
     })
