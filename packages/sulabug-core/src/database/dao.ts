@@ -112,7 +112,28 @@ export class ComicDAO implements IComicDAO {
   public async queryOne(filter: IComicFilter): Promise<IComic | null> {
     await this._createTableIfNotExists()
 
-    const row = await this._dbAdapter.queryOne(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${filter.pattern}%`})
+    const sql = `
+        SELECT comic.name,
+            comic.cover_url,
+            comic.source,
+            comic.source_page_url      AS                              sourcePageUrl,
+            comic.catalog,
+            comic.author,
+            comic.last_updated_chapter AS                              lastUpdatedChapter,
+            comic.last_updated_time    AS                              lastUpdatedTime,
+            comic.summary,
+            comic.blueprint,
+            CASE WHEN collection.name IS NULL THEN FALSE ELSE TRUE END marked
+        FROM comic
+            LEFT JOIN collection ON comic.name = collection.name AND comic.author = collection.author
+        WHERE 
+            comic.name LIKE $name AND ($marked=FALSE OR marked=$marked);
+      `
+
+    const row = await this._dbAdapter.queryOne(sql, {
+      $name: `%${filter.pattern}%`,
+      $marked: filter.marked,
+    })
     if (!row) {
       return null
     }
@@ -135,7 +156,28 @@ export class ComicDAO implements IComicDAO {
   public async queryAll(filter: IComicFilter): Promise<IComic[]> {
     await this._createTableIfNotExists()
 
-    const rows = await this._dbAdapter.queryAll(`SELECT name, cover_url, source, source_page_url AS sourcePageUrl, catalog, author, last_updated_chapter AS lastUpdatedChapter, last_updated_time AS lastUpdatedTime, summary, blueprint FROM comic WHERE name LIKE $name`, {$name: `%${filter.pattern}%`})
+    const sql = `
+        SELECT comic.name,
+            comic.cover_url,
+            comic.source,
+            comic.source_page_url      AS                              sourcePageUrl,
+            comic.catalog,
+            comic.author,
+            comic.last_updated_chapter AS                              lastUpdatedChapter,
+            comic.last_updated_time    AS                              lastUpdatedTime,
+            comic.summary,
+            comic.blueprint,
+            CASE WHEN collection.name IS NULL THEN FALSE ELSE TRUE END marked
+        FROM comic
+            LEFT JOIN collection ON comic.name = collection.name AND comic.author = collection.author
+        WHERE 
+            comic.name LIKE $name AND ($marked=FALSE OR marked=$marked);
+      `
+
+    const rows = await this._dbAdapter.queryAll(sql, {
+      $name: `%${filter.pattern}%`,
+      $marked: filter.marked,
+    })
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(
         name,

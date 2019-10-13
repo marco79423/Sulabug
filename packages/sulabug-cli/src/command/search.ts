@@ -6,6 +6,7 @@ const print = console.log
 
 
 export interface SearchCommandOptions {
+  marked: boolean
   update: boolean
   verbose: boolean
 }
@@ -37,7 +38,7 @@ export class SearchCommandHandler implements ISearchCommandHandler {
     }
 
     // 步驟 2: 搜尋漫畫資料庫
-    const comics = await this._coreService.searchComics({pattern}, options.verbose)
+    const comics = await this._coreService.searchComics({pattern, marked: options.marked}, options.verbose)
 
     // 步驟 3: 顯示漫畫
     if (comics.length > 0) {

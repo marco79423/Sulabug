@@ -27,11 +27,13 @@ export function run() {
     .command('search <漫畫/作者>')
     .option('-u, --update', '強制更新漫畫資料庫')
     .option('-v, --verbose', '顯示詳細資訊')
+    .option('-m, --marked', '只顯示標記的漫畫')
     .action(async (pattern: string, cmd) => {
       const handler = createSearchCommandHandler()
       await handler.handle(pattern, {
+        marked: !!cmd.marked,
         update: cmd.update,
-        verbose: cmd.verbose,
+        verbose: !!cmd.verbose,
       })
     })
 

@@ -49,6 +49,7 @@ export interface IConfig {
  * 漫畫篩選
  */
 export interface IComicFilter {
+  readonly marked: boolean
   readonly pattern: string
 }
 
