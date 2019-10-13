@@ -58,7 +58,7 @@ export class MarkCommandHandler implements IMarkCommandHandler {
 
     // 步驟 2: 搜尋漫畫資料庫
     let targetComic: IComic
-    const comics = await this._coreService.searchComics({pattern}, options.verbose)
+    const comics = await this._coreService.searchComics({pattern, marked: false}, options.verbose)
 
     if (comics.length == 0) {
       // 如果一部都沒有就報錯
@@ -107,7 +107,7 @@ export class MarkCommandHandler implements IMarkCommandHandler {
 
     // 步驟 2: 搜尋漫畫資料庫
     let targetComic: IComic
-    const comics = await this._coreService.searchComics({pattern}, options.verbose)
+    const comics = await this._coreService.searchComics({pattern, marked: false}, options.verbose)
 
     if (comics.length == 0) {
       // 如果一部都沒有就報錯
