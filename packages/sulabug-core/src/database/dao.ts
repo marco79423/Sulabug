@@ -13,7 +13,7 @@ import {
   IWebComicSourceRepository
 } from '../interface'
 import {Comic} from './comic'
-
+import * as sqls from './sqls'
 
 export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
   private readonly _dbAdapter: IDBAdapter
@@ -24,7 +24,7 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
 
   public async updateLastUpdatedTime(sourceCode: string, lastUpdatedTime: Date): Promise<void> {
     await this._createTableIfNotExists()
-    await this._dbAdapter.run(`INSERT OR REPLACE INTO comic_database_info (source, last_updated_time) VALUES ($source, $lastUpdatedTime)`, {
+    await this._dbAdapter.run(sqls.INSERT_OR_UPDATE_LAST_UPDATED_TIME_SQL, {
       $source: sourceCode,
       $lastUpdatedTime: lastUpdatedTime,
     })
@@ -32,7 +32,7 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
 
   public async queryLastUpdatedTime(sourceCode: string): Promise<Date | null> {
     await this._createTableIfNotExists()
-    const row = await this._dbAdapter.queryOne('SELECT last_updated_time as lastUpdatedTime from comic_database_info WHERE source=$source', {$source: sourceCode})
+    const row = await this._dbAdapter.queryOne(sqls.QUERY_LAST_UPDATED_TIME_SQL, {$source: sourceCode})
     if (row) {
       return row.lastUpdatedTime
     } else {
@@ -41,11 +41,8 @@ export class ComicDatabaseInfoDAO implements IComicDatabaseInfoDAO {
   }
 
   private async _createTableIfNotExists() {
-    await this._dbAdapter.run(`
-      CREATE TABLE IF NOT EXISTS comic_database_info (
-        source            VARCHAR NOT NULL PRIMARY KEY,
-        last_updated_time DATE
-    );`)
+    await this._dbAdapter.run(sqls.CREATE_COMIC_DATABASE_INFO_TABLE_SQL)
+    await this._dbAdapter.run(sqls.CREATE_COMIC_DATABASE_INFO_TABLE_INDEX_SQL)
   }
 }
 
@@ -72,10 +69,7 @@ export class ComicDAO implements IComicDAO {
   public async insertOrUpdate(comic: IComic): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._dbAdapter.run(`
-      INSERT OR REPLACE INTO comic (name, cover_url, source, source_page_url, catalog, author, last_updated_chapter, last_updated_time, summary, blueprint)
-      VALUES ($name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime, $summary, $blueprint)
-    `, {
+    await this._dbAdapter.run(sqls.INSERT_OR_UPDATE_COMIC_SQL, {
       $name: comic.name,
       $coverUrl: comic.coverUrl,
       $source: comic.source,
@@ -92,10 +86,7 @@ export class ComicDAO implements IComicDAO {
   public async insertOrUpdateMany(comics: IComic[]): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._dbAdapter.runMany(`
-      INSERT OR REPLACE INTO comic (name, cover_url, source, source_page_url, catalog, author, last_updated_chapter, last_updated_time, summary, blueprint)
-      VALUES ($name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime, $summary, $blueprint)
-    `, comics.map(comic => ({
+    await this._dbAdapter.runMany(sqls.INSERT_OR_UPDATE_COMIC_SQL, comics.map(comic => ({
       $name: comic.name,
       $coverUrl: comic.coverUrl,
       $source: comic.source,
@@ -112,25 +103,7 @@ export class ComicDAO implements IComicDAO {
   public async queryOne(filter: IComicFilter): Promise<IComic | null> {
     await this._createTableIfNotExists()
 
-    const sql = `
-        SELECT comic.name,
-            comic.cover_url,
-            comic.source,
-            comic.source_page_url      AS                              sourcePageUrl,
-            comic.catalog,
-            comic.author,
-            comic.last_updated_chapter AS                              lastUpdatedChapter,
-            comic.last_updated_time    AS                              lastUpdatedTime,
-            comic.summary,
-            comic.blueprint,
-            CASE WHEN collection.name IS NULL THEN FALSE ELSE TRUE END marked
-        FROM comic
-            LEFT JOIN collection ON comic.name = collection.name AND comic.author = collection.author
-        WHERE 
-            comic.name LIKE $name AND ($marked=FALSE OR marked=$marked);
-      `
-
-    const row = await this._dbAdapter.queryOne(sql, {
+    const row = await this._dbAdapter.queryOne(sqls.QUERY_COMICS_SQL, {
       $name: `%${filter.pattern}%`,
       $marked: filter.marked,
     })
@@ -156,25 +129,7 @@ export class ComicDAO implements IComicDAO {
   public async queryAll(filter: IComicFilter): Promise<IComic[]> {
     await this._createTableIfNotExists()
 
-    const sql = `
-        SELECT comic.name,
-            comic.cover_url,
-            comic.source,
-            comic.source_page_url      AS                              sourcePageUrl,
-            comic.catalog,
-            comic.author,
-            comic.last_updated_chapter AS                              lastUpdatedChapter,
-            comic.last_updated_time    AS                              lastUpdatedTime,
-            comic.summary,
-            comic.blueprint,
-            CASE WHEN collection.name IS NULL THEN FALSE ELSE TRUE END marked
-        FROM comic
-            LEFT JOIN collection ON comic.name = collection.name AND comic.author = collection.author
-        WHERE 
-            comic.name LIKE $name AND ($marked=FALSE OR marked=$marked);
-      `
-
-    const rows = await this._dbAdapter.queryAll(sql, {
+    const rows = await this._dbAdapter.queryAll(sqls.QUERY_COMICS_SQL, {
       $name: `%${filter.pattern}%`,
       $marked: filter.marked,
     })
@@ -195,21 +150,8 @@ export class ComicDAO implements IComicDAO {
   }
 
   private async _createTableIfNotExists() {
-    await this._dbAdapter.run(`
-      CREATE TABLE IF NOT EXISTS comic (
-        name                 VARCHAR NOT NULL,
-        cover_url            VARCHAR NOT NULL,
-        source               VARCHAR NOT NULL,
-        source_page_url      VARCHAR NOT NULL,
-        catalog              VARCHAR,
-        author               VARCHAR,
-        last_updated_chapter VARCHAR,
-        last_updated_time    DATE,
-        summary              TEXT,
-        blueprint            TEXT    NOT NULL
-    );`)
-
-    await this._dbAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS source_comic on comic (name, author);')
+    await this._dbAdapter.run(sqls.CREATE_COMIC_TABLE_SQL)
+    await this._dbAdapter.run(sqls.CREATE_COMIC_TABLE_INDEX_SQL)
   }
 
   private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
@@ -245,7 +187,7 @@ export class CollectionDAO implements ICollectionDAO {
   public async add(comic: IComic): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._dbAdapter.run('INSERT OR REPLACE INTO collection (name, author) VALUES ($name, $author);', {
+    await this._dbAdapter.run(sqls.ADD_COLLECTION_SQL, {
       $name: comic.name,
       $author: comic.author,
     })
@@ -254,7 +196,7 @@ export class CollectionDAO implements ICollectionDAO {
   public async remove(comic: IComic): Promise<void> {
     await this._createTableIfNotExists()
 
-    await this._dbAdapter.run('DELETE FROM collection WHERE name=$name AND author=$author;', {
+    await this._dbAdapter.run(sqls.REMOVE_COLLECTION_SQL, {
       $name: comic.name,
       $author: comic.author,
     })
@@ -262,8 +204,7 @@ export class CollectionDAO implements ICollectionDAO {
 
   public async has(comic: IComic): Promise<boolean> {
     await this._createTableIfNotExists()
-
-    const row = await this._dbAdapter.queryOne('SELECT * FROM comic WHERE name=$name AND author=$author;', {
+    const row = await this._dbAdapter.queryOne(sqls.QUERY_COLLECTION_SQL, {
       $name: comic.name,
       $author: comic.author,
     })
@@ -271,13 +212,8 @@ export class CollectionDAO implements ICollectionDAO {
   }
 
   private async _createTableIfNotExists() {
-    await this._dbAdapter.run(`
-      CREATE TABLE IF NOT EXISTS collection (
-        name                 VARCHAR NOT NULL,
-        author               VARCHAR
-    );`)
-
-    await this._dbAdapter.run('CREATE UNIQUE INDEX IF NOT EXISTS collection_index on collection (name, author);')
+    await this._dbAdapter.run(sqls.CREATE_COLLECTION_TABLE_SQL)
+    await this._dbAdapter.run(sqls.CREATE_COLLECTION_TABLE_INDEX_SQL)
   }
 
 }
