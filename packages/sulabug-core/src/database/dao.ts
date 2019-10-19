@@ -152,6 +152,8 @@ export class ComicDAO implements IComicDAO {
   private async _createTableIfNotExists() {
     await this._dbAdapter.run(sqls.CREATE_COMIC_TABLE_SQL)
     await this._dbAdapter.run(sqls.CREATE_COMIC_TABLE_INDEX_SQL)
+    await this._dbAdapter.run(sqls.CREATE_COLLECTION_TABLE_SQL)
+    await this._dbAdapter.run(sqls.CREATE_COLLECTION_TABLE_INDEX_SQL)
   }
 
   private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
