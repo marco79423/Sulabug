@@ -34,6 +34,10 @@ export interface IComic {
 
   updateInfoByWebComic(webComic: IWebComic): Promise<void>
 
+  mark(): Promise<void>
+
+  unmark(): Promise<void>
+
   startDownloadTask(targetDir: string): Observable<ITaskStatus>
 }
 
@@ -49,7 +53,7 @@ export interface IConfig {
  * 漫畫篩選
  */
 export interface IComicFilter {
-  readonly marked: boolean
+  readonly marked?: boolean
   readonly pattern: string
 }
 

@@ -131,7 +131,7 @@ export class ComicDAO implements IComicDAO {
 
     const rows = await this._dbAdapter.queryAll(sqls.QUERY_COMICS_SQL, {
       $name: `%${filter.pattern}%`,
-      $marked: filter.marked,
+      $marked: !!filter.marked,
     })
     return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(

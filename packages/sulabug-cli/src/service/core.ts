@@ -166,7 +166,8 @@ export class CoreService implements ICoreService {
   }
 
   public async updateConfig(attrName: string, attrValue: string) {
-    const profileJson = await this._fetchConfig()
+    const originProfileJson = await this._fetchConfig()
+    let profileJson = {...originProfileJson}
 
     switch (attrName) {
       case 'database-dir-path':
@@ -192,7 +193,7 @@ export class CoreService implements ICoreService {
     return this._comicDatabase
   }
 
-  private async _fetchConfig(): IConfig {
+  private async _fetchConfig(): Promise<IConfig> {
     const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
     if (!await this._fileAdapter.pathExists(profilePath)) {
       await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
