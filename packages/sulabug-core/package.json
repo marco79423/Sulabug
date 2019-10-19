@@ -5,7 +5,7 @@
     "build": "tsc",
     "build:watch": "yarn build --watch"
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
   "devDependencies": {
