@@ -1,4 +1,5 @@
 import {differenceInDays} from 'date-fns'
+import boolean from 'boolean'
 import {IComic, IComicDatabase, IComicFilter, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 const ProgressBar = require('progress')
@@ -170,6 +171,9 @@ export class CoreService implements ICoreService {
     switch (attrName) {
       case 'database-dir-path':
         profileJson.databaseDirPath = this._pathAdapter.convertToAbsolutePath(attrValue)
+        break
+      case 'fake-mode':
+        profileJson.useFakeWebSource = boolean(attrValue)
         break
       default:
         print(`抱歉！ ${attrName} 不是合法的設定欄位`)
