@@ -1,6 +1,7 @@
 export const CREATE_COMIC_TABLE_SQL = `
     CREATE TABLE IF NOT EXISTS comic
     (
+        id                   INTEGER PRIMARY KEY AUTOINCREMENT,
         name                 VARCHAR NOT NULL,
         cover_url            VARCHAR NOT NULL,
         source               VARCHAR NOT NULL,
@@ -22,14 +23,15 @@ export const CREATE_COMIC_TABLE_INDEX_SQL = `
 export const INSERT_OR_UPDATE_COMIC_SQL = `
     INSERT OR
     REPLACE
-    INTO comic (name, cover_url, source, source_page_url, catalog, author, last_updated_chapter,
+    INTO comic (id, name, cover_url, source, source_page_url, catalog, author, last_updated_chapter,
                 last_updated_time, summary, blueprint)
-    VALUES ($name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime,
+    VALUES ($id, $name, $coverUrl, $source, $sourcePageRrl, $catalog, $author, $lastUpdatedChapter, $lastUpdatedTime,
             $summary, $blueprint);
 `
 
 export const QUERY_COMICS_SQL = `
-    SELECT comic.name,
+    SELECT comic.id,
+           comic.name,
            comic.cover_url,
            comic.source,
            comic.source_page_url      AS                              sourcePageUrl,
@@ -42,6 +44,7 @@ export const QUERY_COMICS_SQL = `
            CASE WHEN collection.name IS NULL THEN FALSE ELSE TRUE END marked
     FROM comic
              LEFT JOIN collection ON comic.name = collection.name AND comic.author = collection.author
-    WHERE comic.name LIKE $name
+    WHERE ($id IS NULL OR comic.id = $id)
+      AND comic.name LIKE $name
       AND ($marked = FALSE OR marked = $marked);
 `

@@ -122,6 +122,7 @@ export class ComicDatabase implements IComicDatabase {
         this._fileAdapter,
         this._comicDAO,
         this._collectionDAO,
+        null,
         webComic.name,
         webComic.source,
         webComic.sourcePageUrl,

@@ -21,6 +21,7 @@ export interface ITaskStatus<T = any> {
  * 漫畫
  */
 export interface IComic {
+  readonly id: number | null
   readonly name: string
   readonly source: string
   readonly sourcePageUrl: string
@@ -53,6 +54,7 @@ export interface IConfig {
  * 漫畫篩選
  */
 export interface IComicFilter {
+  readonly id?: string
   readonly marked?: boolean
   readonly pattern: string
 }

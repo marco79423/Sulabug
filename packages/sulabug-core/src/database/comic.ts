@@ -3,8 +3,11 @@ import * as path from 'path'
 import {
   ICollectionDAO,
   IComic,
-  IComicDAO, IConfig, IFileAdapter,
-  IHashAdapter, INetAdapter,
+  IComicDAO,
+  IConfig,
+  IFileAdapter,
+  IHashAdapter,
+  INetAdapter,
   ITaskStatus,
   IWebComic,
   IWebComicBlueprint,
@@ -13,6 +16,7 @@ import {
 import {Observable} from 'rxjs'
 
 export class Comic implements IComic {
+  public readonly id: number | null
   public readonly name: string
   public readonly source: string
   public readonly sourcePageUrl: string
@@ -57,7 +61,8 @@ export class Comic implements IComic {
     return this._lastUpdatedTime
   }
 
-  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, collectionDAO: ICollectionDAO, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
+  constructor(config: IConfig, webComicSourceRepository: IWebComicSourceRepository, hashAdapter: IHashAdapter, netAdapter: INetAdapter, fileAdapter: IFileAdapter, comicDAO: IComicDAO, collectionDAO: ICollectionDAO, id: number | null, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint) {
+    this.id = id
     this.name = name
     this.source = source
     this.sourcePageUrl = sourcePageUrl

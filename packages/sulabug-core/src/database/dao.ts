@@ -87,6 +87,7 @@ export class ComicDAO implements IComicDAO {
     await this._createTableIfNotExists()
 
     await this._dbAdapter.runMany(sqls.INSERT_OR_UPDATE_COMIC_SQL, comics.map(comic => ({
+      $id: comic.id,
       $name: comic.name,
       $coverUrl: comic.coverUrl,
       $source: comic.source,
@@ -104,6 +105,7 @@ export class ComicDAO implements IComicDAO {
     await this._createTableIfNotExists()
 
     const row = await this._dbAdapter.queryOne(sqls.QUERY_COMICS_SQL, {
+      $id: filter.id || null,
       $name: `%${filter.pattern}%`,
       $marked: filter.marked,
     })
@@ -111,8 +113,9 @@ export class ComicDAO implements IComicDAO {
       return null
     }
 
-    const {name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint} = row
+    const {id, name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint} = row
     return this._createComic(
+      id,
       name,
       source,
       sourcePageUrl,
@@ -130,11 +133,13 @@ export class ComicDAO implements IComicDAO {
     await this._createTableIfNotExists()
 
     const rows = await this._dbAdapter.queryAll(sqls.QUERY_COMICS_SQL, {
+      $id: filter.id || null,
       $name: `%${filter.pattern}%`,
       $marked: !!filter.marked,
     })
-    return rows.map(({name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
+    return rows.map(({id, name, source, sourcePageUrl, coverUrl, author, summary, catalog, lastUpdatedChapter, lastUpdatedTime, blueprint}) => {
       return this._createComic(
+        id,
         name,
         source,
         sourcePageUrl,
@@ -143,7 +148,7 @@ export class ComicDAO implements IComicDAO {
         summary,
         catalog,
         lastUpdatedChapter,
-        lastUpdatedTime,
+        new Date(lastUpdatedTime),
         JSON.parse(blueprint)
       )
     })
@@ -156,7 +161,7 @@ export class ComicDAO implements IComicDAO {
     await this._dbAdapter.run(sqls.CREATE_COLLECTION_TABLE_INDEX_SQL)
   }
 
-  private _createComic(name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
+  private _createComic(id: number | null, name: string, source: string, sourcePageUrl: string, coverUrl: string, author: string, summary: string, catalog: string, lastUpdatedChapter: string, lastUpdatedTime: Date, blueprint: IWebComicBlueprint): IComic {
     return new Comic(
       this._config,
       this._webComicSourceRepository,
@@ -165,6 +170,7 @@ export class ComicDAO implements IComicDAO {
       this._fileAdapter,
       this,
       this._collectionDAO,
+      id,
       name,
       source,
       sourcePageUrl,
