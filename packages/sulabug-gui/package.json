@@ -2,6 +2,7 @@
   "name": "sulabug-gui",
   "version": "0.0.4-alpha.0",
   "scripts": {
+    "postinstall": "electron-rebuild --which sqlite3",
     "dev": "electron-webpack dev",
     "test": "jest",
     "test:coverage": "yarn test --coverage",
@@ -29,6 +30,7 @@
     "reselect": "^4.0.0",
     "rxjs": "6",
     "source-map-support": "^0.5.9",
+    "sulabug-core": "^0.0.4-alpha.0",
     "typeface-roboto": "^0.0.54"
   },
   "devDependencies": {
@@ -44,6 +46,7 @@
     "electron": "4.0.1",
     "electron-builder": "20.38.4",
     "electron-devtools-installer": "^2.2.4",
+    "electron-rebuild": "^1.8.6",
     "electron-webpack": "^2.6.2",
     "electron-webpack-ts": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
