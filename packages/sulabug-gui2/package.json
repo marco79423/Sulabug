@@ -6,10 +6,13 @@
     "dev": "electron-webpack dev"
   },
   "dependencies": {
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "source-map-support": "^0.5.12",
     "sulabug-core": "^0.0.4-alpha.0"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.6.3",
     "electron": "5.0.6",
     "electron-builder": "^21.0.11",
     "electron-rebuild": "^1.8.6",
