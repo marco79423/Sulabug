@@ -1,20 +1,15 @@
-import React, {useEffect, useReducer} from 'react'
+import React, {useEffect} from 'react'
 import {ipcRenderer} from 'electron'
+import {useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 console.log('browser module loaded')
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'add-log':
-      return {...state, logs: [...state.logs, action.data]}
-    default:
-      return state
-  }
-}
 
 export default function Browser() {
-  const [state, dispatch] = useReducer(reducer, {logs: []})
+  const dispatch = useDispatch()
+  const logs = useSelector((state: any) => state.browser.logs)
+
   useEffect(() => {
     ipcRenderer.on('sulabug-action', (e, action) => {
       dispatch(action)
@@ -25,7 +20,7 @@ export default function Browser() {
     <div>
       browser <Link to={`/manager`}>manager</Link>
       <ul>
-        {state.logs.map((log, i) => <li key={i}>{log}</li>)}
+        {logs.map((log, i) => <li key={i}>{log}</li>)}
       </ul>
     </div>
   )

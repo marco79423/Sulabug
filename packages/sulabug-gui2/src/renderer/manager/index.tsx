@@ -1,29 +1,22 @@
-import React, {useEffect, useReducer} from 'react'
+import React, {useEffect} from 'react'
 import {ipcRenderer} from 'electron'
+import {useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 console.log('manager module loaded')
 
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'manager/increment-count':
-      return {...state, count: state.count + 1}
-    default:
-      return state
-  }
-}
-
 export default function Manager() {
-  const [state, dispatch] = useReducer(reducer, {count: 0})
+  const dispatch = useDispatch()
+  const count = useSelector((state: any) => state.manager.count)
 
   useEffect(() => {
     setTimeout(() => {
-      console.log('state', state)
-      ipcRenderer.send('sulabug-action', {type: 'add-log', data: state.count})
+      console.log('count', count)
+      ipcRenderer.send('sulabug-action', {type: 'browser/add-log', data: count})
       dispatch({type: 'manager/increment-count'})
     }, 1000)
-  }, [state.count])
+  }, [count])
 
   return (
     <div>
