@@ -3,22 +3,13 @@ import * as ReactDOM from 'react-dom'
 import {HashRouter, Route, Switch} from 'react-router-dom'
 import {Redirect} from 'react-router'
 import {Provider} from 'react-redux'
-import {combineReducers, createStore} from 'redux'
 
-import managerReducer from './manager/reducer'
-import browserReducer from './browser/reducer'
+import configureStore from './configureStore'
 
 const Manager = lazy(() => import('./manager'))
 const Browser = lazy(() => import('./browser'))
 
-
-const reducer = combineReducers({
-  manager: managerReducer,
-  browser: browserReducer,
-})
-
-const store = createStore(reducer)
-
+const store = configureStore()
 
 function App() {
   return (
