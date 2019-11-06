@@ -24,7 +24,7 @@ function createWindow(name: string, url: string) {
   return window
 }
 
-app.on('ready', () => {
+app.on('ready', async () => {
   let targetUrl
   if (isDevelopment) {
     targetUrl = `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
@@ -34,6 +34,14 @@ app.on('ready', () => {
       protocol: 'file',
       slashes: true
     })
+  }
+
+  if (isDevelopment) {
+    const {default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} = require('electron-devtools-installer')
+
+    for (const extension of [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]) {
+      await installExtension(extension)
+    }
   }
 
   const managerWindow = createWindow('manager', `${targetUrl}#manager`)

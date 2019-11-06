@@ -20,6 +20,7 @@
     "@types/redux": "^3.6.0",
     "electron": "5.0.6",
     "electron-builder": "^21.0.11",
+    "electron-devtools-installer": "^2.2.4",
     "electron-rebuild": "^1.8.6",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
