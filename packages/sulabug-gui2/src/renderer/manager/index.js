@@ -8,7 +8,7 @@ console.log('manager module loaded')
 
 export default function Manager() {
   const dispatch = useDispatch()
-  const count = useSelector((state: any) => state.manager.count)
+  const count = useSelector(state => state.manager.count)
 
   useEffect(() => {
     setTimeout(() => {

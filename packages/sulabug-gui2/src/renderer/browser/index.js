@@ -8,7 +8,7 @@ console.log('browser module loaded')
 
 export default function Browser() {
   const dispatch = useDispatch()
-  const logs = useSelector((state: any) => state.browser.logs)
+  const logs = useSelector(state => state.browser.logs)
 
   useEffect(() => {
     ipcRenderer.on('sulabug-action', (e, action) => {
