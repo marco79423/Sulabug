@@ -3,12 +3,15 @@ import {ipcRenderer} from 'electron'
 import {useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 
-console.log('manager module loaded')
-
 
 export default function Manager() {
   const dispatch = useDispatch()
   const count = useSelector(state => state.manager.count)
+
+  useEffect(() => {
+    dispatch({type: 'common/initialize-app', data: 'manager'})
+  }, [])
+
 
   useEffect(() => {
     setTimeout(() => {
