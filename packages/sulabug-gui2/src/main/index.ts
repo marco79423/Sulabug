@@ -1,6 +1,8 @@
 import {app, BrowserWindow, ipcMain} from 'electron'
 import * as path from 'path'
 import {format as formatUrl} from 'url'
+import {applyMiddleware, createStore} from 'redux'
+import {forwardToRenderer, replayActionMain} from 'electron-redux'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -51,5 +53,15 @@ app.on('ready', async () => {
     managerWindow.webContents.send('sulabug-action', action)
     browserWindow.webContents.send('sulabug-action', action)
   })
+
+
+  const store = createStore(
+    state => state,
+    applyMiddleware(
+      forwardToRenderer, // IMPORTANT! This goes last
+    ),
+  )
+
+  replayActionMain(store)
 })
 

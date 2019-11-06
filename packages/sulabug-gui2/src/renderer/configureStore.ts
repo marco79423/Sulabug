@@ -1,9 +1,13 @@
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux'
+import {forwardToMain, replayActionRenderer} from 'electron-redux'
+
 import managerReducer from './manager/reducer'
 import browserReducer from './browser/reducer'
 
 declare global {
-  interface Window { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any; }
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+  }
 }
 
 
@@ -19,8 +23,11 @@ export default function configureStore() {
   const store = createStore(
     reducer,
     composeEnhancers(applyMiddleware(
+      forwardToMain, // IMPORTANT! This goes first
     ))
   )
+
+  replayActionRenderer(store)
 
   return store
 }
