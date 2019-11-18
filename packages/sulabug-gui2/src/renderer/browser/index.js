@@ -8,13 +8,11 @@ export default function Browser() {
   const logs = useSelector(state => state.browser.logs)
 
   useEffect(() => {
-    dispatch({type: 'common/initialize-app', data: 'browser'})
-  }, [])
-
-  useEffect(() => {
     ipcRenderer.on('sulabug-action', (e, action) => {
       dispatch(action)
     })
+
+    dispatch({type: 'common/initialize-app', data: 'browser'})
   }, [])
 
   return (
