@@ -2,8 +2,8 @@ import {applyMiddleware, combineReducers, compose, createStore} from 'redux'
 import {forwardToMain, replayActionRenderer} from 'electron-redux'
 import createSagaMiddleware from 'redux-saga'
 
-import managerReducer from './manager/reducer'
-import browserReducer from './browser/reducer'
+import {reducer as managerReducer} from './manager/logic'
+import {reducer as browserReducer} from './browser/logic'
 import rootSaga from './rootSaga'
 
 declare global {

@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react'
-import {ipcRenderer} from 'electron'
 import {useDispatch, useSelector} from 'react-redux'
 
 
@@ -8,10 +7,6 @@ export default function Browser() {
   const logs = useSelector(state => state.browser.logs)
 
   useEffect(() => {
-    ipcRenderer.on('sulabug-action', (e, action) => {
-      dispatch(action)
-    })
-
     dispatch({type: 'common/initialize-app', data: 'browser'})
   }, [])
 
