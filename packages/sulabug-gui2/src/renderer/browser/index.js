@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
 import {ipcRenderer} from 'electron'
 import {useDispatch, useSelector} from 'react-redux'
-import {Link} from 'react-router-dom'
 
 
 export default function Browser() {
@@ -20,7 +19,7 @@ export default function Browser() {
 
   return (
     <div>
-      browser <Link to={`/manager`}>manager</Link>
+      browser
       <ul>
         {logs.map((log, i) => <li key={i}>{log}</li>)}
       </ul>

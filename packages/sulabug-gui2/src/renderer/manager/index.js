@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
 import {ipcRenderer} from 'electron'
 import {useDispatch, useSelector} from 'react-redux'
-import {Link} from 'react-router-dom'
 
 
 export default function Manager() {
@@ -23,7 +22,7 @@ export default function Manager() {
 
   return (
     <div>
-      manager <Link to='/browser'>browser</Link>
+      manager
     </div>
   )
 }
