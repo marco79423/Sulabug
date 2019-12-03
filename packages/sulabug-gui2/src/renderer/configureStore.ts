@@ -2,8 +2,7 @@ import {applyMiddleware, combineReducers, compose, createStore} from 'redux'
 import {forwardToMain, replayActionRenderer} from 'electron-redux'
 import createSagaMiddleware from 'redux-saga'
 
-import {reducer as managerReducer} from './manager/logic'
-import {reducer as browserReducer} from './browser/logic'
+import {reducer as browserReducer} from './browser/ducks'
 import rootSaga from './rootSaga'
 
 declare global {
@@ -15,7 +14,6 @@ declare global {
 
 export default function configureStore() {
   const reducer = combineReducers({
-    manager: managerReducer,
     browser: browserReducer,
   })
 

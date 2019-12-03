@@ -5,7 +5,6 @@ import {Redirect} from 'react-router'
 import {Provider} from 'react-redux'
 
 import configureStore from './configureStore'
-import Manager from './manager'
 import Browser from './browser'
 
 const store = configureStore()
@@ -16,7 +15,6 @@ function App() {
       <HashRouter>
         <Switch>
           <Redirect exact from='/' to='/manager'/>
-          <Route path="/manager" component={Manager}/>
           <Route path="/browser" component={Browser}/>
         </Switch>
       </HashRouter>
