@@ -14,12 +14,12 @@ export const queryCollectionsFailure = createAction<Error>('browser/queryCollect
 
 export const addComicToCollectionsRequest = createAction<number>('browser/addComicToCollections/request')
 export const addComicToCollectionsProcessing = createAction('browser/addComicToCollections/processing')
-export const addComicToCollectionsSuccess = createAction('browser/addComicToCollections/success')
+export const addComicToCollectionsSuccess = createAction<number>('browser/addComicToCollections/success')
 export const addComicToCollectionsFailure = createAction<Error>('browser/addComicToCollections/failure')
 
 export const removeComicFromCollectionsRequest = createAction<number>('browser/removeComicFromCollections/request')
 export const removeComicFromCollectionsProcessing = createAction('browser/removeComicFromCollections/processing')
-export const removeComicFromCollectionsSuccess = createAction('browser/removeComicFromCollections/success')
+export const removeComicFromCollectionsSuccess = createAction<number>('browser/removeComicFromCollections/success')
 export const removeComicFromCollectionsFailure = createAction<Error>('browser/removeComicFromCollections/failure')
 
 
@@ -123,8 +123,24 @@ export const reducer = createReducer(
         },
       }
     }))
-    .addCase(addComicToCollectionsSuccess, (state) => ({
+    .addCase(addComicToCollectionsSuccess, (state, action: PayloadAction<number>) => ({
       ...state,
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload) {
+            return {
+              ...comic,
+              inCollection: true,
+            }
+          }
+          return comic
+        })
+      },
+      collections: {
+        ...state.collections,
+        data: [...state.collections.data, ...state.comics.data.filter(comic => comic.id === action.payload)],
+      },
       tasks: {
         ...state.tasks,
         addComicToCollection: {
@@ -152,8 +168,24 @@ export const reducer = createReducer(
         },
       }
     }))
-    .addCase(removeComicFromCollectionsSuccess, (state) => ({
+    .addCase(removeComicFromCollectionsSuccess, (state, action: PayloadAction<number>) => ({
       ...state,
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload) {
+            return {
+              ...comic,
+              inCollection: false,
+            }
+          }
+          return comic
+        })
+      },
+      collections: {
+        ...state.collections,
+        data: state.collections.data.filter(collection => collection.id !== action.payload),
+      },
       tasks: {
         ...state.tasks,
         removeComicFromCollection: {
@@ -260,8 +292,7 @@ function* addComicToCollectionSaga(action) {
     const coreService = createCoreService()
     const comicId = action.payload
     yield call(coreService.addComicToCollections.bind(coreService), comicId)
-    yield put(addComicToCollectionsSuccess())
-    yield put(queryComicsRequest())
+    yield put(addComicToCollectionsSuccess(comicId))
   } catch (e) {
     yield put(addComicToCollectionsFailure(e))
   }
@@ -273,8 +304,7 @@ function* removeComicFromCollectionSaga(action) {
     const coreService = createCoreService()
     const comicId = action.payload
     yield call(coreService.removeComicFromCollections.bind(coreService), comicId)
-    yield put(removeComicFromCollectionsSuccess())
-    yield put(queryCollectionsRequest())
+    yield put(removeComicFromCollectionsSuccess(comicId))
   } catch (e) {
     yield put(removeComicFromCollectionsFailure(e))
   }
