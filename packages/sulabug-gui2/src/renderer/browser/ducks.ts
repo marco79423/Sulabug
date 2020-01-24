@@ -123,6 +123,8 @@ function* queryComicsSaga() {
     name: comic.name,
     coverUrl: comic.coverUrl,
     summary: comic.summary,
+    lastUpdatedChapter: comic.lastUpdatedChapter,
+    lastUpdatedTime: comic.lastUpdatedTime,
   }))))
 }
 

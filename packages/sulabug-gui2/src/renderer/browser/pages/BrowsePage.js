@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
-import dateFormat from 'dateformat'
+import dateFormat from 'date-fns/format'
 
 import * as ducks from '../ducks'
 import ComicListItem from '../components/ComicListItem'
@@ -70,7 +70,7 @@ export function BrowsePage({classes}) {
   }
 
   const updatedTime = new Date()
-  const updatedTimeStr = updatedTime ? dateFormat(updatedTime, 'yyyy/mm/dd HH:MM') : '從未更新'
+  const updatedTimeStr = updatedTime ? dateFormat(updatedTime, 'yyyy/MM/dd HH:mm') : '從未更新'
 
   return (
     <BaseLayout>

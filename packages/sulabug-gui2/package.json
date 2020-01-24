@@ -12,7 +12,6 @@
     "boolean": "^3.0.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.9.0",
-    "dateformat": "^3.0.3",
     "electron-redux": "^1.4.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
