@@ -1,5 +1,5 @@
 import {differenceInDays} from 'date-fns'
-import boolean from 'boolean'
+import {boolean} from 'boolean'
 import {IComic, IComicDatabase, IComicFilter, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 export type CreateComicDatabaseFunc = (config: IConfig) => IComicDatabase

@@ -46,7 +46,7 @@
     "electron": "4.0.1",
     "electron-builder": "20.38.4",
     "electron-devtools-installer": "^2.2.4",
-    "electron-rebuild": "^1.8.6",
+    "electron-rebuild": "^1.9.0",
     "electron-webpack": "^2.6.2",
     "electron-webpack-ts": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
