@@ -12,6 +12,16 @@ export const queryCollectionsProcessing = createAction('browser/queryCollections
 export const queryCollectionsSuccess = createAction<any[]>('browser/queryCollections/success')
 export const queryCollectionsFailure = createAction<Error>('browser/queryCollections/failure')
 
+export const addComicToCollectionsRequest = createAction<number>('browser/addComicToCollections/request')
+export const addComicToCollectionsProcessing = createAction('browser/addComicToCollections/processing')
+export const addComicToCollectionsSuccess = createAction('browser/addComicToCollections/success')
+export const addComicToCollectionsFailure = createAction<Error>('browser/addComicToCollections/failure')
+
+export const removeComicFromCollectionsRequest = createAction<number>('browser/removeComicFromCollections/request')
+export const removeComicFromCollectionsProcessing = createAction('browser/removeComicFromCollections/processing')
+export const removeComicFromCollectionsSuccess = createAction('browser/removeComicFromCollections/success')
+export const removeComicFromCollectionsFailure = createAction<Error>('browser/removeComicFromCollections/failure')
+
 
 export interface IBrowserState {
   comics: {
@@ -24,6 +34,16 @@ export interface IBrowserState {
     data: any[],
     error?: Error
   },
+  tasks: {
+    addComicToCollections: {
+      loading: boolean,
+      error?: Error
+    },
+    removeComicFromCollections: {
+      loading: boolean,
+      error?: Error
+    },
+  }
 }
 
 const initialState: IBrowserState = {
@@ -34,6 +54,14 @@ const initialState: IBrowserState = {
   collections: {
     loading: false,
     data: [],
+  },
+  tasks: {
+    addComicToCollections: {
+      loading: false,
+    },
+    removeComicFromCollections: {
+      loading: false,
+    },
   },
 }
 
@@ -85,6 +113,64 @@ export const reducer = createReducer(
         error: action.payload,
       }
     }))
+    // addComicToCollection
+    .addCase(addComicToCollectionsProcessing, (state) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        addComicToCollection: {
+          loading: true,
+        },
+      }
+    }))
+    .addCase(addComicToCollectionsSuccess, (state) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        addComicToCollection: {
+          loading: false,
+        },
+      }
+    }))
+    .addCase(addComicToCollectionsFailure, (state, action: PayloadAction<Error>) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        addComicToCollection: {
+          loading: false,
+          error: action.payload,
+        },
+      }
+    }))
+    // removeComicFromCollection
+    .addCase(removeComicFromCollectionsProcessing, (state) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        removeComicFromCollection: {
+          loading: true,
+        },
+      }
+    }))
+    .addCase(removeComicFromCollectionsSuccess, (state) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        removeComicFromCollection: {
+          loading: false,
+        },
+      }
+    }))
+    .addCase(removeComicFromCollectionsFailure, (state, action: PayloadAction<Error>) => ({
+      ...state,
+      tasks: {
+        ...state.tasks,
+        removeComicFromCollection: {
+          loading: false,
+          error: action.payload,
+        },
+      }
+    }))
 )
 
 export const isComicsLoading = state => state.browser.comics.loading
@@ -103,41 +189,93 @@ export const getComicMap = createSelector(
 
 export const isCollectionsLoading = state => state.browser.collections.loading
 export const getCollections = state => state.browser.collections.data
+export const getCollectionIds = createSelector(
+  getCollections,
+  collections => collections.map(collection => collection.id),
+)
+export const getCollectionMap = createSelector(
+  getCollections,
+  collections => collections.reduce((collectionMap, collection) => ({
+    ...collectionMap,
+    [collection.id]: collection,
+  }), {})
+)
 
 export function* browserSaga() {
   yield takeEvery(queryComicsRequest, queryComicsSaga)
   yield takeEvery(queryCollectionsRequest, queryCollectionsSaga)
+
+  yield takeEvery(addComicToCollectionsRequest, addComicToCollectionSaga)
+  yield takeEvery(removeComicFromCollectionsRequest, removeComicFromCollectionSaga)
 }
 
 function* queryComicsSaga() {
-  yield put(queryComicsProcessing())
-  const coreService = createCoreService()
+  try {
+    yield put(queryComicsProcessing())
+    const coreService = createCoreService()
 
-  if (yield call(coreService.checkIfComicDatabaseUpdateRequired.bind(coreService))) {
-    yield call(coreService.updateComicDatabase.bind(coreService))
+    if (yield call(coreService.checkIfComicDatabaseUpdateRequired.bind(coreService))) {
+      yield call(coreService.updateComicDatabase.bind(coreService))
+    }
+
+    const collections = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
+    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: false})
+    yield put(queryComicsSuccess(comics.map(comic => ({
+      id: comic.id,
+      name: comic.name,
+      coverUrl: comic.coverUrl,
+      summary: comic.summary,
+      lastUpdatedChapter: comic.lastUpdatedChapter,
+      lastUpdatedTime: comic.lastUpdatedTime,
+      inCollection: collections.filter(collection => collection.id === comic.id).length > 0
+    }))))
+  } catch (e) {
+    yield put(queryComicsFailure(e))
   }
-
-  const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: false})
-  yield put(queryComicsSuccess(comics.map(comic => ({
-    id: comic.id,
-    name: comic.name,
-    coverUrl: comic.coverUrl,
-    summary: comic.summary,
-    lastUpdatedChapter: comic.lastUpdatedChapter,
-    lastUpdatedTime: comic.lastUpdatedTime,
-  }))))
 }
 
 
 function* queryCollectionsSaga() {
-  yield put(queryCollectionsProcessing())
-  const coreService = createCoreService()
+  try {
+    yield put(queryCollectionsProcessing())
+    const coreService = createCoreService()
 
-  const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
-  yield put(queryCollectionsSuccess(comics.map(comic => ({
-    id: comic.id,
-    name: comic.name,
-    coverUrl: comic.coverUrl,
-    summary: comic.summary,
-  }))))
+    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
+    yield put(queryCollectionsSuccess(comics.map(comic => ({
+      id: comic.id,
+      name: comic.name,
+      coverUrl: comic.coverUrl,
+      summary: comic.summary,
+      lastUpdatedChapter: comic.lastUpdatedChapter,
+      lastUpdatedTime: comic.lastUpdatedTime,
+    }))))
+  } catch (e) {
+    yield put(queryCollectionsFailure(e))
+  }
+}
+
+function* addComicToCollectionSaga(action) {
+  try {
+    yield put(addComicToCollectionsProcessing())
+    const coreService = createCoreService()
+    const comicId = action.payload
+    yield call(coreService.addComicToCollections.bind(coreService), comicId)
+    yield put(addComicToCollectionsSuccess())
+    yield put(queryComicsRequest())
+  } catch (e) {
+    yield put(addComicToCollectionsFailure(e))
+  }
+}
+
+function* removeComicFromCollectionSaga(action) {
+  try {
+    yield put(removeComicFromCollectionsProcessing())
+    const coreService = createCoreService()
+    const comicId = action.payload
+    yield call(coreService.removeComicFromCollections.bind(coreService), comicId)
+    yield put(removeComicFromCollectionsSuccess())
+    yield put(queryCollectionsRequest())
+  } catch (e) {
+    yield put(removeComicFromCollectionsFailure(e))
+  }
 }

@@ -66,7 +66,7 @@ const styles = (theme) => createStyles({
 })
 
 function ComicListItem({classes, comicId}) {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const comicMap = useSelector(ducks.getComicMap)
   const comic = comicMap[comicId]
 
@@ -74,9 +74,7 @@ function ComicListItem({classes, comicId}) {
     require('electron').shell.openExternal(comic.pageUrl)
   }
 
-
-  const addComicToCollection = () => {
-  } //dispatch(ducks.addComicToCollectionRequest(comicId))
+  const addComicToCollections = () => dispatch(ducks.addComicToCollectionsRequest(comicId))
 
   return (
     <ListItem className={classes.root}>
@@ -98,7 +96,7 @@ function ComicListItem({classes, comicId}) {
             <Button size="small" onClick={openInBrowser}><OpenInBrowserIcon
               className={classes.openInBrowserIcon}/><Typography variant="button">試看</Typography></Button>
             <Button size="small" variant="contained" color="primary" disabled={comic.inCollection}
-                    onClick={addComicToCollection}><CollectionsIcon
+                    onClick={addComicToCollections}><CollectionsIcon
               className={classes.collectionsIcon}/>{comic.inCollection ? '已收藏' : '收藏'}</Button>
           </CardActions>
         </div>

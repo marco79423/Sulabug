@@ -13,6 +13,8 @@ export interface ICoreService {
 
   addComicToCollections(comicId: string)
 
+  removeComicFromCollections(comicId: string)
+
   downloadComic(comicId: string)
 
   updateConfig(attrName: string, attrValue: string)
@@ -84,7 +86,6 @@ export class CoreService implements ICoreService {
   }
 
   public async addComicToCollections(comicId: string) {
-    // 步驟 2: 搜尋漫畫資料庫
     const comics = await this.searchComics({id: comicId, pattern:''})
     if(comics.length !== 1) {
       throw new Error('unable to get target comic')
@@ -93,6 +94,16 @@ export class CoreService implements ICoreService {
     const targetComic = comics[0]
     await targetComic.mark()
     // print(`已收藏 ${targetComic.name}`)
+  }
+
+  public async removeComicFromCollections(comicId: string) {
+    const comics = await this.searchComics({id: comicId, pattern:''})
+    if(comics.length !== 1) {
+      throw new Error('unable to get target comic')
+    }
+
+    const targetComic = comics[0]
+    await targetComic.unmark()
   }
 
   public async downloadComic(comicId: string) {

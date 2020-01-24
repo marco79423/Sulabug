@@ -33,11 +33,11 @@ const styles = (theme) => createStyles({
 
 export function CollectionPage({classes}) {
   const dispatch = useDispatch()
-  const collections = useSelector(ducks.getCollections)
+  const collectionIds = useSelector(ducks.getCollectionIds)
   const loading = useSelector(ducks.isCollectionsLoading)
 
   useEffect(() => {
-    dispatch(ducks.queryComicsRequest())
+    dispatch(ducks.queryCollectionsRequest())
   }, [dispatch])
 
   if (loading) {
@@ -48,10 +48,7 @@ export function CollectionPage({classes}) {
     )
   }
 
-  const removeComicFromCollection = {}
-  const openReadingPage = {}
-
-  if (collections.length === 0) {
+  if (collectionIds.length === 0) {
     return (
       <BaseLayout pageLoading={loading}>
         <Card className={classes.card}>
@@ -69,10 +66,7 @@ export function CollectionPage({classes}) {
     <BaseLayout>
       <div className={classes.root}>
         <List>
-          {collections.map((comic) => <CollectionListItem key={comic.id}
-                                                          comic={comic}
-                                                          removeComicFromCollection={removeComicFromCollection}
-                                                          openReadingPage={openReadingPage}/>)}
+          {collectionIds.map(collectionId => <CollectionListItem key={collectionId} collectionId={collectionId}/>)}
         </List>
       </div>
     </BaseLayout>

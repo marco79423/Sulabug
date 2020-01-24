@@ -11,6 +11,8 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import {remote} from 'electron'
 import DeleteIcon from '@material-ui/icons/Delete'
+import {useDispatch, useSelector} from 'react-redux'
+import * as ducks from '../ducks'
 
 const styles = (theme) => createStyles({
   root: {
@@ -51,7 +53,7 @@ const styles = (theme) => createStyles({
     height: 150,
   },
   summary: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     height: 40,
     textOverflow: 'ellipsis',
     overflow: 'hidden'
@@ -61,19 +63,17 @@ const styles = (theme) => createStyles({
     justifyContent: 'flex-end',
   },
   openReadingPageButton: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   }
 })
 
-export class CollectionListItem extends React.Component {
+export function CollectionListItem({classes, collectionId}) {
+  const dispatch = useDispatch()
+  const collectionMap = useSelector(ducks.getCollectionMap)
+  const collection = collectionMap[collectionId]
 
-  openReadingPage() {
-    const {comic} = this.props
-    this.props.openReadingPage(comic.id)
-  }
-
-  remove () {
-    const {comic} = this.props
+  const openTargetFolder = () => {}
+  const remove = () => {
     remote.dialog.showMessageBox({
       type: 'warning',
       title: '警告',
@@ -82,40 +82,37 @@ export class CollectionListItem extends React.Component {
       buttons: ['刪除', '取消'],
     }, (index) => {
       if (index === 0) {
-        this.props.removeComicFromCollection(comic.id)
+        dispatch(ducks.removeComicFromCollectionsRequest(collectionId))
       }
     })
   }
 
-  render() {
-    const {classes, comic} = this.props
-
-    return (
-      <ListItem className={classes.root}>
-        <Card className={classes.card}>
-          <CardMedia
-            className={classes.cover}
-            image={comic.coverDataUrl}
-            title={comic.name}
-          />
-          <div className={classes.details}>
-            <CardContent className={classes.content}>
-              <Typography className={classes.title} noWrap={true} variant="h2">{comic.name}</Typography>
-              <Typography className={classes.metadata} variant="subtitle2" color="textSecondary">
-                最新: {comic.lastUpdatedChapter} ({dateformat(comic.lastUpdatedTime, 'yyyy/MM/dd')})
-              </Typography>
-              <Typography variant="subtitle2">{comic.summary.substring(0, 35)}...</Typography>
-            </CardContent>
-            <CardActions className={classes.actions}>
-              <Button size="small" onClick={this.remove}><DeleteIcon className={classes.openReadingPageButton}/>移除</Button>
-              <Button size="small" variant="contained" color="primary" onClick={this.openReadingPage}><OpenInNewIcon
-                className={classes.openReadingPageButton}/>閱讀</Button>
-            </CardActions>
-          </div>
-        </Card>
-      </ListItem>
-    )
-  }
+  return (
+    <ListItem className={classes.root}>
+      <Card className={classes.card}>
+        <CardMedia
+          className={classes.cover}
+          image={collection.coverDataUrl}
+          title={collection.name}
+        />
+        <div className={classes.details}>
+          <CardContent className={classes.content}>
+            <Typography className={classes.title} noWrap={true} variant="h2">{collection.name}</Typography>
+            <Typography className={classes.metadata} variant="subtitle2" color="textSecondary">
+              最新: {collection.lastUpdatedChapter} ({dateformat(new Date(collection.lastUpdatedTime), 'yyyy/MM/dd')})
+            </Typography>
+            <Typography variant="subtitle2">{collection.summary.substring(0, 35)}...</Typography>
+          </CardContent>
+          <CardActions className={classes.actions}>
+            <Button size="small" onClick={remove}><DeleteIcon
+              className={classes.openReadingPageButton}/>移除</Button>
+            <Button size="small" variant="contained" color="primary" onClick={openTargetFolder}><OpenInNewIcon
+              className={classes.openReadingPageButton}/>閱讀</Button>
+          </CardActions>
+        </div>
+      </Card>
+    </ListItem>
+  )
 }
 
 export default withStyles(styles)(CollectionListItem)
