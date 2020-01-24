@@ -43,10 +43,6 @@ const styles = (theme) => createStyles({
   list: {
     padding: 0,
   },
-
-  column: {
-    flexBasis: '40%',
-  },
 })
 
 export function BrowsePage({classes}) {
@@ -78,7 +74,6 @@ export function BrowsePage({classes}) {
         {/*Meta Section*/}
         <ExpansionPanel className={classes.meta}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
-            <div className={classes.column}/>
             <div>
               <Typography inline>更新時間： {updatedTimeStr}</Typography>
             </div>
