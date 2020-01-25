@@ -39,6 +39,11 @@ export const updateDatabaseProcessing = createAction('browser/updateDatabase/pro
 export const updateDatabaseSuccess = createAction<any[]>('browser/updateDatabase/success')
 export const updateDatabaseFailure = createAction<Error>('browser/updateDatabase/failure')
 
+export const createDownloadTasksFromCollectionsRequest = createAction('browser/createDownloadTasksFromCollections/request')
+export const createDownloadTasksFromCollectionsProcessing = createAction('browser/createDownloadTasksFromCollections/processing')
+export const createDownloadTasksFromCollectionsSuccess = createAction<any[]>('browser/createDownloadTasksFromCollections/success')
+export const createDownloadTasksFromCollectionsFailure = createAction<Error>('browser/createDownloadTasksFromCollections/failure')
+
 export interface IBrowserState {
   comics: {
     loading: boolean,
@@ -46,6 +51,11 @@ export interface IBrowserState {
     error?: Error
   },
   collections: {
+    loading: boolean,
+    data: any[],
+    error?: Error
+  },
+  downloadTasks: {
     loading: boolean,
     data: any[],
     error?: Error
@@ -73,6 +83,10 @@ const initialState: IBrowserState = {
     data: [],
   },
   collections: {
+    loading: false,
+    data: [],
+  },
+  downloadTasks: {
     loading: false,
     data: [],
   },
@@ -298,6 +312,14 @@ export const reducer = createReducer(
         error: action.payload,
       }
     }))
+    // createDownloadTasks
+    .addCase(createDownloadTasksFromCollectionsSuccess, (state, action: PayloadAction<any[]>) => ({
+      ...state,
+      downloadTasks: {
+        loading: false,
+        data: action.payload,
+      }
+    }))
 )
 
 export const isComicsLoading = state => state.browser.comics.loading
@@ -328,6 +350,19 @@ export const getCollectionMap = createSelector(
   }), {})
 )
 
+export const getDownloadTasks = state => state.browser.downloadTasks.data
+export const getDownloadTaskIds = createSelector(
+  getDownloadTasks,
+  downloadTasks => downloadTasks.map(downloadTask => downloadTask.id),
+)
+export const getDownloadTaskMap = createSelector(
+  getDownloadTasks,
+  downloadTasks => downloadTasks.reduce((downloadTaskMap, downloadTask) => ({
+    ...downloadTaskMap,
+    [downloadTask.id]: downloadTask,
+  }), {})
+)
+
 export const isConfigLoading = state => state.browser.config.loading
 export const getConfig = state => state.browser.config.data
 
@@ -342,6 +377,8 @@ export function* browserSaga() {
   yield takeEvery(updateConfigRequest, updateConfigSaga)
 
   yield takeEvery(updateDatabaseRequest, updateDatabaseSaga)
+
+  yield takeEvery(createDownloadTasksFromCollectionsRequest, createDownloadTasksFromCollectionsSaga)
 }
 
 function* queryComicsSaga() {
@@ -454,6 +491,22 @@ function* updateDatabaseSaga() {
     }))))
   } catch (e) {
     yield put(updateDatabaseFailure(e))
+  }
+}
+
+function* createDownloadTasksFromCollectionsSaga() {
+  try {
+    yield put(createDownloadTasksFromCollectionsProcessing())
+    const coreService = createCoreService()
+
+    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
+    yield put(createDownloadTasksFromCollectionsSuccess(comics.map(comic => ({
+      id: comic.id,
+      name: comic.name,
+      coverUrl: comic.coverUrl,
+    }))))
+  } catch (e) {
+    yield put(createDownloadTasksFromCollectionsFailure(e))
   }
 }
 

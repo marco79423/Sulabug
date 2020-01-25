@@ -12,6 +12,13 @@ import List from '@material-ui/core/List'
 import * as ducks from '../ducks'
 import BaseLayout from '../layouts/BaseLayout'
 import CollectionListItem from '../components/CollectionListItem'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Divider from '@material-ui/core/Divider'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
+import Button from '@material-ui/core/Button'
 
 
 const styles = (theme) => createStyles({
@@ -62,9 +69,28 @@ export function CollectionPage({classes}) {
     )
   }
 
+  const createDownloadTasksFromCollections = () => dispatch(ducks.createDownloadTasksFromCollectionsRequest())
+
   return (
     <BaseLayout>
       <div className={classes.root}>
+        {/*Meta Section*/}
+        <ExpansionPanel className={classes.meta}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+            <div>
+              <Typography inline>更新時間： </Typography>
+            </div>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography variant="body2">
+              收藏的漫畫每天都會自動下載更新。
+            </Typography>
+          </ExpansionPanelDetails>
+          <Divider/>
+          <ExpansionPanelActions>
+            <Button variant="contained" onClick={createDownloadTasksFromCollections}>手動下載</Button>
+          </ExpansionPanelActions>
+        </ExpansionPanel>
         <List>
           {collectionIds.map(collectionId => <CollectionListItem key={collectionId} collectionId={collectionId}/>)}
         </List>

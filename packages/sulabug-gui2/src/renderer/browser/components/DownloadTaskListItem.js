@@ -5,6 +5,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
+import {useDispatch, useSelector} from 'react-redux'
+import * as ducks from '../ducks'
 
 const styles = (theme) => createStyles({
   root: {},
@@ -13,7 +15,11 @@ const styles = (theme) => createStyles({
   }
 })
 
-function DownloadTaskListItem ({classes, downloadTask}) {
+function DownloadTaskListItem ({classes, downloadTaskId}) {
+  const dispatch = useDispatch()
+  const downloadTaskMap = useSelector(ducks.getDownloadTaskMap)
+  const downloadTask = downloadTaskMap[downloadTaskId]
+
 
   const renderProgress = () => {
     switch (downloadTask.status) {
@@ -27,15 +33,11 @@ function DownloadTaskListItem ({classes, downloadTask}) {
     }
   }
 
-  const deleteDownloadTask = () => {
-    // this.props.deleteDownloadTask(downloadTask.id)
-  }
-
   return (
     <ListItem className={classes.root}>
       <ListItemAvatar>
         <Avatar>
-          <img src={downloadTask.coverDataUrl}/>
+          <img src={downloadTask.coverUrl}/>
         </Avatar>
       </ListItemAvatar>
       <ListItemText

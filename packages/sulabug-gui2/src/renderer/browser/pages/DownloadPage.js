@@ -8,6 +8,8 @@ import List from '@material-ui/core/List'
 
 import BaseLayout from '../layouts/BaseLayout'
 import DownloadTaskListItem from '../components/DownloadTaskListItem'
+import {useDispatch, useSelector} from 'react-redux'
+import * as ducks from '../ducks'
 
 
 const styles = (theme) => createStyles({
@@ -27,18 +29,9 @@ const styles = (theme) => createStyles({
 
 
 function DownloadPage({classes}) {
-  const downloadTasks = []
-  const loading = false
+  const downloadTaskIds = useSelector(ducks.getDownloadTaskIds)
 
-  if (loading) {
-    return (
-      <BaseLayout>
-        <LinearProgress color="secondary" variant="query"/>
-      </BaseLayout>
-    )
-  }
-
-  if (downloadTasks.length === 0) {
+  if (downloadTaskIds.length === 0) {
     return (
       <BaseLayout>
         <Card className={classes.card}>
@@ -55,9 +48,8 @@ function DownloadPage({classes}) {
     <BaseLayout>
       <div className={classes.root}>
         <List>
-          {downloadTasks.map((downloadTask) => <DownloadTaskListItem key={downloadTask.id}
-                                                                     downloadTask={downloadTask}
-                                                                     deleteDownloadTask={this.props.deleteDownloadTask}/>)}
+          {downloadTaskIds.map((downloadTaskId) => <DownloadTaskListItem key={downloadTaskId}
+                                                                         downloadTaskId={downloadTaskId}/>)}
         </List>
       </div>
     </BaseLayout>
