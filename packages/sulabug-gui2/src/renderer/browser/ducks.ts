@@ -55,7 +55,7 @@ export interface IBrowserState {
     data: {},
     error?: Error
   },
-  tasks: {
+  asyncTasks: {
     addComicToCollections: {
       loading: boolean,
       error?: Error
@@ -80,7 +80,7 @@ const initialState: IBrowserState = {
     loading: false,
     data: {}
   },
-  tasks: {
+  asyncTasks: {
     addComicToCollections: {
       loading: false,
     },
@@ -142,8 +142,8 @@ export const reducer = createReducer(
     // addComicToCollection
     .addCase(addComicToCollectionsProcessing, (state) => ({
       ...state,
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         addComicToCollection: {
           loading: true,
         },
@@ -167,8 +167,8 @@ export const reducer = createReducer(
         ...state.collections,
         data: [...state.collections.data, ...state.comics.data.filter(comic => comic.id === action.payload)],
       },
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         addComicToCollection: {
           loading: false,
         },
@@ -176,8 +176,8 @@ export const reducer = createReducer(
     }))
     .addCase(addComicToCollectionsFailure, (state, action: PayloadAction<Error>) => ({
       ...state,
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         addComicToCollection: {
           loading: false,
           error: action.payload,
@@ -187,8 +187,8 @@ export const reducer = createReducer(
     // removeComicFromCollection
     .addCase(removeComicFromCollectionsProcessing, (state) => ({
       ...state,
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         removeComicFromCollection: {
           loading: true,
         },
@@ -212,8 +212,8 @@ export const reducer = createReducer(
         ...state.collections,
         data: state.collections.data.filter(collection => collection.id !== action.payload),
       },
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         removeComicFromCollection: {
           loading: false,
         },
@@ -221,8 +221,8 @@ export const reducer = createReducer(
     }))
     .addCase(removeComicFromCollectionsFailure, (state, action: PayloadAction<Error>) => ({
       ...state,
-      tasks: {
-        ...state.tasks,
+      asyncTasks: {
+        ...state.asyncTasks,
         removeComicFromCollection: {
           loading: false,
           error: action.payload,
