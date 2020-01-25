@@ -1,6 +1,8 @@
 import {call, put, takeEvery} from 'redux-saga/effects'
 import {createAction, createReducer, createSelector, PayloadAction} from '@reduxjs/toolkit'
+
 import {createCoreService} from './services'
+import {IConfig} from 'sulabug-core'
 
 export const queryComicsRequest = createAction('browser/queryComics/request')
 export const queryComicsProcessing = createAction('browser/queryComics/processing')
@@ -22,6 +24,15 @@ export const removeComicFromCollectionsProcessing = createAction('browser/remove
 export const removeComicFromCollectionsSuccess = createAction<number>('browser/removeComicFromCollections/success')
 export const removeComicFromCollectionsFailure = createAction<Error>('browser/removeComicFromCollections/failure')
 
+export const queryConfigRequest = createAction('browser/queryConfig/request')
+export const queryConfigProcessing = createAction('browser/queryConfig/processing')
+export const queryConfigSuccess = createAction<IConfig>('browser/queryConfig/success')
+export const queryConfigFailure = createAction<Error>('browser/queryConfig/failure')
+
+export const updateConfigRequest = createAction<IConfig>('browser/updateConfig/request')
+export const updateConfigProcessing = createAction('browser/updateConfig/processing')
+export const updateConfigSuccess = createAction<IConfig>('browser/updateConfig/success')
+export const updateConfigFailure = createAction<Error>('browser/updateConfig/failure')
 
 export interface IBrowserState {
   comics: {
@@ -34,6 +45,11 @@ export interface IBrowserState {
     data: any[],
     error?: Error
   },
+  config: {
+    loading: boolean,
+    data: {},
+    error?: Error
+  },
   tasks: {
     addComicToCollections: {
       loading: boolean,
@@ -43,7 +59,7 @@ export interface IBrowserState {
       loading: boolean,
       error?: Error
     },
-  }
+  },
 }
 
 const initialState: IBrowserState = {
@@ -54,6 +70,10 @@ const initialState: IBrowserState = {
   collections: {
     loading: false,
     data: [],
+  },
+  config: {
+    loading: false,
+    data: {}
   },
   tasks: {
     addComicToCollections: {
@@ -203,6 +223,52 @@ export const reducer = createReducer(
         },
       }
     }))
+    // queryConfig
+    .addCase(queryConfigProcessing, (state) => ({
+      ...state,
+      config: {
+        loading: true,
+        data: {},
+      }
+    }))
+    .addCase(queryConfigSuccess, (state, action: PayloadAction<IConfig>) => ({
+      ...state,
+      config: {
+        loading: false,
+        data: action.payload,
+      }
+    }))
+    .addCase(queryConfigFailure, (state, action: PayloadAction<Error>) => ({
+      ...state,
+      config: {
+        loading: false,
+        data: {},
+        error: action.payload,
+      }
+    }))
+   // updateConfig
+    .addCase(updateConfigProcessing, (state) => ({
+      ...state,
+      config: {
+        loading: true,
+        data: {}
+      },
+    }))
+    .addCase(updateConfigSuccess, (state, action: PayloadAction<IConfig>) => ({
+      ...state,
+      config: {
+        loading: false,
+        data: action.payload,
+      },
+    }))
+    .addCase(updateConfigFailure, (state, action: PayloadAction<Error>) => ({
+      ...state,
+      config: {
+        loading: false,
+        data: {},
+        error: action.payload,
+      },
+    }))
 )
 
 export const isComicsLoading = state => state.browser.comics.loading
@@ -233,12 +299,18 @@ export const getCollectionMap = createSelector(
   }), {})
 )
 
+export const isConfigLoading = state => state.browser.config.loading
+export const getConfig = state => state.browser.config.data
+
 export function* browserSaga() {
   yield takeEvery(queryComicsRequest, queryComicsSaga)
   yield takeEvery(queryCollectionsRequest, queryCollectionsSaga)
 
   yield takeEvery(addComicToCollectionsRequest, addComicToCollectionSaga)
   yield takeEvery(removeComicFromCollectionsRequest, removeComicFromCollectionSaga)
+
+  yield takeEvery(queryConfigRequest, queryConfigSaga)
+  yield takeEvery(updateConfigRequest, updateConfigSaga)
 }
 
 function* queryComicsSaga() {
@@ -307,5 +379,30 @@ function* removeComicFromCollectionSaga(action) {
     yield put(removeComicFromCollectionsSuccess(comicId))
   } catch (e) {
     yield put(removeComicFromCollectionsFailure(e))
+  }
+}
+
+function* queryConfigSaga() {
+  try {
+    yield put(queryConfigProcessing())
+    const coreService = createCoreService()
+
+    const config = yield call(coreService.fetchConfig.bind(coreService))
+    yield put(queryConfigSuccess(config))
+  } catch (e) {
+    yield put(queryConfigFailure(e))
+  }
+}
+
+function* updateConfigSaga(action) {
+  try {
+    yield put(updateConfigProcessing())
+    const coreService = createCoreService()
+
+    const config = action.payload
+    yield call(coreService.updateConfig.bind(coreService), config)
+    yield put(updateConfigSuccess(config))
+  } catch (e) {
+    yield put(updateConfigFailure(e))
   }
 }

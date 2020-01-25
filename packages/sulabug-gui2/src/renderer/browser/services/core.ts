@@ -1,5 +1,4 @@
 import {differenceInDays} from 'date-fns'
-import {boolean} from 'boolean'
 import {IComic, IComicDatabase, IComicFilter, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
 
 export type CreateComicDatabaseFunc = (config: IConfig) => IComicDatabase
@@ -17,7 +16,9 @@ export interface ICoreService {
 
   downloadComic(comicId: string)
 
-  updateConfig(attrName: string, attrValue: string)
+  fetchConfig(): Promise<IConfig>
+
+  updateConfig(config: IConfig)
 }
 
 export class CoreService implements ICoreService {
@@ -61,11 +62,11 @@ export class CoreService implements ICoreService {
       await new Promise(resolve => {
         comicDatabase.startUpdateTask(webComicSource)
           .subscribe(taskStatus => {
-          if (taskStatus.completed) {
-            // print(`${webComicSource.name} 更新完成`)
-            resolve()
-          }
-        })
+            if (taskStatus.completed) {
+              // print(`${webComicSource.name} 更新完成`)
+              resolve()
+            }
+          })
       })
     }
     // print(`漫畫資料庫更新完成`)
@@ -86,8 +87,8 @@ export class CoreService implements ICoreService {
   }
 
   public async addComicToCollections(comicId: string) {
-    const comics = await this.searchComics({id: comicId, pattern:''})
-    if(comics.length !== 1) {
+    const comics = await this.searchComics({id: comicId, pattern: ''})
+    if (comics.length !== 1) {
       throw new Error('unable to get target comic')
     }
 
@@ -97,8 +98,8 @@ export class CoreService implements ICoreService {
   }
 
   public async removeComicFromCollections(comicId: string) {
-    const comics = await this.searchComics({id: comicId, pattern:''})
-    if(comics.length !== 1) {
+    const comics = await this.searchComics({id: comicId, pattern: ''})
+    if (comics.length !== 1) {
       throw new Error('unable to get target comic')
     }
 
@@ -109,8 +110,8 @@ export class CoreService implements ICoreService {
   public async downloadComic(comicId: string) {
     // console.log(`開始下載 ${comic.name} ...`)
 
-    const comics = await this.searchComics({id: comicId, pattern:''})
-    if(comics.length !== 1) {
+    const comics = await this.searchComics({id: comicId, pattern: ''})
+    if (comics.length !== 1) {
       throw new Error('unable to get target comic')
     }
 
@@ -128,35 +129,7 @@ export class CoreService implements ICoreService {
     console.log('漫畫下載完畢')
   }
 
-  public async updateConfig(attrName: string, attrValue: string) {
-    const originProfileJson = await this._fetchConfig()
-    let profileJson: {databaseDirPath: string, useFakeWebSource: boolean} = {...originProfileJson}
-
-    switch (attrName) {
-      case 'database-dir-path':
-        profileJson.databaseDirPath = this._pathAdapter.convertToAbsolutePath(attrValue)
-        break
-      case 'fake-mode':
-        profileJson.useFakeWebSource = boolean(attrValue)
-        break
-      default:
-        // print(`抱歉！ ${attrName} 不是合法的設定欄位`)
-    }
-
-    const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
-    await this._fileAdapter.writeJson(profilePath, profileJson)
-  }
-
-  private async _createComicDatabase(): Promise<IComicDatabase> {
-    if (!this._comicDatabase) {
-      const profileJson = await this._fetchConfig()
-      this._comicDatabase = this._createComicDatabaseFunc(profileJson)
-    }
-
-    return this._comicDatabase
-  }
-
-  private async _fetchConfig(): Promise<IConfig> {
+  public async fetchConfig(): Promise<IConfig> {
     const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
     if (!await this._fileAdapter.pathExists(profilePath)) {
       await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
@@ -164,9 +137,24 @@ export class CoreService implements ICoreService {
     return await this._fileAdapter.readJson(profilePath)
   }
 
+  public async updateConfig(config: IConfig) {
+    const configPath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
+    await this._fileAdapter.writeJson(configPath, config)
+  }
+
+  private async _createComicDatabase(): Promise<IComicDatabase> {
+    if (!this._comicDatabase) {
+      const profileJson = await this.fetchConfig()
+      this._comicDatabase = this._createComicDatabaseFunc(profileJson)
+    }
+
+    return this._comicDatabase
+  }
+
   private _getDefaultProfile(): IConfig {
     return {
       databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
+      downloadDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '漫畫'),
       useFakeWebSource: false,
     }
   }

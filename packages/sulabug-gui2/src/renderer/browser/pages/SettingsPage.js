@@ -12,6 +12,10 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 
 import BaseLayout from '../layouts/BaseLayout'
+import {useDispatch, useSelector} from 'react-redux'
+import {useEffect} from 'react'
+import * as ducks from '../ducks'
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 
 
 const styles = (theme) => createStyles({
@@ -27,23 +31,36 @@ const styles = (theme) => createStyles({
 })
 
 function SettingsPage({classes}) {
-  const userProfile = {}
-  const updateUserProfile = () => {}
+  const dispatch = useDispatch()
+
+  const loading = useSelector(ducks.isConfigLoading)
+  const config = useSelector(ducks.getConfig)
+
+  useEffect(() => {
+    dispatch(ducks.queryConfigRequest())
+  }, [dispatch])
 
   const updateComicsFolder = () => {
     const filePaths = remote.dialog.showOpenDialog({
       title: '指定漫畫資料夾',
-      defaultPath: userProfile.downloadFolderPath,
+      defaultPath: config.downloadDirPath,
       buttonLabel: '確定',
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
     })
     if (filePaths && filePaths.length > 0) {
-      updateUserProfile({
-        id: 'default',
-        ...userProfile,
-        downloadFolderPath: filePaths[0],
-      })
+      dispatch(ducks.updateConfigRequest({
+        ...config,
+        downloadDirPath: filePaths[0],
+      }))
     }
+  }
+
+  if (loading) {
+    return (
+      <BaseLayout>
+        <LinearProgress color="secondary" variant="query"/>
+      </BaseLayout>
+    )
   }
 
   return (
@@ -58,7 +75,7 @@ function SettingsPage({classes}) {
             </ListItemAvatar>
             <ListItemText
               primary="漫畫下載目錄"
-              secondary={userProfile.downloadFolderPath}
+              secondary={config.downloadDirPath}
             />
             <ListItemSecondaryAction>
               <IconButton onClick={updateComicsFolder}>
