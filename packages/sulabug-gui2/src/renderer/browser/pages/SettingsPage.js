@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {useEffect} from 'react'
 import {remote} from 'electron'
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
@@ -13,9 +14,9 @@ import EditIcon from '@material-ui/icons/Edit'
 
 import BaseLayout from '../layouts/BaseLayout'
 import {useDispatch, useSelector} from 'react-redux'
-import {useEffect} from 'react'
-import * as ducks from '../ducks'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
+import {queryConfigRequest, updateConfigRequest} from '../ducks/actions'
+import {getConfig, isConfigLoading} from '../ducks/selectors'
 
 
 const styles = (theme) => createStyles({
@@ -33,11 +34,11 @@ const styles = (theme) => createStyles({
 function SettingsPage({classes}) {
   const dispatch = useDispatch()
 
-  const loading = useSelector(ducks.isConfigLoading)
-  const config = useSelector(ducks.getConfig)
+  const loading = useSelector(isConfigLoading)
+  const config = useSelector(getConfig)
 
   useEffect(() => {
-    dispatch(ducks.queryConfigRequest())
+    dispatch(queryConfigRequest())
   }, [dispatch])
 
   const updateComicsFolder = () => {
@@ -48,7 +49,7 @@ function SettingsPage({classes}) {
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
     })
     if (filePaths && filePaths.length > 0) {
-      dispatch(ducks.updateConfigRequest({
+      dispatch(updateConfigRequest({
         ...config,
         downloadDirPath: filePaths[0],
       }))

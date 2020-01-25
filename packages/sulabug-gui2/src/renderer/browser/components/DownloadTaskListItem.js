@@ -5,8 +5,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
-import {useDispatch, useSelector} from 'react-redux'
-import * as ducks from '../ducks'
+import {useSelector} from 'react-redux'
+import {getDownloadTaskMap} from '../ducks/selectors'
 
 const styles = (theme) => createStyles({
   root: {},
@@ -16,7 +16,7 @@ const styles = (theme) => createStyles({
 })
 
 function DownloadTaskListItem ({classes, downloadTaskId}) {
-  const downloadTaskMap = useSelector(ducks.getDownloadTaskMap)
+  const downloadTaskMap = useSelector(getDownloadTaskMap)
   const downloadTask = downloadTaskMap[downloadTaskId]
 
   const renderProgress = () => {

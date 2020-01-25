@@ -12,7 +12,8 @@ import Button from '@material-ui/core/Button'
 import {remote} from 'electron'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {useDispatch, useSelector} from 'react-redux'
-import * as ducks from '../ducks'
+import {removeComicFromCollectionsRequest} from '../ducks/actions'
+import {getCollectionMap} from '../ducks/selectors'
 
 const styles = (theme) => createStyles({
   root: {
@@ -69,7 +70,7 @@ const styles = (theme) => createStyles({
 
 export function CollectionListItem({classes, collectionId}) {
   const dispatch = useDispatch()
-  const collectionMap = useSelector(ducks.getCollectionMap)
+  const collectionMap = useSelector(getCollectionMap)
   const collection = collectionMap[collectionId]
 
   const openTargetFolder = () => {}
@@ -82,7 +83,7 @@ export function CollectionListItem({classes, collectionId}) {
       buttons: ['刪除', '取消'],
     }, (index) => {
       if (index === 0) {
-        dispatch(ducks.removeComicFromCollectionsRequest(collectionId))
+        dispatch(removeComicFromCollectionsRequest(collectionId))
       }
     })
   }

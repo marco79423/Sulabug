@@ -13,10 +13,10 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import dateFormat from 'date-fns/format'
-
-import * as ducks from '../ducks'
 import ComicListItem from '../components/ComicListItem'
 import BaseLayout from '../layouts/BaseLayout'
+import {queryComicsRequest, updateDatabaseRequest} from '../ducks/actions'
+import {getComicIds, isComicsLoading} from '../ducks/selectors'
 
 
 const styles = (theme) => createStyles({
@@ -48,14 +48,14 @@ const styles = (theme) => createStyles({
 export function BrowsePage({classes}) {
   const dispatch = useDispatch()
 
-  const updateComicDatabase = () => dispatch(ducks.updateDatabaseRequest())
+  const updateComicDatabase = () => dispatch(updateDatabaseRequest())
 
   useEffect(() => {
-    dispatch(ducks.queryComicsRequest())
+    dispatch(queryComicsRequest())
   }, [dispatch])
 
-  const loading = useSelector(ducks.isComicsLoading)
-  const comicIds = useSelector(ducks.getComicIds)
+  const loading = useSelector(isComicsLoading)
+  const comicIds = useSelector(getComicIds)
 
   if (loading) {
     return (

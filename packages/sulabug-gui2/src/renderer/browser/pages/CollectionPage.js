@@ -8,8 +8,6 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import {Link} from 'react-router-dom'
 import List from '@material-ui/core/List'
-
-import * as ducks from '../ducks'
 import BaseLayout from '../layouts/BaseLayout'
 import CollectionListItem from '../components/CollectionListItem'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -19,6 +17,8 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button'
+import {createDownloadTasksFromCollectionsRequest, queryCollectionsRequest} from '../ducks/actions'
+import {getCollectionIds, isCollectionsLoading} from '../ducks/selectors'
 
 
 const styles = (theme) => createStyles({
@@ -40,11 +40,11 @@ const styles = (theme) => createStyles({
 
 export function CollectionPage({classes}) {
   const dispatch = useDispatch()
-  const collectionIds = useSelector(ducks.getCollectionIds)
-  const loading = useSelector(ducks.isCollectionsLoading)
+  const collectionIds = useSelector(getCollectionIds)
+  const loading = useSelector(isCollectionsLoading)
 
   useEffect(() => {
-    dispatch(ducks.queryCollectionsRequest())
+    dispatch(queryCollectionsRequest())
   }, [dispatch])
 
   if (loading) {
@@ -69,7 +69,7 @@ export function CollectionPage({classes}) {
     )
   }
 
-  const createDownloadTasksFromCollections = () => dispatch(ducks.createDownloadTasksFromCollectionsRequest())
+  const createDownloadTasksFromCollections = () => dispatch(createDownloadTasksFromCollectionsRequest())
 
   return (
     <BaseLayout>

@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga'
 import {createEpicMiddleware} from 'redux-observable'
 
 import {rootSaga, rootEpic} from './rootDucks'
-import {reducer as browserReducer} from './browser/ducks'
+import browserReducer from './browser/ducks/reducer'
 import {createCoreService} from './browser/services'
 
 declare global {

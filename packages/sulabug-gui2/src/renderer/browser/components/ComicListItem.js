@@ -11,8 +11,8 @@ import CollectionsIcon from '@material-ui/icons/Collections'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import ListItem from '@material-ui/core/ListItem/ListItem'
 import {useDispatch, useSelector} from 'react-redux'
-
-import * as ducks from '../ducks'
+import {addComicToCollectionsRequest} from '../ducks/actions'
+import {getComicMap} from '../ducks/selectors'
 
 const styles = (theme) => createStyles({
   root: {
@@ -67,14 +67,14 @@ const styles = (theme) => createStyles({
 
 function ComicListItem({classes, comicId}) {
   const dispatch = useDispatch()
-  const comicMap = useSelector(ducks.getComicMap)
+  const comicMap = useSelector(getComicMap)
   const comic = comicMap[comicId]
 
   const openInBrowser = () => {
     require('electron').shell.openExternal(comic.sourcePageUrl)
   }
 
-  const addComicToCollections = () => dispatch(ducks.addComicToCollectionsRequest(comicId))
+  const addComicToCollections = () => dispatch(addComicToCollectionsRequest(comicId))
 
   return (
     <ListItem className={classes.root}>

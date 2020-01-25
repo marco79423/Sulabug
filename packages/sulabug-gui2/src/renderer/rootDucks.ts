@@ -1,7 +1,8 @@
 import {call, take} from 'redux-saga/effects'
 import {combineEpics} from 'redux-observable'
 
-import {browserEpic, browserSaga} from './browser/ducks'
+import browserEpic from './browser/ducks/epic'
+import browserSaga from './browser/ducks/saga'
 
 export function* rootSaga() {
   const action = yield take('common/initialize-app')
