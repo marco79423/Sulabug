@@ -34,6 +34,11 @@ export const updateConfigProcessing = createAction('browser/updateConfig/process
 export const updateConfigSuccess = createAction<IConfig>('browser/updateConfig/success')
 export const updateConfigFailure = createAction<Error>('browser/updateConfig/failure')
 
+export const updateDatabaseRequest = createAction('browser/updateDatabase/request')
+export const updateDatabaseProcessing = createAction('browser/updateDatabase/processing')
+export const updateDatabaseSuccess = createAction<any[]>('browser/updateDatabase/success')
+export const updateDatabaseFailure = createAction<Error>('browser/updateDatabase/failure')
+
 export interface IBrowserState {
   comics: {
     loading: boolean,
@@ -89,6 +94,7 @@ const initialState: IBrowserState = {
 export const reducer = createReducer(
   initialState,
   builder => builder
+    // queryComics
     .addCase(queryComicsProcessing, (state) => ({
       ...state,
       comics: {
@@ -246,7 +252,7 @@ export const reducer = createReducer(
         error: action.payload,
       }
     }))
-   // updateConfig
+    // updateConfig
     .addCase(updateConfigProcessing, (state) => ({
       ...state,
       config: {
@@ -268,6 +274,29 @@ export const reducer = createReducer(
         data: {},
         error: action.payload,
       },
+    }))
+    // updateDatabase
+    .addCase(updateDatabaseProcessing, (state) => ({
+      ...state,
+      comics: {
+        loading: true,
+        data: [],
+      }
+    }))
+    .addCase(updateDatabaseSuccess, (state, action: PayloadAction<any[]>) => ({
+      ...state,
+      comics: {
+        loading: false,
+        data: action.payload,
+      }
+    }))
+    .addCase(updateDatabaseFailure, (state, action: PayloadAction<Error>) => ({
+      ...state,
+      comics: {
+        loading: false,
+        data: [],
+        error: action.payload,
+      }
     }))
 )
 
@@ -311,6 +340,8 @@ export function* browserSaga() {
 
   yield takeEvery(queryConfigRequest, queryConfigSaga)
   yield takeEvery(updateConfigRequest, updateConfigSaga)
+
+  yield takeEvery(updateDatabaseRequest, updateDatabaseSaga)
 }
 
 function* queryComicsSaga() {
@@ -406,3 +437,23 @@ function* updateConfigSaga(action) {
     yield put(updateConfigFailure(e))
   }
 }
+
+function* updateDatabaseSaga() {
+  try {
+    yield put(updateDatabaseProcessing())
+    const coreService = createCoreService()
+
+    const comics = yield call(coreService.updateComicDatabase.bind(coreService))
+    yield put(updateDatabaseSuccess(comics.map(comic => ({
+      id: comic.id,
+      name: comic.name,
+      coverUrl: comic.coverUrl,
+      summary: comic.summary,
+      lastUpdatedChapter: comic.lastUpdatedChapter,
+      lastUpdatedTime: comic.lastUpdatedTime,
+    }))))
+  } catch (e) {
+    yield put(updateDatabaseFailure(e))
+  }
+}
+

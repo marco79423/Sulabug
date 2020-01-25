@@ -6,7 +6,7 @@ export type CreateComicDatabaseFunc = (config: IConfig) => IComicDatabase
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
 
-  updateComicDatabase()
+  updateComicDatabase(): Promise<IComic[]>
 
   searchComics(filter: IComicFilter): Promise<IComic[]>
 
@@ -51,7 +51,7 @@ export class CoreService implements ICoreService {
     return false
   }
 
-  public async updateComicDatabase() {
+  public async updateComicDatabase(): Promise<IComic[]> {
     // print(`更新漫畫資料庫 ...`)
 
     const comicDatabase = await this._createComicDatabase()
@@ -69,7 +69,9 @@ export class CoreService implements ICoreService {
           })
       })
     }
+
     // print(`漫畫資料庫更新完成`)
+    return await this.searchComics({pattern:'', marked: false})
   }
 
   public async searchComics(filter: IComicFilter): Promise<IComic[]> {

@@ -48,7 +48,7 @@ const styles = (theme) => createStyles({
 export function BrowsePage({classes}) {
   const dispatch = useDispatch()
 
-  const updateComicDatabase = () => {}
+  const updateComicDatabase = () => dispatch(ducks.updateDatabaseRequest())
 
   useEffect(() => {
     dispatch(ducks.queryComicsRequest())
