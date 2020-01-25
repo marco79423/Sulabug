@@ -78,7 +78,7 @@ export function CollectionPage({classes}) {
         <ExpansionPanel className={classes.meta}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
             <div>
-              <Typography inline>更新時間： </Typography>
+              <Typography inline>上次下載時間： </Typography>
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>

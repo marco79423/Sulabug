@@ -16,17 +16,15 @@ const styles = (theme) => createStyles({
 })
 
 function DownloadTaskListItem ({classes, downloadTaskId}) {
-  const dispatch = useDispatch()
   const downloadTaskMap = useSelector(ducks.getDownloadTaskMap)
   const downloadTask = downloadTaskMap[downloadTaskId]
 
-
   const renderProgress = () => {
-    switch (downloadTask.status) {
-      case 'PREPARING':
+    switch (downloadTask.state) {
+      case 'Pending':
         return <LinearProgress className={classes.progress} variant="query"/>
-      case 'DOWNLOADING':
-      case 'FINISHED':
+      case 'Downloading':
+      case 'Finished':
         return <LinearProgress className={classes.progress} variant="determinate" value={downloadTask.progress}/>
       default:
         return null

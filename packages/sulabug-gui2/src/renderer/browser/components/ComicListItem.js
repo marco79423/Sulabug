@@ -71,7 +71,7 @@ function ComicListItem({classes, comicId}) {
   const comic = comicMap[comicId]
 
   const openInBrowser = () => {
-    require('electron').shell.openExternal(comic.pageUrl)
+    require('electron').shell.openExternal(comic.sourcePageUrl)
   }
 
   const addComicToCollections = () => dispatch(ducks.addComicToCollectionsRequest(comicId))

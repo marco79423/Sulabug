@@ -1,9 +1,11 @@
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux'
 import {forwardToMain, replayActionRenderer} from 'electron-redux'
 import createSagaMiddleware from 'redux-saga'
+import {createEpicMiddleware} from 'redux-observable'
 
+import {rootSaga, rootEpic} from './rootDucks'
 import {reducer as browserReducer} from './browser/ducks'
-import rootSaga from './rootSaga'
+import {createCoreService} from './browser/services'
 
 declare global {
   interface Window {
@@ -18,6 +20,11 @@ export default function configureStore() {
   })
 
   const sagaMiddleware = createSagaMiddleware()
+  const epicMiddleware = createEpicMiddleware({
+    dependencies: {
+      coreService: createCoreService(),
+    }
+  })
 
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose
@@ -27,10 +34,12 @@ export default function configureStore() {
     composeEnhancers(applyMiddleware(
       forwardToMain, // IMPORTANT! This goes first
       sagaMiddleware,
+      epicMiddleware,
     ))
   )
 
   sagaMiddleware.run(rootSaga)
+  epicMiddleware.run(rootEpic)
 
   replayActionRenderer(store)
 

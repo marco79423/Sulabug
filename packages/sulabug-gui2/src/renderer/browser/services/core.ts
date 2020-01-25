@@ -117,10 +117,12 @@ export class CoreService implements ICoreService {
       throw new Error('unable to get target comic')
     }
 
+    const config = await this.fetchConfig()
+
     const targetComic = comics[0]
 
     await new Promise(resolve => {
-      targetComic.startDownloadTask('.').subscribe(taskStatus => {
+      targetComic.startDownloadTask(config.downloadDirPath).subscribe(taskStatus => {
         if (taskStatus.completed) {
           // console.log(`${targetComic.name} 下載完成`)
           resolve()

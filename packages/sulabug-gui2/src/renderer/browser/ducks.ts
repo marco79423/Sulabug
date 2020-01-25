@@ -1,17 +1,93 @@
 import {call, put, takeEvery} from 'redux-saga/effects'
 import {createAction, createReducer, createSelector, PayloadAction} from '@reduxjs/toolkit'
+import {combineEpics, Epic, ofType} from 'redux-observable'
+import {flatMap, map} from 'rxjs/operators'
 
 import {createCoreService} from './services'
-import {IConfig} from 'sulabug-core'
+import {IConfig, ITaskStatus} from 'sulabug-core'
+import { merge, of } from 'rxjs'
+
+export interface IComic {
+  readonly id: number
+  readonly name: string
+  readonly source: string
+  readonly sourcePageUrl: string
+  readonly coverUrl: string
+  readonly author: string
+  readonly summary: string
+  readonly catalog: string
+  readonly lastUpdatedChapter: string
+  readonly lastUpdatedTime: Date
+  readonly inCollection: boolean
+}
+
+export interface ICollection {
+  readonly id: number
+  readonly name: string
+  readonly source: string
+  readonly sourcePageUrl: string
+  readonly coverUrl: string
+  readonly author: string
+  readonly summary: string
+  readonly catalog: string
+  readonly lastUpdatedChapter: string
+  readonly lastUpdatedTime: Date
+}
+
+export interface IDownloadTask {
+  readonly id: number
+  readonly name: string,
+  readonly coverUrl: string,
+  readonly state: string
+  readonly progress: number
+  readonly status: string
+}
+
+export interface IConfig {
+
+}
+
+export interface IBrowserState {
+  comics: {
+    loading: boolean,
+    data: IComic[],
+    error?: Error
+  },
+  collections: {
+    loading: boolean,
+    data: ICollection[],
+    error?: Error
+  },
+  downloadTasks: {
+    loading: boolean,
+    data: any[],
+    error?: Error
+  },
+  config: {
+    loading: boolean,
+    data: {},
+    error?: Error
+  },
+  asyncTasks: {
+    addComicToCollections: {
+      loading: boolean,
+      error?: Error
+    },
+    removeComicFromCollections: {
+      loading: boolean,
+      error?: Error
+    },
+  },
+}
 
 export const queryComicsRequest = createAction('browser/queryComics/request')
 export const queryComicsProcessing = createAction('browser/queryComics/processing')
-export const queryComicsSuccess = createAction<any[]>('browser/queryComics/success')
+export const queryComicsSuccess = createAction<IComic[]>('browser/queryComics/success')
 export const queryComicsFailure = createAction<Error>('browser/queryComics/failure')
 
 export const queryCollectionsRequest = createAction('browser/queryCollections/request')
 export const queryCollectionsProcessing = createAction('browser/queryCollections/processing')
-export const queryCollectionsSuccess = createAction<any[]>('browser/queryCollections/success')
+export const queryCollectionsSuccess = createAction<ICollection[]>('browser/queryCollections/success')
 export const queryCollectionsFailure = createAction<Error>('browser/queryCollections/failure')
 
 export const addComicToCollectionsRequest = createAction<number>('browser/addComicToCollections/request')
@@ -36,46 +112,16 @@ export const updateConfigFailure = createAction<Error>('browser/updateConfig/fai
 
 export const updateDatabaseRequest = createAction('browser/updateDatabase/request')
 export const updateDatabaseProcessing = createAction('browser/updateDatabase/processing')
-export const updateDatabaseSuccess = createAction<any[]>('browser/updateDatabase/success')
+export const updateDatabaseSuccess = createAction<IComic[]>('browser/updateDatabase/success')
 export const updateDatabaseFailure = createAction<Error>('browser/updateDatabase/failure')
 
 export const createDownloadTasksFromCollectionsRequest = createAction('browser/createDownloadTasksFromCollections/request')
 export const createDownloadTasksFromCollectionsProcessing = createAction('browser/createDownloadTasksFromCollections/processing')
-export const createDownloadTasksFromCollectionsSuccess = createAction<any[]>('browser/createDownloadTasksFromCollections/success')
+export const createDownloadTasksFromCollectionsSuccess = createAction<IDownloadTask[]>('browser/createDownloadTasksFromCollections/success')
 export const createDownloadTasksFromCollectionsFailure = createAction<Error>('browser/createDownloadTasksFromCollections/failure')
 
-export interface IBrowserState {
-  comics: {
-    loading: boolean,
-    data: any[],
-    error?: Error
-  },
-  collections: {
-    loading: boolean,
-    data: any[],
-    error?: Error
-  },
-  downloadTasks: {
-    loading: boolean,
-    data: any[],
-    error?: Error
-  },
-  config: {
-    loading: boolean,
-    data: {},
-    error?: Error
-  },
-  asyncTasks: {
-    addComicToCollections: {
-      loading: boolean,
-      error?: Error
-    },
-    removeComicFromCollections: {
-      loading: boolean,
-      error?: Error
-    },
-  },
-}
+export const updateDownloadTaskStatus = createAction<{ id: number, state: string, progress: number, status: string }>('browser/updateDownloadTaskStatus')
+
 
 const initialState: IBrowserState = {
   comics: {
@@ -320,6 +366,24 @@ export const reducer = createReducer(
         data: action.payload,
       }
     }))
+    // updateDownloadTasks
+    .addCase(updateDownloadTaskStatus, (state, action: PayloadAction<{ id: number, state: string, progress: number, status: string }>) => ({
+      ...state,
+      downloadTasks: {
+        loading: false,
+        data: state.downloadTasks.data
+          .filter(downloadTask => downloadTask.id !== action.payload.id || (downloadTask.id === action.payload.id && action.payload.state !== 'Finished'))
+          .map(downloadTask => {
+            if (downloadTask.id === action.payload.id) {
+              return {
+                ...downloadTask,
+                ...action.payload,
+              }
+            }
+            return downloadTask
+          }),
+      }
+    }))
 )
 
 export const isComicsLoading = state => state.browser.comics.loading
@@ -504,9 +568,61 @@ function* createDownloadTasksFromCollectionsSaga() {
       id: comic.id,
       name: comic.name,
       coverUrl: comic.coverUrl,
+      state: 'Pending',
+      progress: 0,
+      status: '',
     }))))
   } catch (e) {
     yield put(createDownloadTasksFromCollectionsFailure(e))
   }
 }
 
+
+export const handleDownloadTasksEpic: Epic = (action$, state$, {coreService}) => action$.pipe(
+  ofType(
+    createDownloadTasksFromCollectionsSuccess.type,
+  ),
+  map(action => action.payload),
+  // map((downloadTasks: IDownloadTask[]) => downloadTasks[0]), // 暫時
+  flatMap((downloadTasks: IDownloadTask[]) => merge(...downloadTasks.map(downloadTask => of(downloadTask).pipe(
+    flatMap(async downloadTask => {
+      const comics = await coreService.searchComics({id: downloadTask.id, pattern: ''})
+      if (comics.length !== 1) {
+        throw new Error('unable to get target comic')
+      }
+
+      const config = await coreService.fetchConfig()
+      const targetComic = comics[0]
+      return [targetComic, config.downloadDirPath]
+    }),
+    flatMap(([targetComic, downloadDirPath]) => targetComic.startDownloadTask(downloadDirPath).pipe(map((downloadStatus: ITaskStatus) => updateDownloadTaskStatus({
+      id: targetComic.id,
+      state: downloadStatus.completed ? 'Finished' : 'Downloading',
+      progress: downloadStatus.progress.current / downloadStatus.progress.total * 100,
+      status: downloadStatus.progress.status
+    })))),
+  )))),
+
+
+  // flatMap(async downloadTask => {
+  //   const comics = await coreService.searchComics({id: downloadTask.id, pattern: ''})
+  //   if (comics.length !== 1) {
+  //     throw new Error('unable to get target comic')
+  //   }
+  //
+  //   const config = await coreService.fetchConfig()
+  //   const targetComic = comics[0]
+  //   return [targetComic, config.downloadDirPath]
+  // }),
+  // flatMap(([targetComic, downloadDirPath]) => targetComic.startDownloadTask(downloadDirPath).pipe(map((downloadStatus: ITaskStatus) => updateDownloadTaskStatus({
+  //   id: targetComic.id,
+  //   state: downloadStatus.completed ? 'Finished' : 'Downloading',
+  //   progress: downloadStatus.progress.current / downloadStatus.progress.total * 100,
+  //   status: downloadStatus.progress.status
+  // })))),
+)
+
+
+export const browserEpic = combineEpics(
+  handleDownloadTasksEpic
+)
