@@ -32,7 +32,7 @@ export const INSERT_OR_UPDATE_COMIC_SQL = `
 export const QUERY_COMICS_SQL = `
     SELECT comic.id,
            comic.name,
-           comic.cover_url,
+           comic.cover_url            AS                              coverUrl,
            comic.source,
            comic.source_page_url      AS                              sourcePageUrl,
            comic.catalog,
