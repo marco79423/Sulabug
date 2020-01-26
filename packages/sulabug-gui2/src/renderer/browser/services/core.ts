@@ -1,7 +1,8 @@
 import {differenceInDays} from 'date-fns'
-import {IComic, IComicDatabase, IComicFilter, IConfig, IFileAdapter, IPathAdapter} from 'sulabug-core'
+import * as sulabugCore from 'sulabug-core'
+import {IComic, IComicFilter, IConfig} from '../ducks/interface'
 
-export type CreateComicDatabaseFunc = (config: IConfig) => IComicDatabase
+export type CreateComicDatabaseFunc = (config: sulabugCore.IConfig) => sulabugCore.IComicDatabase
 
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
@@ -23,11 +24,11 @@ export interface ICoreService {
 
 export class CoreService implements ICoreService {
   private readonly _createComicDatabaseFunc: CreateComicDatabaseFunc
-  private readonly _fileAdapter: IFileAdapter
-  private readonly _pathAdapter: IPathAdapter
-  private _comicDatabase?: IComicDatabase
+  private readonly _fileAdapter: sulabugCore.IFileAdapter
+  private readonly _pathAdapter: sulabugCore.IPathAdapter
+  private _comicDatabase?: sulabugCore.IComicDatabase
 
-  constructor(fileAdapter: IFileAdapter, pathAdapter: IPathAdapter, createComicDatabaseFunc: CreateComicDatabaseFunc) {
+  constructor(fileAdapter: sulabugCore.IFileAdapter, pathAdapter: sulabugCore.IPathAdapter, createComicDatabaseFunc: CreateComicDatabaseFunc) {
     this._fileAdapter = fileAdapter
     this._pathAdapter = pathAdapter
     this._createComicDatabaseFunc = createComicDatabaseFunc
@@ -138,7 +139,12 @@ export class CoreService implements ICoreService {
     if (!await this._fileAdapter.pathExists(profilePath)) {
       await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
     }
-    return await this._fileAdapter.readJson(profilePath)
+    const config = await this._fileAdapter.readJson(profilePath)
+
+    return {
+      ...this._getDefaultProfile(),
+      ...config,
+    }
   }
 
   public async updateConfig(config: IConfig) {
@@ -146,7 +152,7 @@ export class CoreService implements ICoreService {
     await this._fileAdapter.writeJson(configPath, config)
   }
 
-  private async _createComicDatabase(): Promise<IComicDatabase> {
+  private async _createComicDatabase(): Promise<sulabugCore.IComicDatabase> {
     if (!this._comicDatabase) {
       const profileJson = await this.fetchConfig()
       this._comicDatabase = this._createComicDatabaseFunc(profileJson)

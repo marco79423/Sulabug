@@ -48,7 +48,6 @@ export interface IComic {
 export interface IConfig {
   readonly useFakeWebSource: boolean
   readonly databaseDirPath: string
-  readonly downloadDirPath: string
 }
 
 /**
