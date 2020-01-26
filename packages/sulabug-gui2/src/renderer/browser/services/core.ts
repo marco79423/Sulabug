@@ -1,15 +1,15 @@
 import {differenceInDays} from 'date-fns'
 import * as sulabugCore from 'sulabug-core'
-import {IComic, IComicFilter, IConfig} from '../ducks/interface'
+import {IComicFilter, IConfig} from '../ducks/interface'
 
 export type CreateComicDatabaseFunc = (config: sulabugCore.IConfig) => sulabugCore.IComicDatabase
 
 export interface ICoreService {
   checkIfComicDatabaseUpdateRequired(): Promise<boolean>
 
-  updateComicDatabase(): Promise<IComic[]>
+  updateComicDatabase(): Promise<sulabugCore.IComic[]>
 
-  searchComics(filter: IComicFilter): Promise<IComic[]>
+  searchComics(filter: IComicFilter): Promise<sulabugCore.IComic[]>
 
   addComicToCollections(comicId: string)
 
@@ -52,7 +52,7 @@ export class CoreService implements ICoreService {
     return false
   }
 
-  public async updateComicDatabase(): Promise<IComic[]> {
+  public async updateComicDatabase(): Promise<sulabugCore.IComic[]> {
     // print(`更新漫畫資料庫 ...`)
 
     const comicDatabase = await this._createComicDatabase()
@@ -72,14 +72,14 @@ export class CoreService implements ICoreService {
     }
 
     // print(`漫畫資料庫更新完成`)
-    return await this.searchComics({pattern:'', marked: false})
+    return await this.searchComics({pattern: '', marked: false})
   }
 
-  public async searchComics(filter: IComicFilter): Promise<IComic[]> {
+  public async searchComics(filter: IComicFilter): Promise<sulabugCore.IComic[]> {
     // print(`搜尋漫畫資料庫 ...`)
 
     const comicDatabase = await this._createComicDatabase()
-    return await new Promise<IComic[]>(resolve => {
+    return await new Promise<sulabugCore.IComic[]>(resolve => {
       comicDatabase.startQueryComicsTask(filter).subscribe(taskStatus => {
         if (taskStatus.completed) {
           // print(`漫畫資料庫搜尋完成`)
