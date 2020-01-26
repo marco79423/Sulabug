@@ -6,7 +6,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
 import {useSelector} from 'react-redux'
-import {getDownloadTaskMap} from '../ducks/selectors'
+import {getComicMap, getDownloadTaskMap} from '../ducks/selectors'
 
 const styles = (theme) => createStyles({
   root: {},
@@ -17,7 +17,9 @@ const styles = (theme) => createStyles({
 
 function DownloadTaskListItem ({classes, downloadTaskId}) {
   const downloadTaskMap = useSelector(getDownloadTaskMap)
+  const comicMap = useSelector(getComicMap)
   const downloadTask = downloadTaskMap[downloadTaskId]
+  const targetComic = comicMap[downloadTask.comicId]
 
   const renderProgress = () => {
     switch (downloadTask.state) {
@@ -35,11 +37,11 @@ function DownloadTaskListItem ({classes, downloadTaskId}) {
     <ListItem className={classes.root}>
       <ListItemAvatar>
         <Avatar>
-          <img src={downloadTask.coverUrl}/>
+          <img src={targetComic.coverUrl}/>
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={downloadTask.name}
+        primary={targetComic.name}
         secondary={renderProgress()}
       />
     </ListItem>

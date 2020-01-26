@@ -1,25 +1,20 @@
 import {createAction} from '@reduxjs/toolkit'
-import {ICollection, IComic, IConfig, IDownloadTask} from './interface'
+import {IComic, IConfig, IDownloadTask} from './interface'
 
 export const queryComicsRequest = createAction('browser/queryComics/request')
 export const queryComicsProcessing = createAction('browser/queryComics/processing')
 export const queryComicsSuccess = createAction<IComic[]>('browser/queryComics/success')
 export const queryComicsFailure = createAction<Error>('browser/queryComics/failure')
 
-export const queryCollectionsRequest = createAction('browser/queryCollections/request')
-export const queryCollectionsProcessing = createAction('browser/queryCollections/processing')
-export const queryCollectionsSuccess = createAction<ICollection[]>('browser/queryCollections/success')
-export const queryCollectionsFailure = createAction<Error>('browser/queryCollections/failure')
-
 export const addComicToCollectionsRequest = createAction<number>('browser/addComicToCollections/request')
-export const addComicToCollectionsProcessing = createAction('browser/addComicToCollections/processing')
+export const addComicToCollectionsProcessing = createAction<number>('browser/addComicToCollections/processing')
 export const addComicToCollectionsSuccess = createAction<number>('browser/addComicToCollections/success')
-export const addComicToCollectionsFailure = createAction<Error>('browser/addComicToCollections/failure')
+export const addComicToCollectionsFailure = createAction<{ id: number, error: Error }>('browser/addComicToCollections/failure')
 
 export const removeComicFromCollectionsRequest = createAction<number>('browser/removeComicFromCollections/request')
-export const removeComicFromCollectionsProcessing = createAction('browser/removeComicFromCollections/processing')
+export const removeComicFromCollectionsProcessing = createAction<number>('browser/removeComicFromCollections/processing')
 export const removeComicFromCollectionsSuccess = createAction<number>('browser/removeComicFromCollections/success')
-export const removeComicFromCollectionsFailure = createAction<Error>('browser/removeComicFromCollections/failure')
+export const removeComicFromCollectionsFailure = createAction<{ id: number, error: Error }>('browser/removeComicFromCollections/failure')
 
 export const queryConfigRequest = createAction('browser/queryConfig/request')
 export const queryConfigProcessing = createAction('browser/queryConfig/processing')
@@ -41,4 +36,4 @@ export const createDownloadTasksFromCollectionsProcessing = createAction('browse
 export const createDownloadTasksFromCollectionsSuccess = createAction<IDownloadTask[]>('browser/createDownloadTasksFromCollections/success')
 export const createDownloadTasksFromCollectionsFailure = createAction<Error>('browser/createDownloadTasksFromCollections/failure')
 
-export const updateDownloadTaskStatus = createAction<{ id: number, state: string, progress: number, status: string }>('browser/updateDownloadTaskStatus')
+export const updateDownloadTaskStatus = createAction<IDownloadTask>('browser/updateDownloadTaskStatus')

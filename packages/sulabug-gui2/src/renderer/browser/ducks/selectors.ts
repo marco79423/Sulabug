@@ -13,8 +13,12 @@ export const getComicMap = createSelector(
     [comic.id]: comic,
   }), {})
 )
-export const isCollectionsLoading = state => state.browser.collections.loading
-export const getCollections = state => state.browser.collections.data
+export const isCollectionsLoading = state => state.browser.comics.loading
+export const getCollections = createSelector(
+  getComics,
+  comics => comics.filter(comic => comic.inCollection)
+)
+
 export const getCollectionIds = createSelector(
   getCollections,
   collections => collections.map(collection => collection.id),
@@ -29,13 +33,13 @@ export const getCollectionMap = createSelector(
 export const getDownloadTasks = state => state.browser.downloadTasks.data
 export const getDownloadTaskIds = createSelector(
   getDownloadTasks,
-  downloadTasks => downloadTasks.map(downloadTask => downloadTask.id),
+  downloadTasks => downloadTasks.map(downloadTask => downloadTask.comicId),
 )
 export const getDownloadTaskMap = createSelector(
   getDownloadTasks,
   downloadTasks => downloadTasks.reduce((downloadTaskMap, downloadTask) => ({
     ...downloadTaskMap,
-    [downloadTask.id]: downloadTask,
+    [downloadTask.comicId]: downloadTask,
   }), {})
 )
 export const isConfigLoading = state => state.browser.config.loading

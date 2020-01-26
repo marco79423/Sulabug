@@ -12,10 +12,9 @@ export const handleDownloadTasksEpic: Epic = (action$, state$, {coreService}) =>
     actions.createDownloadTasksFromCollectionsSuccess.type,
   ),
   map(action => action.payload),
-  // map((downloadTasks: IDownloadTask[]) => downloadTasks[0]), // 暫時
   flatMap((downloadTasks: IDownloadTask[]) => merge(...downloadTasks.map(downloadTask => of(downloadTask).pipe(
     flatMap(async downloadTask => {
-      const comics = await coreService.searchComics({id: downloadTask.id, pattern: ''})
+      const comics = await coreService.searchComics({id: downloadTask.comicId, pattern: ''})
       if (comics.length !== 1) {
         throw new Error('unable to get target comic')
       }
@@ -25,7 +24,7 @@ export const handleDownloadTasksEpic: Epic = (action$, state$, {coreService}) =>
       return [targetComic, config.downloadDirPath]
     }),
     flatMap(([targetComic, downloadDirPath]) => targetComic.startDownloadTask(downloadDirPath).pipe(map((downloadStatus: ITaskStatus) => actions.updateDownloadTaskStatus({
-      id: targetComic.id,
+      comicId: targetComic.id,
       state: downloadStatus.completed ? 'Finished' : 'Downloading',
       progress: downloadStatus.progress.current / downloadStatus.progress.total * 100,
       status: downloadStatus.progress.status

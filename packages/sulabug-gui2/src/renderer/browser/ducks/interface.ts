@@ -4,6 +4,8 @@ export interface IComicFilter extends sulabugCore.IComicFilter {
 }
 
 export interface IComic extends sulabugCore.IComic {
+  readonly inCollection: boolean
+  readonly state: string
 }
 
 export interface ICollection {
@@ -20,9 +22,7 @@ export interface ICollection {
 }
 
 export interface IDownloadTask {
-  readonly id: number
-  readonly name: string,
-  readonly coverUrl: string,
+  readonly comicId: number
   readonly state: string
   readonly progress: number
   readonly status: string
@@ -36,31 +36,13 @@ export interface IBrowserState {
   comics: {
     loading: boolean,
     data: IComic[],
-    error?: Error
-  },
-  collections: {
-    loading: boolean,
-    data: ICollection[],
-    error?: Error
   },
   downloadTasks: {
     loading: boolean,
-    data: any[],
-    error?: Error
+    data: IDownloadTask[],
   },
   config: {
     loading: boolean,
     data: {},
-    error?: Error
-  },
-  asyncTasks: {
-    addComicToCollections: {
-      loading: boolean,
-      error?: Error
-    },
-    removeComicFromCollections: {
-      loading: boolean,
-      error?: Error
-    },
   },
 }

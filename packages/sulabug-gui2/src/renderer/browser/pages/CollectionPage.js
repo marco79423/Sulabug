@@ -17,7 +17,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button'
-import {createDownloadTasksFromCollectionsRequest, queryCollectionsRequest} from '../ducks/actions'
+import {createDownloadTasksFromCollectionsRequest, queryCollectionsRequest, queryComicsRequest} from '../ducks/actions'
 import {getCollectionIds, isCollectionsLoading} from '../ducks/selectors'
 
 
@@ -44,7 +44,7 @@ export function CollectionPage({classes}) {
   const loading = useSelector(isCollectionsLoading)
 
   useEffect(() => {
-    dispatch(queryCollectionsRequest())
+    dispatch(queryComicsRequest())
   }, [dispatch])
 
   if (loading) {

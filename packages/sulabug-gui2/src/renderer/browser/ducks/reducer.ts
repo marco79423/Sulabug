@@ -1,14 +1,10 @@
 import {createReducer, PayloadAction} from '@reduxjs/toolkit'
 
-import {IBrowserState, IConfig} from './interface'
+import {IBrowserState, IComic, IConfig, IDownloadTask} from './interface'
 import * as actions from './actions'
 
 const initialState: IBrowserState = {
   comics: {
-    loading: false,
-    data: [],
-  },
-  collections: {
     loading: false,
     data: [],
   },
@@ -19,14 +15,6 @@ const initialState: IBrowserState = {
   config: {
     loading: false,
     data: {}
-  },
-  asyncTasks: {
-    addComicToCollections: {
-      loading: false,
-    },
-    removeComicFromCollections: {
-      loading: false,
-    },
   },
 }
 
@@ -42,7 +30,7 @@ export default createReducer(
         data: [],
       }
     }))
-    .addCase(actions.queryComicsSuccess, (state, action: PayloadAction<any[]>) => ({
+    .addCase(actions.queryComicsSuccess, (state, action: PayloadAction<IComic[]>) => ({
       ...state,
       comics: {
         loading: false,
@@ -54,39 +42,22 @@ export default createReducer(
       comics: {
         loading: false,
         data: [],
-        error: action.payload,
-      }
-    }))
-    .addCase(actions.queryCollectionsProcessing, (state) => ({
-      ...state,
-      collections: {
-        loading: true,
-        data: [],
-      }
-    }))
-    .addCase(actions.queryCollectionsSuccess, (state, action: PayloadAction<any[]>) => ({
-      ...state,
-      collections: {
-        loading: false,
-        data: action.payload,
-      }
-    }))
-    .addCase(actions.queryCollectionsFailure, (state, action: PayloadAction<Error>) => ({
-      ...state,
-      collections: {
-        loading: false,
-        data: [],
-        error: action.payload,
-      }
+      },
     }))
     // addComicToCollection
-    .addCase(actions.addComicToCollectionsProcessing, (state) => ({
+    .addCase(actions.addComicToCollectionsProcessing, (state, action: PayloadAction<number>) => ({
       ...state,
-      asyncTasks: {
-        ...state.asyncTasks,
-        addComicToCollection: {
-          loading: true,
-        },
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload) {
+            return {
+              ...comic,
+              state: 'loading',
+            }
+          }
+          return comic
+        })
       }
     }))
     .addCase(actions.addComicToCollectionsSuccess, (state, action: PayloadAction<number>) => ({
@@ -98,40 +69,42 @@ export default createReducer(
             return {
               ...comic,
               inCollection: true,
+              state: 'ready',
             }
           }
           return comic
         })
       },
-      collections: {
-        ...state.collections,
-        data: [...state.collections.data, ...state.comics.data.filter(comic => comic.id === action.payload)],
-      },
-      asyncTasks: {
-        ...state.asyncTasks,
-        addComicToCollection: {
-          loading: false,
-        },
-      }
     }))
-    .addCase(actions.addComicToCollectionsFailure, (state, action: PayloadAction<Error>) => ({
+    .addCase(actions.addComicToCollectionsFailure, (state, action: PayloadAction<{ id: number, error: Error }>) => ({
       ...state,
-      asyncTasks: {
-        ...state.asyncTasks,
-        addComicToCollection: {
-          loading: false,
-          error: action.payload,
-        },
-      }
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload.id) {
+            return {
+              ...comic,
+              state: 'ready',
+            }
+          }
+          return comic
+        })
+      },
     }))
     // removeComicFromCollection
-    .addCase(actions.removeComicFromCollectionsProcessing, (state) => ({
+    .addCase(actions.removeComicFromCollectionsProcessing, (state, action: PayloadAction<number>) => ({
       ...state,
-      asyncTasks: {
-        ...state.asyncTasks,
-        removeComicFromCollection: {
-          loading: true,
-        },
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload) {
+            return {
+              ...comic,
+              state: 'loading',
+            }
+          }
+          return comic
+        })
       }
     }))
     .addCase(actions.removeComicFromCollectionsSuccess, (state, action: PayloadAction<number>) => ({
@@ -143,31 +116,27 @@ export default createReducer(
             return {
               ...comic,
               inCollection: false,
+              state: 'ready',
             }
           }
           return comic
         })
       },
-      collections: {
-        ...state.collections,
-        data: state.collections.data.filter(collection => collection.id !== action.payload),
-      },
-      asyncTasks: {
-        ...state.asyncTasks,
-        removeComicFromCollection: {
-          loading: false,
-        },
-      }
     }))
-    .addCase(actions.removeComicFromCollectionsFailure, (state, action: PayloadAction<Error>) => ({
+    .addCase(actions.removeComicFromCollectionsFailure, (state, action: PayloadAction<{ id: number, error: Error }>) => ({
       ...state,
-      asyncTasks: {
-        ...state.asyncTasks,
-        removeComicFromCollection: {
-          loading: false,
-          error: action.payload,
-        },
-      }
+      comics: {
+        ...state.comics,
+        data: state.comics.data.map(comic => {
+          if (comic.id === action.payload.id) {
+            return {
+              ...comic,
+              state: 'ready',
+            }
+          }
+          return comic
+        })
+      },
     }))
     // queryConfig
     .addCase(actions.queryConfigProcessing, (state) => ({
@@ -212,7 +181,6 @@ export default createReducer(
       config: {
         loading: false,
         data: {},
-        error: action.payload,
       },
     }))
     // updateDatabase
@@ -223,7 +191,7 @@ export default createReducer(
         data: [],
       }
     }))
-    .addCase(actions.updateDatabaseSuccess, (state, action: PayloadAction<any[]>) => ({
+    .addCase(actions.updateDatabaseSuccess, (state, action: PayloadAction<IComic[]>) => ({
       ...state,
       comics: {
         loading: false,
@@ -235,11 +203,10 @@ export default createReducer(
       comics: {
         loading: false,
         data: [],
-        error: action.payload,
-      }
+      },
     }))
     // createDownloadTasks
-    .addCase(actions.createDownloadTasksFromCollectionsSuccess, (state, action: PayloadAction<any[]>) => ({
+    .addCase(actions.createDownloadTasksFromCollectionsSuccess, (state, action: PayloadAction<IDownloadTask[]>) => ({
       ...state,
       downloadTasks: {
         loading: false,
@@ -247,14 +214,14 @@ export default createReducer(
       }
     }))
     // updateDownloadTasks
-    .addCase(actions.updateDownloadTaskStatus, (state, action: PayloadAction<{ id: number, state: string, progress: number, status: string }>) => ({
+    .addCase(actions.updateDownloadTaskStatus, (state, action: PayloadAction<IDownloadTask>) => ({
       ...state,
       downloadTasks: {
         loading: false,
         data: state.downloadTasks.data
-          .filter(downloadTask => downloadTask.id !== action.payload.id || (downloadTask.id === action.payload.id && action.payload.state !== 'Finished'))
+          .filter(downloadTask => downloadTask.comicId !== action.payload.comicId || (downloadTask.comicId === action.payload.comicId && action.payload.state !== 'Finished'))
           .map(downloadTask => {
-            if (downloadTask.id === action.payload.id) {
+            if (downloadTask.comicId === action.payload.comicId) {
               return {
                 ...downloadTask,
                 ...action.payload,

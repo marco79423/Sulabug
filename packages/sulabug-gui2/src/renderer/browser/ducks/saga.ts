@@ -5,7 +5,6 @@ import {createCoreService} from '../services'
 
 export default function* browserSaga() {
   yield takeEvery(actions.queryComicsRequest, queryComicsSaga)
-  yield takeEvery(actions.queryCollectionsRequest, queryCollectionsSaga)
 
   yield takeEvery(actions.addComicToCollectionsRequest, addComicToCollectionSaga)
   yield takeEvery(actions.removeComicFromCollectionsRequest, removeComicFromCollectionSaga)
@@ -30,60 +29,42 @@ function* queryComicsSaga() {
     const collections = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
     const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: false})
     yield put(actions.queryComicsSuccess(comics.map(comic => ({
-      id: comic.id,
-      name: comic.name,
+      ...comic,
       coverUrl: comic.coverUrl,
+      author: comic.author,
       summary: comic.summary,
+      catalog: comic.catalog,
       lastUpdatedChapter: comic.lastUpdatedChapter,
       lastUpdatedTime: comic.lastUpdatedTime,
-      inCollection: collections.filter(collection => collection.id === comic.id).length > 0
+      inCollection: collections.filter(collection => collection.id === comic.id).length > 0,
+      state: 'ready',
     }))))
   } catch (e) {
     yield put(actions.queryComicsFailure(e))
   }
 }
 
-
-function* queryCollectionsSaga() {
-  try {
-    yield put(actions.queryCollectionsProcessing())
-    const coreService = createCoreService()
-
-    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
-    yield put(actions.queryCollectionsSuccess(comics.map(comic => ({
-      id: comic.id,
-      name: comic.name,
-      coverUrl: comic.coverUrl,
-      summary: comic.summary,
-      lastUpdatedChapter: comic.lastUpdatedChapter,
-      lastUpdatedTime: comic.lastUpdatedTime,
-    }))))
-  } catch (e) {
-    yield put(actions.queryCollectionsFailure(e))
-  }
-}
-
 function* addComicToCollectionSaga(action) {
+  const comicId = action.payload
   try {
-    yield put(actions.addComicToCollectionsProcessing())
+    yield put(actions.addComicToCollectionsProcessing(comicId))
     const coreService = createCoreService()
-    const comicId = action.payload
     yield call(coreService.addComicToCollections.bind(coreService), comicId)
     yield put(actions.addComicToCollectionsSuccess(comicId))
   } catch (e) {
-    yield put(actions.addComicToCollectionsFailure(e))
+    yield put(actions.addComicToCollectionsFailure({id: comicId, error: e}))
   }
 }
 
 function* removeComicFromCollectionSaga(action) {
+  const comicId = action.payload
   try {
-    yield put(actions.removeComicFromCollectionsProcessing())
+    yield put(actions.removeComicFromCollectionsProcessing(comicId))
     const coreService = createCoreService()
-    const comicId = action.payload
     yield call(coreService.removeComicFromCollections.bind(coreService), comicId)
     yield put(actions.removeComicFromCollectionsSuccess(comicId))
   } catch (e) {
-    yield put(actions.removeComicFromCollectionsFailure(e))
+    yield put(actions.removeComicFromCollectionsFailure({id: comicId, error: e}))
   }
 }
 
@@ -117,14 +98,18 @@ function* updateDatabaseSaga() {
     yield put(actions.updateDatabaseProcessing())
     const coreService = createCoreService()
 
+    const collections = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
     const comics = yield call(coreService.updateComicDatabase.bind(coreService))
     yield put(actions.updateDatabaseSuccess(comics.map(comic => ({
-      id: comic.id,
-      name: comic.name,
+      ...comic,
       coverUrl: comic.coverUrl,
+      author: comic.author,
       summary: comic.summary,
+      catalog: comic.catalog,
       lastUpdatedChapter: comic.lastUpdatedChapter,
       lastUpdatedTime: comic.lastUpdatedTime,
+      inCollection: collections.filter(collection => collection.id === comic.id).length > 0,
+      state: 'ready',
     }))))
   } catch (e) {
     yield put(actions.updateDatabaseFailure(e))
@@ -138,9 +123,7 @@ function* createDownloadTasksFromCollectionsSaga() {
 
     const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
     yield put(actions.createDownloadTasksFromCollectionsSuccess(comics.map(comic => ({
-      id: comic.id,
-      name: comic.name,
-      coverUrl: comic.coverUrl,
+      comicId: comic.id,
       state: 'Pending',
       progress: 0,
       status: '',
