@@ -13,7 +13,7 @@ export class DumpWebComicSource implements IWebComicSource {
 
   public createWebComicByBlueprint(blueprint: any): IWebComic {
     const {name} = blueprint
-    return new DumpWebComic(name, 'sourcePageUrl')
+    return new DumpWebComic(name, 'https://marco79423.net')
   }
 
   public collectAllWebComics(): Observable<ITaskStatus> {
