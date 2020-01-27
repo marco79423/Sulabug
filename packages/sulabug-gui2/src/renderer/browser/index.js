@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import {Redirect, Route, Switch} from 'react-router'
+import {Redirect, Route, Switch} from 'react-router-dom'
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles'
 import {lime, teal} from '@material-ui/core/colors'
 
