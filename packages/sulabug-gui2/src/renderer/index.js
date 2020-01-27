@@ -1,6 +1,6 @@
 import React from 'react'
 import * as ReactDOM from 'react-dom'
-import {HashRouter, Route, Switch} from 'react-router-dom'
+import {HashRouter as Router, Route, Switch} from 'react-router-dom'
 import {Redirect} from 'react-router'
 import {Provider} from 'react-redux'
 
@@ -12,12 +12,12 @@ const store = configureStore()
 function App() {
   return (
     <Provider store={store}>
-      <HashRouter>
+      <Router>
         <Switch>
-          <Redirect exact from='/' to='/manager'/>
+          <Redirect exact from='/' to='/browser'/>
           <Route path="/browser" component={Browser}/>
         </Switch>
-      </HashRouter>
+      </Router>
     </Provider>
   )
 }
