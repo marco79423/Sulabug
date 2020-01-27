@@ -1,11 +1,11 @@
-import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
-import Input from '@material-ui/core/Input'
-import Button from '@material-ui/core/Button'
+import React, {useEffect, useRef, useState} from 'react'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import {fromEvent} from 'rxjs'
 import {filter} from 'rxjs/operators'
+import Input from '@material-ui/core/Input'
+import Button from '@material-ui/core/Button'
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -23,56 +23,44 @@ const styles = (theme) => createStyles({
   button: {
     marginLeft: theme.spacing(1),
   },
-})
+}))
 
-class SearchBar extends React.Component {
-  constructor(props) {
-    super(props)
+export default function SearchBar() {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+  const inputRef = useRef()
+  const [searchTerm, setSearchTerm] = useState('')
 
-    this.state = {
-      searchTerm: '',
-    }
+  useEffect(() => {
+    fromEvent(inputRef.current, 'keyup').pipe(filter(event => event.key === 'Enter'))
+      .subscribe(searchComic)
+  }, [])
 
-    this.inputRef = React.createRef()
+  const searchComic = () => {
+    console.log(`searchTerm ${searchTerm}`)
   }
 
-  searchComic() {
-    this.props.searchComic(this.state.searchTerm)
-  }
+  const handleChange = (e) => setSearchTerm(e.target.value)
 
-  handleChange() {
-    this.setState({
-      searchTerm: event.target.value
-    })
-  }
-
-  componentDidMount() {
-    fromEvent(this.inputRef.current, 'keyup').pipe(filter(event => event.key === 'Enter'))
-      .subscribe(this.searchComic)
-  }
-
-  render() {
-    const {classes} = this.props
-    return (
-      <div className={classes.root}>
-        <Input
-          inputRef={this.inputRef}
-          autoFocus={true}
-          placeholder="請輸入想試看的漫畫……"
-          onChange={this.handleChange}
-          className={classes.input}
-          disableUnderline
-          inputProps={{
-            'aria-label': 'Description',
-          }}
-        />
-        <Button variant="contained" size="small" color="secondary" className={classes.button}
-                onClick={this.searchComic}>
-          搜尋
-        </Button>
-      </div>
-    )
-  }
+  return (
+    <div className={classes.root}>
+      <Input
+        inputRef={inputRef}
+        autoFocus={true}
+        placeholder="請輸入想試看的漫畫……"
+        onChange={handleChange}
+        className={classes.input}
+        disableUnderline
+        inputProps={{
+          'aria-label': 'Description',
+        }}
+      />
+      <Button variant="contained" size="small" color="secondary" className={classes.button}
+              onClick={searchComic}>
+        搜尋
+      </Button>
+    </div>
+  )
 }
 
-export default withStyles(styles)(SearchBar)
+
