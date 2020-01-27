@@ -46,7 +46,7 @@ export default function CollectionPage() {
   const loading = useSelector(isCollectionsLoading)
 
   useEffect(() => {
-    dispatch(queryComicsRequest())
+    dispatch(queryComicsRequest(''))
   }, [dispatch])
 
   if (loading) {

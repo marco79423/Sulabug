@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
+import {withRouter} from 'react-router-dom'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import {fromEvent} from 'rxjs'
 import {filter} from 'rxjs/operators'
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function SearchBar() {
+function SearchBar({history}) {
   const theme = useTheme()
   const classes = useStyles(theme)
   const inputRef = useRef()
@@ -37,10 +38,12 @@ export default function SearchBar() {
   }, [])
 
   const searchComic = () => {
-    console.log(`searchTerm ${searchTerm}`)
+    history.push(`/browser/browse?pattern=${searchTerm}`)
   }
 
-  const handleChange = (e) => setSearchTerm(e.target.value)
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
 
   return (
     <div className={classes.root}>
@@ -63,4 +66,4 @@ export default function SearchBar() {
   )
 }
 
-
+export default withRouter(SearchBar)

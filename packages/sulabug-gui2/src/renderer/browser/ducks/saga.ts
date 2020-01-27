@@ -17,8 +17,9 @@ export default function* browserSaga() {
   yield takeEvery(actions.createDownloadTasksFromCollectionsRequest, createDownloadTasksFromCollectionsSaga)
 }
 
-function* queryComicsSaga() {
+function* queryComicsSaga(action) {
   try {
+    const pattern = action.payload
     yield put(actions.queryComicsProcessing())
     const coreService = createCoreService()
 
@@ -26,8 +27,8 @@ function* queryComicsSaga() {
       yield call(coreService.updateComicDatabase.bind(coreService))
     }
 
-    const collections = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: true})
-    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: '', marked: false})
+    const collections = yield call(coreService.searchComics.bind(coreService), {pattern: pattern, marked: true})
+    const comics = yield call(coreService.searchComics.bind(coreService), {pattern: pattern, marked: false})
     yield put(actions.queryComicsSuccess(comics.map(comic => ({
       ...comic,
       coverUrl: comic.coverUrl,

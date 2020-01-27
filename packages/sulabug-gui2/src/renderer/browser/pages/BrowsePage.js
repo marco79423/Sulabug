@@ -17,7 +17,7 @@ import ComicListItem from '../components/ComicListItem'
 import BaseLayout from '../layouts/BaseLayout'
 import {queryComicsRequest, updateDatabaseRequest} from '../ducks/actions'
 import {getComicIds, isComicsLoading} from '../ducks/selectors'
-
+import {withRouter} from 'react-router-dom'
 
 const useStyles = makeStyles({
   root: {
@@ -45,19 +45,20 @@ const useStyles = makeStyles({
   },
 })
 
-
-export default function BrowsePage() {
+function BrowsePage({location}) {
   const classes = useStyles()
   const dispatch = useDispatch()
-
-  const updateComicDatabase = () => dispatch(updateDatabaseRequest())
-
-  useEffect(() => {
-    dispatch(queryComicsRequest())
-  }, [dispatch])
-
   const loading = useSelector(isComicsLoading)
   const comicIds = useSelector(getComicIds)
+
+  const query = new URLSearchParams(location.search)
+  const pattern = query.get('pattern')
+
+  useEffect(() => {
+    dispatch(queryComicsRequest(pattern ? pattern : ''))
+  }, [pattern])
+
+  const updateComicDatabase = () => dispatch(updateDatabaseRequest())
 
   if (loading) {
     return (
@@ -101,3 +102,5 @@ export default function BrowsePage() {
     </BaseLayout>
   )
 }
+
+export default withRouter(BrowsePage)

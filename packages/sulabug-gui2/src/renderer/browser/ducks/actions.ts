@@ -1,7 +1,7 @@
 import {createAction} from '@reduxjs/toolkit'
 import {IComic, IConfig, IDownloadTask} from './interface'
 
-export const queryComicsRequest = createAction('browser/queryComics/request')
+export const queryComicsRequest = createAction<string>('browser/queryComics/request')
 export const queryComicsProcessing = createAction('browser/queryComics/processing')
 export const queryComicsSuccess = createAction<IComic[]>('browser/queryComics/success')
 export const queryComicsFailure = createAction<Error>('browser/queryComics/failure')
