@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {createStyles, makeStyles, withStyles} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
@@ -9,9 +9,10 @@ import BaseLayout from '../layouts/BaseLayout'
 import DownloadTaskListItem from '../components/DownloadTaskListItem'
 import {useSelector} from 'react-redux'
 import {getDownloadTaskIds} from '../ducks/selectors'
+import {useTheme} from '@material-ui/styles'
 
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   card: {
     margin: theme.spacing(2),
   },
@@ -24,10 +25,12 @@ const styles = (theme) => createStyles({
   progress: {
     marginRight: theme.spacing(2)
   }
-})
+}))
 
+export default function DownloadPage() {
+  const theme = useTheme()
+  const classes = useStyles(theme)
 
-function DownloadPage({classes}) {
   const downloadTaskIds = useSelector(getDownloadTaskIds)
 
   if (downloadTaskIds.length === 0) {
@@ -54,5 +57,3 @@ function DownloadPage({classes}) {
     </BaseLayout>
   )
 }
-
-export default withStyles(styles)(DownloadPage)

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 import {remote} from 'electron'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {makeStyles, useTheme, withStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -19,7 +19,7 @@ import {queryConfigRequest, updateConfigRequest} from '../ducks/actions'
 import {getConfig, isConfigLoading} from '../ducks/selectors'
 
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
@@ -29,9 +29,12 @@ const styles = (theme) => createStyles({
     marginRight: theme.spacing(1),
     width: 180,
   },
-})
+}))
 
-function SettingsPage({classes}) {
+export default function SettingsPage() {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+
   const dispatch = useDispatch()
 
   const loading = useSelector(isConfigLoading)
@@ -89,5 +92,3 @@ function SettingsPage({classes}) {
     </BaseLayout>
   )
 }
-
-export default withStyles(styles)(SettingsPage)

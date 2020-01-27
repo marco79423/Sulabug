@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import React from 'react'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
@@ -11,19 +11,22 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import {remote} from 'electron'
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   textField: {
-    marginLeft: theme.spacing(3) ,
+    marginLeft: theme.spacing(3),
     marginRight: theme.spacing(1),
     width: 180,
   },
-})
+}))
 
-function Settings({classes, userProfile, updateUserProfile}) {
+export default function Settings({userProfile, updateUserProfile}) {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+
   const updateComicsFolder = () => {
     const filePaths = remote.dialog.showOpenDialog({
       title: '指定漫畫資料夾',
@@ -63,5 +66,3 @@ function Settings({classes, userProfile, updateUserProfile}) {
     </div>
   )
 }
-
-export default withStyles(styles)(Settings)

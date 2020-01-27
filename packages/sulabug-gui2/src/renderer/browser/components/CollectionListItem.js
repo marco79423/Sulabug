@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import Card from '@material-ui/core/Card'
@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {removeComicFromCollectionsRequest} from '../ducks/actions'
 import {getCollectionMap} from '../ducks/selectors'
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(1),
     '&:not(:first-child)': {
@@ -65,15 +65,19 @@ const styles = (theme) => createStyles({
   },
   openReadingPageButton: {
     marginRight: theme.spacing(1),
-  }
-})
+  },
+}))
 
-export function CollectionListItem({classes, collectionId}) {
+
+export default function CollectionListItem({collectionId}) {
+  const theme = useTheme()
+  const classes = useStyles(theme)
   const dispatch = useDispatch()
   const collectionMap = useSelector(getCollectionMap)
   const collection = collectionMap[collectionId]
 
-  const openTargetFolder = () => {}
+  const openTargetFolder = () => {
+  }
   const remove = () => {
     remote.dialog.showMessageBox({
       type: 'warning',
@@ -115,5 +119,3 @@ export function CollectionListItem({classes, collectionId}) {
     </ListItem>
   )
 }
-
-export default withStyles(styles)(CollectionListItem)

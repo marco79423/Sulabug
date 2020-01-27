@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useEffect} from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {makeStyles} from '@material-ui/core/styles'
 import {useDispatch, useSelector} from 'react-redux'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import List from '@material-ui/core/List'
@@ -19,7 +19,7 @@ import {queryComicsRequest, updateDatabaseRequest} from '../ducks/actions'
 import {getComicIds, isComicsLoading} from '../ducks/selectors'
 
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -45,7 +45,9 @@ const styles = (theme) => createStyles({
   },
 })
 
-export function BrowsePage({classes}) {
+
+export default function BrowsePage() {
+  const classes = useStyles()
   const dispatch = useDispatch()
 
   const updateComicDatabase = () => dispatch(updateDatabaseRequest())
@@ -99,5 +101,3 @@ export function BrowsePage({classes}) {
     </BaseLayout>
   )
 }
-
-export default withStyles(styles)(BrowsePage)

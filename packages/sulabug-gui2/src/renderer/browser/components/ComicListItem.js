@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import React from 'react'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import dateFormat from 'date-fns/format'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {addComicToCollectionsRequest} from '../ducks/actions'
 import {getComicMap} from '../ducks/selectors'
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(1),
     '&:not(:first-child)': {
@@ -63,9 +63,12 @@ const styles = (theme) => createStyles({
   collectionsIcon: {
     marginRight: theme.spacing(1),
   },
-})
+}))
 
-function ComicListItem({classes, comicId}) {
+
+export default function ComicListItem({comicId}) {
+  const theme = useTheme()
+  const classes = useStyles(theme)
   const dispatch = useDispatch()
   const comicMap = useSelector(getComicMap)
   const comic = comicMap[comicId]
@@ -104,5 +107,3 @@ function ComicListItem({classes, comicId}) {
     </ListItem>
   )
 }
-
-export default withStyles(styles)(ComicListItem)

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import classNames from 'classnames'
 import {Link} from 'react-router-dom'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {createStyles, makeStyles, useTheme, withStyles} from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -27,7 +27,7 @@ import SearchBar from '../components/SearchBar'
 
 const drawerWidth = 240
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     zIndex: 1,
@@ -102,9 +102,11 @@ const styles = (theme) => createStyles({
   content: {
     height: '100%',
   }
-})
+}))
 
-function BaseLayout({classes, theme, children}) {
+export default function BaseLayout({children}) {
+  const theme = useTheme()
+  const classes = useStyles(theme)
   const [isOpen, setOpen] = useState(false)
 
   const handleDrawerOpen = () => setOpen(true)
@@ -185,5 +187,3 @@ function BaseLayout({classes, theme, children}) {
     </React.Fragment>
   )
 }
-
-export default withStyles(styles, {withTheme: true})(BaseLayout)

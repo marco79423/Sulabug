@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -17,11 +17,11 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button'
-import {createDownloadTasksFromCollectionsRequest, queryCollectionsRequest, queryComicsRequest} from '../ducks/actions'
+import {createDownloadTasksFromCollectionsRequest, queryComicsRequest} from '../ducks/actions'
 import {getCollectionIds, isCollectionsLoading} from '../ducks/selectors'
 
 
-const styles = (theme) => createStyles({
+const useStyles = makeStyles(theme => ({
   card: {
     margin: theme.spacing(2),
   },
@@ -35,10 +35,12 @@ const styles = (theme) => createStyles({
     textDecoration: 'none',
     color: theme.palette.primary.main,
   }
-})
+}))
 
 
-export function CollectionPage({classes}) {
+export default function CollectionPage() {
+  const theme = useTheme()
+  const classes = useStyles(theme)
   const dispatch = useDispatch()
   const collectionIds = useSelector(getCollectionIds)
   const loading = useSelector(isCollectionsLoading)
@@ -98,5 +100,3 @@ export function CollectionPage({classes}) {
     </BaseLayout>
   )
 }
-
-export default withStyles(styles)(CollectionPage)

@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import React from 'react'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -8,14 +8,18 @@ import Avatar from '@material-ui/core/Avatar'
 import {useSelector} from 'react-redux'
 import {getComicMap, getDownloadTaskMap} from '../ducks/selectors'
 
-const styles = (theme) => createStyles({
+
+const useStyles = makeStyles(theme => ({
   root: {},
   progress: {
     marginRight: theme.spacing(2)
   }
-})
+}))
 
-function DownloadTaskListItem ({classes, downloadTaskId}) {
+export default function DownloadTaskListItem({downloadTaskId}) {
+  const theme = useTheme()
+  const classes = useStyles(theme)
+
   const downloadTaskMap = useSelector(getDownloadTaskMap)
   const comicMap = useSelector(getComicMap)
   const downloadTask = downloadTaskMap[downloadTaskId]
@@ -47,5 +51,3 @@ function DownloadTaskListItem ({classes, downloadTaskId}) {
     </ListItem>
   )
 }
-
-export default withStyles(styles)(DownloadTaskListItem)
