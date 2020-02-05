@@ -129,7 +129,12 @@ class Main {
     const {default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} = require('electron-devtools-installer')
 
     for (const extension of [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]) {
-      await installExtension(extension)
+      try {
+        const name = await installExtension(extension)
+        console.log(`已安裝擴充： ${name}`)
+      } catch (e) {
+        console.error(`安裝擴充失敗： ${e}`)
+      }
     }
   }
 }
