@@ -8,6 +8,16 @@ const sleep = (m: number) => new Promise(r => setTimeout(r, m))
 
 export class NetAdapter implements INetAdapter {
 
+  async fetchJson(targetUrl: string): Promise<any> {
+    try {
+      const response = await axios.get(targetUrl)
+      return await response.data
+    } catch (e) {
+      await sleep(5000)
+      return await this.fetchJson(targetUrl)
+    }
+  }
+
   async fetchText(targetUrl: string): Promise<string> {
     try {
       const response = await axios.get(targetUrl, {

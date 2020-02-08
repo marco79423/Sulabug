@@ -30,9 +30,9 @@ export class SFWebComicSource implements IWebComicSource {
     this._pathAdapter = pathAdapter
   }
 
-  public createWebComicByBlueprint(blueprint: IWebComicBlueprint): IWebComic {
-    const {name, pageUrl} = blueprint
-    return new SFWebComic(name, pageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter)
+  public createWebComicByBlueprint = (blueprint: IWebComicBlueprint): IWebComic => {
+    const {name, sourcePageUrl} = blueprint
+    return new SFWebComic(name, sourcePageUrl, this._netAdapter, this._fileAdapter, this._pathAdapter)
   }
 
   collectAllWebComics(): Observable<ITaskStatus> {
@@ -219,33 +219,37 @@ export class SFWebComic implements IWebComic {
   startDownloadTask(targetDir: string): Observable<ITaskStatus> {
     // @ts-ignore
     return new Observable(async subscriber => {
-      const chapters = await this.fetchChapters()
+      try {
+        const chapters = await this.fetchChapters()
 
-      let total = 0
-      for (const chapter of chapters) {
-        const images = await chapter.fetchImages()
-        total += images.length
-      }
-      let current = 0
+        let total = 0
+        for (const chapter of chapters) {
+          const images = await chapter.fetchImages()
+          total += images.length
+        }
+        let current = 0
 
-      const targetComicFolderPath = this._pathAdapter.joinPaths(targetDir, this.name)
-      for (const chapter of chapters) {
-        await new Promise(resolve => {
-          chapter.startDownloadTask(targetComicFolderPath).subscribe(downloadStatus => {
-            subscriber.next({
-              completed: current + downloadStatus.progress.current === total,
-              progress: {
-                current: current + downloadStatus.progress.current,
-                total: total,
-                status: downloadStatus.progress.status,
+        const targetComicFolderPath = this._pathAdapter.joinPaths(targetDir, this.name)
+        for (const chapter of chapters) {
+          await new Promise(resolve => {
+            chapter.startDownloadTask(targetComicFolderPath).subscribe(downloadStatus => {
+              subscriber.next({
+                completed: current + downloadStatus.progress.current === total,
+                progress: {
+                  current: current + downloadStatus.progress.current,
+                  total: total,
+                  status: downloadStatus.progress.status,
+                }
+              })
+              if (downloadStatus.completed) {
+                current += downloadStatus.progress.total
+                resolve()
               }
             })
-            if (downloadStatus.completed) {
-              current += downloadStatus.progress.total
-              resolve()
-            }
           })
-        })
+        }
+      } catch (e) {
+        subscriber.error(e)
       }
     })
   }
@@ -274,25 +278,17 @@ class SFWebComicChapter implements IWebComicChapter {
   }
 
   public async updateInfo() {
-    const {document} = new JSDOM(await this._netAdapter.fetchText(this.sourcePageUrl)).window
+    const html = await this._netAdapter.fetchText(this.sourcePageUrl)
 
-    // @ts-ignore
-    const text = await fetchText('https:' + document.querySelector('head > script:nth-child(7)').src)
+    const [_, comicId, chapterId, ...others] = /var c = (\d+);.*var chapId = (\d+)/s.exec(html)
 
-    // @ts-ignore
-    const host = /hosts = \["([^"]+)"/g.exec(text)[1]
+    const jsonData = await this._netAdapter.fetchJson(`https://manhua.sfacg.com/ajax/Common.ashx?op=getPics&cid=${comicId}&chapId=${chapterId}`)
+    const imageUrls = jsonData.data
 
-    const images: IWebComicImage[] = []
-    let matched
-    const re = /picAy\[(\d+)\] = "([^"]+)"/g
-    while ((matched = re.exec(text)) !== null) {
-      images.push({
-        name: `${+matched[1] + 1}`.padStart(3, '0') + '.jpg',
-        imageUrl: host + matched[2],
-      })
-    }
-
-    this._images = images
+    this._images = imageUrls.map((imageUrl: string, index: number) => ({
+      name: `${index + 1}`.padStart(3, '0') + '.jpg',
+      imageUrl: imageUrl,
+    }))
     this._updated = true
   }
 

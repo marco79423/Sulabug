@@ -204,6 +204,8 @@ export interface IDBAdapter {
  * 網路 Adapter
  */
 export interface INetAdapter {
+  fetchJson(targetUrl: string): Promise<any>
+
   fetchText(targetUrl: string): Promise<string>
 
   fetchBinaryData(targetUrl: string): Promise<Buffer>
