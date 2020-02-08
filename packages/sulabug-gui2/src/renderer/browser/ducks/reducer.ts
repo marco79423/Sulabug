@@ -213,8 +213,8 @@ export default createReducer(
         data: action.payload,
       }
     }))
-    // updateDownloadTasks
-    .addCase(actions.updateDownloadTaskStatus, (state, action: PayloadAction<IDownloadTask>) => ({
+    // handleDownloadTask
+    .addCase(actions.handleDownloadTaskProcessing, (state, action: PayloadAction<IDownloadTask>) => ({
       ...state,
       downloadTasks: {
         loading: false,

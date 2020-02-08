@@ -1,7 +1,8 @@
-import {call, put, takeEvery} from 'redux-saga/effects'
+import {call, put, select, takeEvery, delay} from 'redux-saga/effects'
 
 import * as actions from './actions'
 import {createCoreService} from '../services'
+import {getDownloadTasks} from './selectors'
 
 export default function* browserSaga() {
   yield takeEvery(actions.queryComicsRequest, queryComicsSaga)
@@ -15,6 +16,16 @@ export default function* browserSaga() {
   yield takeEvery(actions.updateDatabaseRequest, updateDatabaseSaga)
 
   yield takeEvery(actions.createDownloadTasksFromCollectionsRequest, createDownloadTasksFromCollectionsSaga)
+
+  while (true) {
+    const downloadTasks = yield select(getDownloadTasks)
+    for(const downloadTask of downloadTasks) {
+      if(downloadTask.state === 'Pending') {
+        yield put(actions.handleDownloadTaskRequest(downloadTask))
+      }
+    }
+    yield delay(5000)
+  }
 }
 
 function* queryComicsSaga(action) {

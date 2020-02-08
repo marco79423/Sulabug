@@ -36,4 +36,7 @@ export const createDownloadTasksFromCollectionsProcessing = createAction('browse
 export const createDownloadTasksFromCollectionsSuccess = createAction<IDownloadTask[]>('browser/createDownloadTasksFromCollections/success')
 export const createDownloadTasksFromCollectionsFailure = createAction<Error>('browser/createDownloadTasksFromCollections/failure')
 
-export const updateDownloadTaskStatus = createAction<IDownloadTask>('browser/updateDownloadTaskStatus')
+export const handleDownloadTaskRequest = createAction<IDownloadTask>('browser/handleDownloadTask/request')
+export const handleDownloadTaskProcessing = createAction<IDownloadTask>('browser/handleDownloadTask/processing')
+export const handleDownloadTaskSuccess = createAction('browser/handleDownloadTask/success')
+export const handleDownloadTaskFailure = createAction<Error>('browser/handleDownloadTask/failure')
