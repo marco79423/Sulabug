@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {useEffect} from 'react'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
@@ -12,8 +13,8 @@ import Button from '@material-ui/core/Button'
 import {remote} from 'electron'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {useDispatch, useSelector} from 'react-redux'
-import {removeComicFromCollectionsRequest} from '../ducks/actions'
-import {getCollectionMap} from '../ducks/selectors'
+import {queryConfigRequest, removeComicFromCollectionsRequest} from '../ducks/actions'
+import {getCollectionMap, getConfig} from '../ducks/selectors'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,9 +76,17 @@ export default function CollectionListItem({collectionId}) {
   const dispatch = useDispatch()
   const collectionMap = useSelector(getCollectionMap)
   const collection = collectionMap[collectionId]
+  const config = useSelector(getConfig)
+
+  useEffect(() => {
+    dispatch(queryConfigRequest())
+  }, [dispatch])
 
   const openTargetFolder = () => {
+    const {shell} = require('electron')
+    shell.openItem(`${config.downloadDirPath}/${collection.name}`)
   }
+
   const remove = () => {
     remote.dialog.showMessageBox({
       type: 'warning',
