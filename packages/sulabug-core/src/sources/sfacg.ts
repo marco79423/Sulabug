@@ -333,7 +333,7 @@ class SFWebComicChapter implements IWebComicChapter {
         })
       }
 
-      await this._fileAdapter.writeJson(targetDir + '/.done', null)
+      await this._fileAdapter.writeJson(chapterDir + '/.done', null)
       subscriber.complete()
     })
   }
