@@ -248,6 +248,8 @@ export class SFWebComic implements IWebComic {
             })
           })
         }
+
+        subscriber.complete()
       } catch (e) {
         subscriber.error(e)
       }
