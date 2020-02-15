@@ -1,6 +1,6 @@
 import {createReducer, PayloadAction} from '@reduxjs/toolkit'
 
-import {IBrowserState, IComic, IConfig, IDownloadTask} from './interface'
+import {IBrowserState, IComic, IProfile, IDownloadTask} from './interface'
 import * as actions from './actions'
 
 const initialState: IBrowserState = {
@@ -146,7 +146,7 @@ export default createReducer(
         data: {},
       }
     }))
-    .addCase(actions.queryConfigSuccess, (state, action: PayloadAction<IConfig>) => ({
+    .addCase(actions.queryConfigSuccess, (state, action: PayloadAction<IProfile>) => ({
       ...state,
       config: {
         loading: false,
@@ -169,7 +169,7 @@ export default createReducer(
         data: {}
       },
     }))
-    .addCase(actions.updateConfigSuccess, (state, action: PayloadAction<IConfig>) => ({
+    .addCase(actions.updateConfigSuccess, (state, action: PayloadAction<IProfile>) => ({
       ...state,
       config: {
         loading: false,

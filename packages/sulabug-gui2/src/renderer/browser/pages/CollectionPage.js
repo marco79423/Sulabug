@@ -1,5 +1,4 @@
-import * as React from 'react'
-import {useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
@@ -17,8 +16,9 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Divider from '@material-ui/core/Divider'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button'
-import {createDownloadTasksFromCollectionsRequest, queryComicsRequest} from '../ducks/actions'
-import {getCollectionIds, isCollectionsLoading} from '../ducks/selectors'
+import dateFormat from "date-fns/format"
+import {createDownloadTasksFromCollectionsRequest, queryComicsRequest, queryConfigRequest} from '../ducks/actions'
+import {getCollectionIds, getConfig, isCollectionsLoading, isConfigLoading} from '../ducks/selectors'
 
 
 const useStyles = makeStyles(theme => ({
@@ -43,10 +43,15 @@ export default function CollectionPage() {
   const classes = useStyles(theme)
   const dispatch = useDispatch()
   const collectionIds = useSelector(getCollectionIds)
-  const loading = useSelector(isCollectionsLoading)
+  const profile = useSelector(getConfig)
+
+  const loading1 = useSelector(isCollectionsLoading)
+  const loading2 = useSelector(isConfigLoading)
+  const loading = loading1 || loading2
 
   useEffect(() => {
     dispatch(queryComicsRequest(''))
+    dispatch(queryConfigRequest())
   }, [dispatch])
 
   if (loading) {
@@ -72,6 +77,7 @@ export default function CollectionPage() {
   }
 
   const createDownloadTasksFromCollections = () => dispatch(createDownloadTasksFromCollectionsRequest())
+  const lastDownloadTimeStr = profile.lastDownloadTime ? dateFormat(new Date(profile.lastDownloadTime), 'yyyy/MM/dd HH:mm') : '從未下載'
 
   return (
     <BaseLayout>
@@ -80,7 +86,7 @@ export default function CollectionPage() {
         <ExpansionPanel className={classes.meta}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
             <div>
-              <Typography inline>上次下載時間： </Typography>
+              <Typography inline>上次下載時間： {lastDownloadTimeStr} </Typography>
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>

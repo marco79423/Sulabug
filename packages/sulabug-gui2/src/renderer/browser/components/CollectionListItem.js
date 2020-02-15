@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-export default function CollectionListItem({collectionId}) {
+function CollectionListItem({collectionId}) {
   const theme = useTheme()
   const classes = useStyles(theme)
   const dispatch = useDispatch()
@@ -79,7 +79,9 @@ export default function CollectionListItem({collectionId}) {
   const config = useSelector(getConfig)
 
   useEffect(() => {
-    dispatch(queryConfigRequest())
+    if (!config) {
+      dispatch(queryConfigRequest())
+    }
   }, [dispatch])
 
   const openTargetFolder = () => {
@@ -128,3 +130,5 @@ export default function CollectionListItem({collectionId}) {
     </ListItem>
   )
 }
+
+export default React.memo(CollectionListItem)

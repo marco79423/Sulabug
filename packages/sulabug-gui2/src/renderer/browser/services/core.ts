@@ -1,6 +1,6 @@
 import {differenceInDays} from 'date-fns'
 import * as sulabugCore from 'sulabug-core'
-import {IComicFilter, IConfig} from '../ducks/interface'
+import {IComicFilter, IProfile} from '../ducks/interface'
 
 export type CreateComicDatabaseFunc = (config: sulabugCore.IConfig) => sulabugCore.IComicDatabase
 
@@ -17,9 +17,9 @@ export interface ICoreService {
 
   downloadComic(comicId: string)
 
-  fetchConfig(): Promise<IConfig>
+  fetchConfig(): Promise<IProfile>
 
-  updateConfig(config: IConfig)
+  updateConfig(config: IProfile)
 }
 
 export class CoreService implements ICoreService {
@@ -134,22 +134,22 @@ export class CoreService implements ICoreService {
     console.log('漫畫下載完畢')
   }
 
-  public async fetchConfig(): Promise<IConfig> {
+  public async fetchConfig(): Promise<IProfile> {
     const profilePath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
     if (!await this._fileAdapter.pathExists(profilePath)) {
       await this._fileAdapter.writeJson(profilePath, this._getDefaultProfile())
     }
-    const config = await this._fileAdapter.readJson(profilePath)
+    const profile = await this._fileAdapter.readJson(profilePath)
 
     return {
       ...this._getDefaultProfile(),
-      ...config,
+      ...profile,
     }
   }
 
-  public async updateConfig(config: IConfig) {
+  public async updateConfig(profile: IProfile) {
     const configPath = this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug', 'profile.json')
-    await this._fileAdapter.writeJson(configPath, config)
+    await this._fileAdapter.writeJson(configPath, profile)
   }
 
   private async _createComicDatabase(): Promise<sulabugCore.IComicDatabase> {
@@ -161,11 +161,12 @@ export class CoreService implements ICoreService {
     return this._comicDatabase
   }
 
-  private _getDefaultProfile(): IConfig {
+  private _getDefaultProfile(): IProfile {
     return {
       databaseDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '.sulabug'),
       downloadDirPath: this._pathAdapter.joinPaths(this._pathAdapter.getHomeDir(), '漫畫'),
       useFakeWebSource: false,
+      lastDownloadTime: null,
     }
   }
 }

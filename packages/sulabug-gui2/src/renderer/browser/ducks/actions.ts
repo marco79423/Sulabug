@@ -1,5 +1,5 @@
 import {createAction} from '@reduxjs/toolkit'
-import {IComic, IConfig, IDownloadTask} from './interface'
+import {IComic, IProfile, IDownloadTask} from './interface'
 
 export const queryComicsRequest = createAction<string>('browser/queryComics/request')
 export const queryComicsProcessing = createAction('browser/queryComics/processing')
@@ -18,12 +18,12 @@ export const removeComicFromCollectionsFailure = createAction<{ id: number, erro
 
 export const queryConfigRequest = createAction('browser/queryConfig/request')
 export const queryConfigProcessing = createAction('browser/queryConfig/processing')
-export const queryConfigSuccess = createAction<IConfig>('browser/queryConfig/success')
+export const queryConfigSuccess = createAction<IProfile>('browser/queryConfig/success')
 export const queryConfigFailure = createAction<Error>('browser/queryConfig/failure')
 
-export const updateConfigRequest = createAction<IConfig>('browser/updateConfig/request')
+export const updateConfigRequest = createAction<IProfile>('browser/updateConfig/request')
 export const updateConfigProcessing = createAction('browser/updateConfig/processing')
-export const updateConfigSuccess = createAction<IConfig>('browser/updateConfig/success')
+export const updateConfigSuccess = createAction<IProfile>('browser/updateConfig/success')
 export const updateConfigFailure = createAction<Error>('browser/updateConfig/failure')
 
 export const updateDatabaseRequest = createAction('browser/updateDatabase/request')

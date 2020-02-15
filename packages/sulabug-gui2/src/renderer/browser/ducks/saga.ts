@@ -2,7 +2,7 @@ import {call, put, select, takeEvery, delay} from 'redux-saga/effects'
 
 import * as actions from './actions'
 import {createCoreService} from '../services'
-import {getDownloadTasks} from './selectors'
+import {getDownloadTasks, isConfigLoading} from './selectors'
 
 export default function* browserSaga() {
   yield takeEvery(actions.queryComicsRequest, queryComicsSaga)
@@ -82,6 +82,11 @@ function* removeComicFromCollectionSaga(action) {
 
 function* queryConfigSaga() {
   try {
+    const loading = yield select(isConfigLoading)
+    if(loading) {
+      return
+    }
+
     yield put(actions.queryConfigProcessing())
     const coreService = createCoreService()
 

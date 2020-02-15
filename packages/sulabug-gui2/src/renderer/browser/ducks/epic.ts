@@ -41,7 +41,25 @@ export const handleDownloadTasksEpic: Epic = (action$, state$, {coreService}) =>
         })))
       }),
     ),
-    of(actions.handleDownloadTaskSuccess())
+    concat(
+      of(actions.updateConfigProcessing()),
+      of(1).pipe(
+        flatMap(async () => {
+          try {
+            const profile = await coreService.fetchConfig()
+            const newProfile = {
+              ...profile,
+              lastDownloadTime: new Date()
+            }
+            await coreService.updateConfig(newProfile)
+            return actions.updateConfigSuccess(newProfile)
+          } catch (e) {
+            return actions.updateConfigFailure(e)
+          }
+        })
+      ),
+    ),
+    of(actions.handleDownloadTaskSuccess()),
   ))
 )
 

@@ -28,8 +28,9 @@ export interface IDownloadTask {
   readonly status: string
 }
 
-export interface IConfig extends sulabugCore.IConfig {
+export interface IProfile extends sulabugCore.IConfig {
   readonly downloadDirPath: string
+  readonly lastDownloadTime: string | null
 }
 
 export interface IBrowserState {
