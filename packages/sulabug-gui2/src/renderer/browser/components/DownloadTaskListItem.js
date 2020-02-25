@@ -1,11 +1,13 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Avatar from '@material-ui/core/Avatar'
-import {useSelector} from 'react-redux'
+import Typography from '@material-ui/core/Typography'
+
 import {getComicMap, getDownloadTaskMap} from '../ducks/selectors'
 
 
@@ -31,7 +33,12 @@ export default function DownloadTaskListItem({downloadTaskId}) {
         return <LinearProgress className={classes.progress} variant="query"/>
       case 'Downloading':
       case 'Finished':
-        return <LinearProgress className={classes.progress} variant="determinate" value={downloadTask.progress}/>
+        return (
+          <React.Fragment>
+            <LinearProgress className={classes.progress} variant="determinate" value={downloadTask.progress}/>
+            <Typography variant={'body2'}>{downloadTask.status}</Typography>
+          </React.Fragment>
+        )
       default:
         return null
     }
