@@ -108,7 +108,7 @@ function CollectionListItem({collectionId}) {
       <Card className={classes.card}>
         <CardMedia
           className={classes.cover}
-          image={collection.coverDataUrl}
+          image={collection.coverUrl}
           title={collection.name}
         />
         <div className={classes.details}>
