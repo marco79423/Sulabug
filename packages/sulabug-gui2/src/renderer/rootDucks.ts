@@ -1,7 +1,5 @@
 import {call, take} from 'redux-saga/effects'
-import {combineEpics} from 'redux-observable'
 
-import browserEpic from './browser/ducks/epic'
 import browserSaga from './browser/ducks/saga'
 
 export function* rootSaga() {
@@ -12,7 +10,3 @@ export function* rootSaga() {
       break
   }
 }
-
-export const rootEpic = combineEpics(
-  browserEpic,
-)

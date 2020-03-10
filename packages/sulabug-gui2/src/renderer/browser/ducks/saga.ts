@@ -1,5 +1,5 @@
-import {call, put, select, takeEvery, delay} from 'redux-saga/effects'
-
+import {END, eventChannel} from 'redux-saga'
+import {call, delay, put, select, take, takeEvery} from 'redux-saga/effects'
 import * as actions from './actions'
 import {createCoreService} from '../services'
 import {getDownloadTasks, isConfigLoading} from './selectors'
@@ -16,11 +16,12 @@ export default function* browserSaga() {
   yield takeEvery(actions.updateDatabaseRequest, updateDatabaseSaga)
 
   yield takeEvery(actions.createDownloadTasksFromCollectionsRequest, createDownloadTasksFromCollectionsSaga)
+  yield takeEvery(actions.handleDownloadTaskRequest, handleDownloadTaskSaga)
 
   while (true) {
     const downloadTasks = yield select(getDownloadTasks)
-    for(const downloadTask of downloadTasks) {
-      if(downloadTask.state === 'Pending') {
+    for (const downloadTask of downloadTasks) {
+      if (downloadTask.state === 'Pending') {
         yield put(actions.handleDownloadTaskRequest(downloadTask))
       }
     }
@@ -83,7 +84,7 @@ function* removeComicFromCollectionSaga(action) {
 function* queryConfigSaga() {
   try {
     const loading = yield select(isConfigLoading)
-    if(loading) {
+    if (loading) {
       return
     }
 
@@ -148,4 +149,62 @@ function* createDownloadTasksFromCollectionsSaga() {
   } catch (e) {
     yield put(actions.createDownloadTasksFromCollectionsFailure(e))
   }
+}
+
+function* handleDownloadTaskSaga(action) {
+  console.log('啟動下載任務 ...')
+  const downloadTask = action.payload
+  yield put(actions.handleDownloadTaskProcessing({
+    ...downloadTask,
+    state: 'Downloading',
+  }))
+  const coreService = createCoreService()
+  const config = yield call(coreService.fetchConfig.bind(coreService))
+  const downloadDirPath = config.downloadDirPath
+  console.log(`取得下載路徑： ${downloadDirPath}`)
+
+  const comics = yield call(coreService.searchComics.bind(coreService), {id: downloadTask.comicId, pattern: ''})
+  if (comics.length !== 1) {
+    yield put(actions.handleDownloadTaskFailure(new Error('unable to get target comic')))
+  }
+
+  const targetComic = comics[0]
+  const channel = yield call(createHandleDownloadTaskChannel, targetComic, downloadDirPath)
+  while (true) {
+    const downloadStatus = yield take(channel)
+    console.log(downloadStatus)
+    yield put(actions.handleDownloadTaskProcessing({
+      ...downloadTask,
+      state: downloadStatus.completed ? 'Finished' : 'Downloading',
+      progress: downloadStatus.progress.current / downloadStatus.progress.total * 100,
+      status: downloadStatus.progress.status
+    }))
+    if (downloadStatus.completed) {
+      break
+    }
+  }
+
+  yield put(actions.updateConfigProcessing())
+  const newProfile = {
+    ...config,
+    lastDownloadTime: new Date(),
+  }
+
+  yield call(coreService.updateConfig.bind(coreService), newProfile)
+  yield put(actions.updateConfigSuccess(newProfile))
+}
+
+function createHandleDownloadTaskChannel(targetComic, downloadDirPath) {
+  return eventChannel(emitter => {
+    targetComic.startDownloadTask = targetComic.startDownloadTask.bind(targetComic)
+    targetComic.startDownloadTask(downloadDirPath).subscribe(downloadStatus => {
+      emitter(downloadStatus)
+      if (downloadStatus.completed) {
+        emitter(END)
+      }
+    })
+
+    return () => {
+    }
+  })
 }

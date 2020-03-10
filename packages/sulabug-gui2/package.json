@@ -16,7 +16,6 @@
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
-    "redux-observable": "^1.2.0",
     "redux-saga": "^1.1.3",
     "source-map-support": "^0.5.12",
     "sulabug-core": "^0.0.4-alpha.0",
